@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: tareffy-postgres
+    environment:
+      POSTGRES_DB: tareffy
+      POSTGRES_USER: tareffy_user
+      POSTGRES_PASSWORD: tareffy_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/prisma/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - tareffy-network
+    restart: unless-stopped
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tareffy-backend
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://tareffy_user:tareffy_password@postgres:5432/tareffy
+      JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+      PORT: 5000
+      FRONTEND_URL: https://tareffy.iagodev.online
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: your-email@gmail.com
+      SMTP_PASS: your-app-password
+      VAPID_PUBLIC_KEY: your-vapid-public-key
+      VAPID_PRIVATE_KEY: your-vapid-private-key
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    networks:
+      - tareffy-network
+    restart: unless-stopped
+    volumes:
+      - ./backend/uploads:/app/uploads
+    command: >
+      sh -c "
+        npx prisma generate &&
+        npx prisma migrate deploy &&
+        npm start
+      "
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tareffy-frontend
+    environment:
+      REACT_APP_API_URL: https://tareffy.iagodev.online/api
+      REACT_APP_SOCKET_URL: https://tareffy.iagodev.online
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - tareffy-network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: tareffy-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/sites-available:/etc/nginx/sites-available
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - tareffy-network
+    restart: unless-stopped
+
+  # Redis for caching and sessions (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: tareffy-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - tareffy-network
+    restart: unless-stopped
+
+  # PM2 Process Manager
+  pm2:
+    image: keymetrics/pm2:latest
+    container_name: tareffy-pm2
+    environment:
+      PM2_PUBLIC_KEY: your-pm2-public-key
+      PM2_SECRET_KEY: your-pm2-secret-key
+    ports:
+      - "9615:9615"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - tareffy-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  tareffy-network:
+    driver: bridge

@@ -1,0 +1,32 @@
+{
+  "name": "tareffy",
+  "version": "1.0.0",
+  "description": "Sistema completo de gerenciamento de tarefas com drag & drop, notificações e sincronização em tempo real",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "keywords": [
+    "task-management",
+    "drag-drop",
+    "real-time",
+    "notifications",
+    "calendar",
+    "productivity"
+  ],
+  "author": "Iago Dev",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
