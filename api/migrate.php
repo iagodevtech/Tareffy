@@ -1,0 +1,17 @@
+<?php
+require __DIR__ . '/config.php';
+
+$sql = [
+	"CREATE TABLE IF NOT EXISTS users (\n\tid INT AUTO_INCREMENT PRIMARY KEY,\n\tname VARCHAR(120) NOT NULL,\n\temail VARCHAR(190) NOT NULL UNIQUE,\n\tpassword_hash VARCHAR(255) NOT NULL,\n\temail_reminders TINYINT(1) NOT NULL DEFAULT 1,\n\tallow_browser_notif TINYINT(1) NOT NULL DEFAULT 1,\n\tcreated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+	"CREATE TABLE IF NOT EXISTS teams (\n\tid INT AUTO_INCREMENT PRIMARY KEY,\n\tname VARCHAR(160) NOT NULL,\n\towner_user_id INT NOT NULL,\n\tFOREIGN KEY(owner_user_id) REFERENCES users(id) ON DELETE CASCADE\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+	"CREATE TABLE IF NOT EXISTS team_members (\n\tid INT AUTO_INCREMENT PRIMARY KEY,\n\tteam_id INT NOT NULL,\n\tuser_id INT NOT NULL,\n\trole VARCHAR(30) NOT NULL DEFAULT 'member',\n\tUNIQUE(team_id, user_id),\n\tFOREIGN KEY(team_id) REFERENCES teams(id) ON DELETE CASCADE,\n\tFOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+	"CREATE TABLE IF NOT EXISTS boards (\n\tid INT AUTO_INCREMENT PRIMARY KEY,\n\tteam_id INT NULL,\n\tname VARCHAR(160) NOT NULL DEFAULT 'Quadro',\n\tFOREIGN KEY(team_id) REFERENCES teams(id) ON DELETE SET NULL\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+	"CREATE TABLE IF NOT EXISTS columns (\n\tid INT AUTO_INCREMENT PRIMARY KEY,\n\tboard_id INT NOT NULL,\n\tname VARCHAR(120) NOT NULL,\n\tsort_order INT NOT NULL DEFAULT 0,\n\tFOREIGN KEY(board_id) REFERENCES boards(id) ON DELETE CASCADE\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+	"CREATE TABLE IF NOT EXISTS tasks (\n\tid INT AUTO_INCREMENT PRIMARY KEY,\n\tboard_id INT NOT NULL,\n\tcolumn_id INT NOT NULL,\n\ttitle VARCHAR(200) NOT NULL,\n\tdescription TEXT NULL,\n\tassignee_user_id INT NULL,\n\tdue_at DATETIME NULL,\n\tcreated_by INT NOT NULL,\n\tcreated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n\tFOREIGN KEY(board_id) REFERENCES boards(id) ON DELETE CASCADE,\n\tFOREIGN KEY(column_id) REFERENCES columns(id) ON DELETE CASCADE,\n\tFOREIGN KEY(assignee_user_id) REFERENCES users(id) ON DELETE SET NULL,\n\tFOREIGN KEY(created_by) REFERENCES users(id) ON DELETE CASCADE\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+	"CREATE TABLE IF NOT EXISTS notifications (\n\tid INT AUTO_INCREMENT PRIMARY KEY,\n\tuser_id INT NOT NULL,\n\tmessage VARCHAR(255) NOT NULL,\n\tcreated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n\tFOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+];
+
+$pdo = db();
+foreach ($sql as $q) { $pdo->exec($q); }
+
+echo json_encode(['ok' => true]);
