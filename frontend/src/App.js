@@ -57,23 +57,17 @@ const AuthProvider = ({ children }) => {
     // Check if user is logged in
     const token = localStorage.getItem('token');
     if (token) {
-      // In a real app, you would validate the token with the backend
-      setUser({ id: 1, name: 'Usuário Teste', email: 'teste@tareffy.com' });
+      // TODO: Implementar validação real com Supabase
+      // setUser(null); // Usuário não logado por padrão
     }
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
     try {
-      // Simulate API call
-      if (email === 'admin@tareffy.com' && password === 'admin123') {
-        const userData = { id: 1, name: 'Admin', email: 'admin@tareffy.com' };
-        localStorage.setItem('token', 'fake-token');
-        setUser(userData);
-        return { success: true };
-      } else {
-        return { success: false, error: 'Credenciais inválidas' };
-      }
+      // TODO: Implementar integração real com Supabase
+      // Por enquanto, retorna erro para forçar configuração
+      return { success: false, error: 'Sistema em configuração. Configure o Supabase primeiro.' };
     } catch (error) {
       return { success: false, error: 'Erro no login' };
     }
@@ -81,11 +75,8 @@ const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      // Simulate API call
-      const userData = { id: Date.now(), name, email };
-      localStorage.setItem('token', 'fake-token');
-      setUser(userData);
-      return { success: true };
+      // TODO: Implementar registro real com Supabase
+      return { success: false, error: 'Sistema em configuração. Configure o Supabase primeiro.' };
     } catch (error) {
       return { success: false, error: 'Erro no registro' };
     }
@@ -1457,8 +1448,8 @@ const Teams = () => {
   const [invitingTeamId, setInvitingTeamId] = useState(null);
   const [focusedField, setFocusedField] = useState(null);
   
-  // Simulate current user as project owner (in real app, this would come from auth context)
-  const currentUser = { id: 1, name: 'Admin', email: 'admin@tareffy.com', role: 'OWNER' };
+  // TODO: Obter usuário atual do contexto de autenticação
+  const currentUser = { id: null, name: 'Usuário', email: '', role: 'MEMBER' };
   
   // Check if current user is project owner
   const isProjectOwner = (team) => {

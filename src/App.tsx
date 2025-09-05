@@ -7,6 +7,7 @@ import About from './pages/About'
 import Projects from './pages/Projects'
 import Contact from './pages/Contact'
 import ContactManagement from './pages/ContactManagement'
+import Dashboard from './pages/Dashboard'
 import Footer from './components/Footer'
 import './styles/App.css'
 
@@ -35,6 +36,7 @@ function App() {
               <Route path="/projetos" element={<Projects />} />
               <Route path="/contato" element={<Contact />} />
               <Route path="/admin/contatos" element={<ContactManagement />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </main>
           <Footer />

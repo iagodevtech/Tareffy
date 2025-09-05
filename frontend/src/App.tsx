@@ -18,6 +18,19 @@ import Settings from './pages/Settings/Settings';
 import Layout from './components/Layout/Layout';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
+// TESTE DIRETO - Deve aparecer sempre
+console.log('🔥 TESTE DIRETO - App.tsx carregado!');
+alert('🔥 TESTE DIRETO - App.tsx carregado!');
+
+// Debug: Verificar variáveis de ambiente
+console.log('🔍 App.tsx - Variáveis de ambiente:', {
+  REACT_APP_SUPABASE_URL: process.env.REACT_APP_SUPABASE_URL,
+  REACT_APP_SUPABASE_ANON_KEY: process.env.REACT_APP_SUPABASE_ANON_KEY ? 'EXISTS' : 'NOT FOUND',
+  NODE_ENV: process.env.NODE_ENV
+});
+
+console.log('🚀 App.tsx - Iniciando aplicação...');
+
 function App() {
   return (
     <ThemeProvider>

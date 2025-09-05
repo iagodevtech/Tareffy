@@ -17,11 +17,16 @@ const Register: React.FC = () => {
     setLoading(true);
     setError('');
 
+    console.log('🚀 Register: Iniciando registro...', { name, email });
+
     try {
+      console.log('📞 Register: Chamando função register...');
       await register(name, email, password);
+      console.log('✅ Register: Registro concluído, redirecionando...');
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Erro ao criar conta');
+      console.error('❌ Register: Erro no registro:', err);
+      setError(err.message || 'Erro ao criar conta');
     } finally {
       setLoading(false);
     }

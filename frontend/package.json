@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Frontend React para o sistema Tareffy",
   "private": true,
+  "homepage": "https://seu-usuario.github.io/tareffy",
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@supabase/supabase-js": "^2.57.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
@@ -60,7 +63,8 @@
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:gh-pages": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [

@@ -1,0 +1,76 @@
+/* CORREÇÃO GLOBAL PARA TEXTO TRANSPARENTE - TAREFFY */
+
+/* Reset completo para TODOS os elementos de texto */
+* {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-text-stroke: 0 !important;
+  opacity: 1 !important;
+}
+
+/* Reset específico para inputs */
+input, textarea, select, button {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background-color: #ffffff !important;
+  border: 2px solid #3b82f6 !important;
+  font-family: Arial, sans-serif !important;
+  font-size: 16px !important;
+}
+
+/* Reset para texto dentro de inputs */
+input::placeholder, textarea::placeholder {
+  color: #666666 !important;
+  -webkit-text-fill-color: #666666 !important;
+}
+
+/* Reset para modais */
+.modal, .modal * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background-color: #ffffff !important;
+}
+
+/* Reset para cards e containers */
+.card, .container, .content {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Reset para botões */
+button {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #3b82f6 !important;
+}
+
+/* Reset para links */
+a {
+  color: #3b82f6 !important;
+  -webkit-text-fill-color: #3b82f6 !important;
+}
+
+/* Reset para títulos */
+h1, h2, h3, h4, h5, h6 {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Reset para parágrafos */
+p, span, div {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Reset para labels */
+label {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Reset para dropdowns */
+select option {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background-color: #ffffff !important;
+}

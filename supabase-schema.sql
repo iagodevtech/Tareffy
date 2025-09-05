@@ -1,8 +1,5 @@
 -- Supabase Database Schema for Tareffy
 
--- Enable Row Level Security
-ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
-
 -- Create contacts table
 CREATE TABLE IF NOT EXISTS contacts (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,

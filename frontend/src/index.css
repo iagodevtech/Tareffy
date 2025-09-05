@@ -88,8 +88,8 @@ body {
   background: #6b7280;
 }
 
-/* Custom components */
-@layer components {
+/* Custom components - TEMPORARIAMENTE DESABILITADO (Tailwind CSS comentado)
+/* @layer components { */
   /* Button styles */
   .btn {
     @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
@@ -335,10 +335,10 @@ body {
   .dark .calendar-day.has-events {
     @apply bg-success-900 text-success-100;
   }
-}
+/* } */
 
-/* Utility classes */
-@layer utilities {
+/* Utility classes - TEMPORARIAMENTE DESABILITADO (Tailwind CSS comentado)
+/* @layer utilities { */
   /* Text gradients */
   .text-gradient {
     @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
@@ -378,7 +378,7 @@ body {
       display: none !important;
     }
   }
-}
+/* } */
 
 /* Focus styles for accessibility */
 .focus-visible:focus {

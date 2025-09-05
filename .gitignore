@@ -43,8 +43,6 @@ pids
 
 # Coverage directory used by tools like istanbul
 coverage/
-
-# nyc test coverage
 .nyc_output
 
 # Dependency directories
@@ -102,4 +100,42 @@ public/uploads/
 # Temporary files
 tmp/
 temp/
-node_modules
+
+# Supabase
+.supabase/
+
+# Local development
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build artifacts
+*.tsbuildinfo
+
+# OS specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Misc
+*.log
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

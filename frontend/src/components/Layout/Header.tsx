@@ -18,7 +18,7 @@ const Header: React.FC = () => {
             </button>
             <div className="flex items-center space-x-3">
               <div className="text-sm text-gray-700">
-                <p className="font-medium">{user?.name}</p>
+                <p className="font-medium">{user?.user_metadata?.full_name || user?.email}</p>
                 <p className="text-gray-500">{user?.email}</p>
               </div>
               <button

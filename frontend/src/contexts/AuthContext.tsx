@@ -1,20 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import api from '../services/api';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  avatar?: string;
-}
+import { supabase } from '../lib/supabase';
+import { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,37 +27,37 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      // Verificar se o token ainda é válido
-      api.get('/auth/profile')
-        .then(response => {
-          setUser(response.data);
-        })
-        .catch(() => {
-          localStorage.removeItem('token');
-          delete api.defaults.headers.common['Authorization'];
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
       setLoading(false);
-    }
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
-      const { token, user } = response.data;
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       
-      localStorage.setItem('token', token);
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser(user);
+      if (error) throw error;
     } catch (error) {
       throw error;
     }
@@ -71,25 +65,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (name: string, email: string, password: string) => {
     try {
-      const response = await api.post('/auth/register', { name, email, password });
-      const { token, user } = response.data;
+      console.log('🚀 Tentando registrar usuário:', { name, email })
       
-      localStorage.setItem('token', token);
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser(user);
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
+      });
+      
+      console.log('📡 Resposta do Supabase:', { data, error })
+      
+      if (error) throw error;
+      
+      console.log('✅ Usuário registrado com sucesso no Supabase')
     } catch (error) {
+      console.error('❌ Erro ao registrar:', error)
       throw error;
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    delete api.defaults.headers.common['Authorization'];
-    setUser(null);
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   const value = {
     user,
+    session,
     loading,
     login,
     register,

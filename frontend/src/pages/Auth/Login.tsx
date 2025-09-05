@@ -20,80 +20,198 @@ const Login: React.FC = () => {
       await login(email, password);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Erro ao fazer login');
+      setError(err.message || 'Erro ao fazer login');
     } finally {
       setLoading(false);
     }
   };
 
+  // Estilos inline para garantir que funcionem
+  const containerStyle = {
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    padding: '2rem',
+    fontFamily: 'Arial, sans-serif'
+  };
+
+  const formStyle = {
+    background: 'white',
+    padding: '2rem',
+    borderRadius: '12px',
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    width: '100%',
+    maxWidth: '400px'
+  };
+
+  const titleStyle = {
+    textAlign: 'center' as const,
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    color: '#1f2937',
+    marginBottom: '1rem',
+    margin: '0 0 1rem 0'
+  };
+
+  const subtitleStyle = {
+    textAlign: 'center' as const,
+    color: '#6b7280',
+    marginBottom: '2rem',
+    margin: '0 0 2rem 0'
+  };
+
+  const inputGroupStyle = {
+    marginBottom: '1rem'
+  };
+
+  const labelStyle = {
+    display: 'block',
+    marginBottom: '0.5rem',
+    color: '#374151',
+    fontWeight: '500',
+    fontSize: '14px'
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '12px 16px',
+    border: '2px solid #3b82f6',
+    borderRadius: '8px',
+    fontSize: '16px',
+    fontFamily: 'Arial, sans-serif',
+    color: '#000000',
+    backgroundColor: '#ffffff',
+    outline: 'none',
+    boxSizing: 'border-box' as const
+  };
+
+  const buttonStyle = {
+    width: '100%',
+    backgroundColor: '#3b82f6',
+    color: 'white',
+    padding: '12px',
+    border: 'none',
+    borderRadius: '8px',
+    fontSize: '16px',
+    fontWeight: '500',
+    cursor: 'pointer',
+    fontFamily: 'Arial, sans-serif'
+  };
+
+  const errorStyle = {
+    backgroundColor: '#fef2f2',
+    border: '1px solid #fecaca',
+    color: '#dc2626',
+    padding: '12px',
+    borderRadius: '6px',
+    marginBottom: '1rem',
+    fontSize: '14px'
+  };
+
+  const linkStyle = {
+    color: '#3b82f6',
+    textDecoration: 'underline',
+    cursor: 'pointer'
+  };
+
+  const testCredentialsStyle = {
+    marginTop: '1.5rem',
+    padding: '1rem',
+    backgroundColor: '#dbeafe',
+    borderRadius: '8px',
+    border: '1px solid #93c5fd'
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div style={containerStyle}>
+      <div style={formStyle}>
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Entrar na sua conta
+          <h2 style={titleStyle}>
+            Login Tareffy
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Ou{' '}
-            <Link
-              to="/register"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
-              criar uma nova conta
-            </Link>
+          <p style={subtitleStyle}>
+            Entre com suas credenciais para acessar o sistema
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        
+        <form onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
+            <div style={errorStyle}>
               {error}
             </div>
           )}
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Senha
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+          
+          <div style={inputGroupStyle}>
+            <label htmlFor="email" style={labelStyle}>
+              Email:
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="Digite seu email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+          
+          <div style={inputGroupStyle}>
+            <label htmlFor="password" style={labelStyle}>
+              Senha:
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              placeholder="Digite sua senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={inputStyle}
+            />
           </div>
 
           <div>
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              style={buttonStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#2563eb';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#3b82f6';
+              }}
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </button>
           </div>
         </form>
+        
+        <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+          <p style={{ margin: '0.5rem 0', fontSize: '14px' }}>
+            Não tem conta?{' '}
+            <Link to="/register" style={linkStyle}>
+              Registre-se
+            </Link>
+          </p>
+        </div>
+        
+        {/* Informações de acesso */}
+        <div style={testCredentialsStyle}>
+          <h4 style={{ margin: '0 0 0.5rem 0', color: '#1e40af', fontSize: '16px' }}>
+            Acesso ao Sistema:
+          </h4>
+          <p style={{ margin: '0.25rem 0', fontSize: '14px', color: '#1e40af' }}>
+            Entre com suas credenciais reais do sistema
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,356 @@
+/* ESTILOS CRÍTICOS PARA LOGIN - CORREÇÃO DE TEXTO TRANSPARENTE */
+
+/* Reset completo para os inputs */
+.login-container input,
+.login-container input:focus,
+.login-container input:active,
+.login-container input:hover,
+.login-container input:valid,
+.login-container input:invalid {
+  /* Forçar cores de texto */
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-text-stroke: 0 !important;
+  
+  /* Forçar opacidade */
+  opacity: 1 !important;
+  
+  /* Forçar background */
+  background-color: #ffffff !important;
+  
+  /* Forçar fonte */
+  font-family: Arial, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: normal !important;
+  
+  /* Forçar bordas */
+  border: 2px solid #3b82f6 !important;
+  border-radius: 8px !important;
+  
+  /* Forçar padding */
+  padding: 12px 16px !important;
+  
+  /* Forçar largura */
+  width: 100% !important;
+  
+  /* Forçar display */
+  display: block !important;
+  
+  /* Forçar posição */
+  position: relative !important;
+  
+  /* Forçar z-index */
+  z-index: 1 !important;
+  
+  /* Forçar outline */
+  outline: none !important;
+  
+  /* Forçar box-shadow */
+  box-shadow: none !important;
+  
+  /* Forçar transform */
+  transform: none !important;
+  
+  /* Forçar transition */
+  transition: none !important;
+  
+  /* Forçar cursor */
+  cursor: text !important;
+  
+  /* Forçar resize */
+  resize: none !important;
+  
+  /* Forçar overflow */
+  overflow: visible !important;
+  
+  /* Forçar text-align */
+  text-align: left !important;
+  
+  /* Forçar line-height */
+  line-height: normal !important;
+  
+  /* Forçar letter-spacing */
+  letter-spacing: normal !important;
+  
+  /* Forçar word-spacing */
+  word-spacing: normal !important;
+  
+  /* Forçar text-transform */
+  text-transform: none !important;
+  
+  /* Forçar text-decoration */
+  text-decoration: none !important;
+  
+  /* Forçar text-shadow */
+  text-shadow: none !important;
+  
+  /* Forçar white-space */
+  white-space: normal !important;
+  
+  /* Forçar direction */
+  direction: ltr !important;
+  
+  /* Forçar unicode-bidi */
+  unicode-bidi: normal !important;
+  
+  /* Forçar writing-mode */
+  writing-mode: horizontal-tb !important;
+  
+  /* Forçar text-orientation */
+  text-orientation: mixed !important;
+  
+  /* Forçar text-combine-upright */
+  text-combine-upright: none !important;
+  
+  /* Forçar text-emphasis */
+  text-emphasis: none !important;
+  
+  /* Forçar text-underline-position */
+  text-underline-position: auto !important;
+  
+  /* Forçar text-underline-offset */
+  text-underline-offset: auto !important;
+  
+  /* Forçar text-decoration-skip */
+  text-decoration-skip: objects !important;
+  
+  /* Forçar text-decoration-skip-ink */
+  text-decoration-skip-ink: auto !important;
+  
+  /* Forçar text-decoration-thickness */
+  text-decoration-thickness: auto !important;
+  
+  /* Forçar text-decoration-style */
+  text-decoration-style: solid !important;
+  
+  /* Forçar text-decoration-color */
+  text-decoration-color: currentColor !important;
+  
+  /* Forçar text-rendering */
+  text-rendering: auto !important;
+  
+  /* Forçar font-feature-settings */
+  font-feature-settings: normal !important;
+  
+  /* Forçar font-variant */
+  font-variant: normal !important;
+  
+  /* Forçar font-stretch */
+  font-stretch: normal !important;
+  
+  /* Forçar font-style */
+  font-style: normal !important;
+  
+  /* Forçar font-synthesis */
+  font-synthesis: weight style !important;
+  
+  /* Forçar font-display */
+  font-display: auto !important;
+  
+  /* Forçar font-size-adjust */
+  font-size-adjust: none !important;
+  
+  /* Forçar font-smooth */
+  font-smooth: auto !important;
+  
+  /* Forçar -webkit-font-smoothing */
+  -webkit-font-smoothing: auto !important;
+  
+  /* Forçar -moz-osx-font-smoothing */
+  -moz-osx-font-smoothing: auto !important;
+  
+  /* Forçar -webkit-text-size-adjust */
+  -webkit-text-size-adjust: auto !important;
+  
+  /* Forçar -moz-text-size-adjust */
+  -moz-text-size-adjust: auto !important;
+  
+  /* Forçar -ms-text-size-adjust */
+  -ms-text-size-adjust: auto !important;
+  
+  /* Forçar -webkit-text-stroke */
+  -webkit-text-stroke: 0 !important;
+  
+  /* Forçar -webkit-text-fill-color */
+  -webkit-text-fill-color: #000000 !important;
+  
+  /* Forçar -webkit-text-emphasis */
+  -webkit-text-emphasis: none !important;
+  
+  /* Forçar -webkit-text-emphasis-color */
+  -webkit-text-emphasis-color: currentColor !important;
+  
+  /* Forçar -webkit-text-emphasis-style */
+  -webkit-text-emphasis-style: none !important;
+  
+  /* Forçar -webkit-text-emphasis-position */
+  -webkit-text-emphasis-position: over !important;
+  
+  /* Forçar -webkit-text-orientation */
+  -webkit-text-orientation: mixed !important;
+  
+  /* Forçar -webkit-text-combine */
+  -webkit-text-combine: none !important;
+  
+  /* Forçar -webkit-text-decorations-in-effect */
+  -webkit-text-decorations-in-effect: none !important;
+  
+  /* Forçar -webkit-text-fill-color */
+  -webkit-text-fill-color: #000000 !important;
+  
+  /* Forçar -webkit-text-stroke */
+  -webkit-text-stroke: 0 !important;
+  
+  /* Forçar -webkit-text-stroke-color */
+  -webkit-text-stroke-color: transparent !important;
+  
+  /* Forçar -webkit-text-stroke-width */
+  -webkit-text-stroke-width: 0 !important;
+  
+  /* Forçar -webkit-text-security */
+  -webkit-text-security: none !important;
+  
+  /* Forçar -webkit-text-touch-action */
+  -webkit-text-touch-action: auto !important;
+  
+  /* Forçar -webkit-text-zoom */
+  -webkit-text-zoom: normal !important;
+  
+  /* Forçar -webkit-user-select */
+  -webkit-user-select: text !important;
+  
+  /* Forçar -moz-user-select */
+  -moz-user-select: text !important;
+  
+  /* Forçar -ms-user-select */
+  -ms-user-select: text !important;
+  
+  /* Forçar user-select */
+  user-select: text !important;
+  
+  /* Forçar -webkit-user-modify */
+  -webkit-user-modify: read-write !important;
+  
+  /* Forçar -moz-user-modify */
+  -moz-user-modify: read-write !important;
+  
+  /* Forçar -webkit-user-drag */
+  -webkit-user-drag: element !important;
+  
+  /* Forçar -webkit-user-focus */
+  -webkit-user-focus: normal !important;
+  
+  /* Forçar -webkit-user-input */
+  -webkit-user-input: auto !important;
+  
+  /* Forçar -webkit-user-select */
+  -webkit-user-select: text !important;
+  
+  /* Forçar -webkit-user-zoom */
+  -webkit-user-zoom: normal !important;
+  
+  /* Forçar -webkit-writing-mode */
+  -webkit-writing-mode: horizontal-tb !important;
+  
+  /* Forçar -webkit-writing-mode */
+  -webkit-writing-mode: horizontal-tb !important;
+  
+  /* Forçar -webkit-writing-mode */
+  -webkit-writing-mode: horizontal-tb !important;
+}
+
+/* Estilos específicos para o container */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+/* Estilos para o formulário */
+.login-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Estilos para o título */
+.login-title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+/* Estilos para o subtítulo */
+.login-subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* Estilos para o link */
+.login-link {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+/* Estilos para os grupos de input */
+.input-group {
+  margin-bottom: 1rem;
+}
+
+/* Estilos para as labels */
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Estilos para mensagens de erro */
+.error-message {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+/* Estilos para o botão */
+.submit-button {
+  width: 100%;
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #2563eb;
+}
+
+.submit-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Responsividade */
+@media (max-width: 640px) {
+  .login-form {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+}
