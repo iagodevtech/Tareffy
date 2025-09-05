@@ -8,11 +8,15 @@ const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'eyJhbGciOiJI
 console.log('🔧 Supabase Config:', {
   url: supabaseUrl,
   key: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'NOT FOUND',
-  env: process.env.NODE_ENV
+  env: process.env.NODE_ENV,
+  hasUrl: !!process.env.REACT_APP_SUPABASE_URL,
+  hasKey: !!process.env.REACT_APP_SUPABASE_ANON_KEY
 })
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('❌ Configuração do Supabase não encontrada!')
+  console.error('URL:', supabaseUrl)
+  console.error('Key:', supabaseAnonKey ? 'EXISTS' : 'NOT FOUND')
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
