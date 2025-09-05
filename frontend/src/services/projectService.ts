@@ -32,19 +32,31 @@ export const projectService = {
 
   // Criar novo projeto
   async createProject(project: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'user_id'>): Promise<Project> {
+    console.log('🔧 projectService.createProject - Iniciando...', project);
+    
     const { data: { user } } = await supabase.auth.getUser();
+    console.log('👤 Usuário autenticado:', user?.id, user?.email);
+    
     if (!user) throw new Error('Usuário não autenticado');
+
+    const projectData = {
+      ...project,
+      user_id: user.id
+    };
+    console.log('📝 Dados do projeto para inserir:', projectData);
 
     const { data, error } = await supabase
       .from('projects')
-      .insert({
-        ...project,
-        user_id: user.id
-      })
+      .insert(projectData)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Erro ao criar projeto:', error);
+      throw error;
+    }
+    
+    console.log('✅ Projeto criado com sucesso:', data);
 
     // Registrar atividade
     try {

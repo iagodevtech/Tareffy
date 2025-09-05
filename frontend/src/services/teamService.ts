@@ -70,19 +70,31 @@ export const teamService = {
 
   // Criar nova equipe
   async createTeam(team: Omit<Team, 'id' | 'created_at' | 'updated_at' | 'user_id'>): Promise<Team> {
+    console.log('🔧 teamService.createTeam - Iniciando...', team);
+    
     const { data: { user } } = await supabase.auth.getUser();
+    console.log('👤 Usuário autenticado:', user?.id, user?.email);
+    
     if (!user) throw new Error('Usuário não autenticado');
+
+    const teamData = {
+      ...team,
+      user_id: user.id
+    };
+    console.log('📝 Dados da equipe para inserir:', teamData);
 
     const { data, error } = await supabase
       .from('teams')
-      .insert({
-        ...team,
-        user_id: user.id
-      })
+      .insert(teamData)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Erro ao criar equipe:', error);
+      throw error;
+    }
+    
+    console.log('✅ Equipe criada com sucesso:', data);
 
     // Adicionar o criador como admin
     await supabase
