@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { 
   DocumentTextIcon, 
-  CalendarIcon, 
   ChartBarIcon,
   ClockIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
-import { reportService, Activity, PendingItem, Metric } from '../../services/reportService';
+import { reportService, Activity, PendingItem } from '../../services/reportService';
 
 const Reports: React.FC = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [pendingItems, setPendingItems] = useState<PendingItem[]>([]);
-  const [metrics, setMetrics] = useState<Metric[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedReportType, setSelectedReportType] = useState<'daily' | 'weekly' | 'monthly'>('daily');
 
@@ -23,15 +21,13 @@ const Reports: React.FC = () => {
   const loadReportData = async () => {
     try {
       setLoading(true);
-      const [activitiesData, pendingData, metricsData] = await Promise.all([
+      const [activitiesData, pendingData] = await Promise.all([
         reportService.getRecentActivities(20),
-        reportService.getPendingItems(),
-        reportService.getMetrics()
+        reportService.getPendingItems()
       ]);
       
       setActivities(activitiesData);
       setPendingItems(pendingData);
-      setMetrics(metricsData);
     } catch (error) {
       console.error('Erro ao carregar dados dos relatórios:', error);
     } finally {
