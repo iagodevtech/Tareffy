@@ -179,7 +179,7 @@ export const teamService = {
         email,
         role,
         invited_by: user.id,
-        expires_at: expiresAt.toISOString()
+        expires_at: expiresAt.toISOString().split('T')[0] // Converter para formato DATE
       })
       .select()
       .single();

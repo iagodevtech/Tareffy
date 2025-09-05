@@ -8,7 +8,7 @@ export interface Project {
   status: 'active' | 'completed' | 'on-hold';
   progress: number;
   team: string;
-  deadline: string;
+  deadline: string | null;
   created_at: string;
   updated_at: string;
   user_id: string;

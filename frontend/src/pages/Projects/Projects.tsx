@@ -54,7 +54,7 @@ const Projects: React.FC = () => {
       status: 'active',
       progress: 0,
       team: '',
-      deadline: '',
+      deadline: null,
       created_at: '',
       updated_at: '',
       user_id: ''
@@ -78,12 +78,20 @@ const Projects: React.FC = () => {
 
     setSaving(true);
     try {
+      // Preparar dados para envio, convertendo deadline vazio para null
+      const projectData = {
+        ...editingProject,
+        deadline: editingProject.deadline && editingProject.deadline.trim() !== '' 
+          ? editingProject.deadline 
+          : null
+      };
+
       if (editingProject.id) {
         // Atualizar projeto existente
-        await projectService.updateProject(editingProject.id, editingProject);
+        await projectService.updateProject(editingProject.id, projectData);
       } else {
         // Criar novo projeto
-        await projectService.createProject(editingProject);
+        await projectService.createProject(projectData);
       }
       await loadProjects(); // Recarregar lista
       setShowModal(false);
@@ -184,8 +192,8 @@ const Projects: React.FC = () => {
               </div>
               
               <div className="text-sm text-gray-600">
-                <p><span className="font-medium">Equipe:</span> {project.team}</p>
-                <p><span className="font-medium">Prazo:</span> {new Date(project.deadline).toLocaleDateString('pt-BR')}</p>
+                <p><span className="font-medium">Equipe:</span> {project.team || 'Não definida'}</p>
+                <p><span className="font-medium">Prazo:</span> {project.deadline ? new Date(project.deadline).toLocaleDateString('pt-BR') : 'Não definido'}</p>
               </div>
             </div>
             
@@ -219,9 +227,9 @@ const Projects: React.FC = () => {
 
       {/* Modal para criar/editar projeto */}
       {showModal && editingProject && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg sm:text-xl font-bold mb-4">
               {projects.find(p => p.id === editingProject.id) ? 'Editar Projeto' : 'Novo Projeto'}
             </h2>
             
@@ -260,29 +268,30 @@ const Projects: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Prazo</label>
                 <input
                   type="date"
-                  value={editingProject.deadline}
-                  onChange={(e) => setEditingProject({...editingProject, deadline: e.target.value})}
+                  value={editingProject.deadline || ''}
+                  onChange={(e) => setEditingProject({...editingProject, deadline: e.target.value || null})}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
             
-            <div className="flex justify-end gap-3 mt-6">
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-6">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100 transition-colors order-2 sm:order-1"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSaveProject}
                 disabled={saving}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors order-1 sm:order-2"
               >
                 {saving ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    Salvando...
+                    <span className="hidden sm:inline">Salvando...</span>
+                    <span className="sm:hidden">...</span>
                   </>
                 ) : (
                   'Salvar'
