@@ -91,6 +91,13 @@ ALTER TABLE teams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE team_invites ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Contacts are viewable by admin" ON contacts;
+DROP POLICY IF EXISTS "Contacts are insertable by everyone" ON contacts;
+DROP POLICY IF EXISTS "Contacts are updatable by admin" ON contacts;
+DROP POLICY IF EXISTS "Users can view own profile" ON users;
+DROP POLICY IF EXISTS "Users can update own profile" ON users;
+
 -- Contacts policies (admin can read all, public can insert)
 CREATE POLICY "Contacts are viewable by admin" ON contacts
   FOR SELECT USING (auth.role() = 'authenticated');
@@ -108,6 +115,12 @@ CREATE POLICY "Users can view own profile" ON users
 CREATE POLICY "Users can update own profile" ON users
   FOR UPDATE USING (auth.uid() = id);
 
+-- Drop existing project policies
+DROP POLICY IF EXISTS "Users can view own projects" ON projects;
+DROP POLICY IF EXISTS "Users can insert own projects" ON projects;
+DROP POLICY IF EXISTS "Users can update own projects" ON projects;
+DROP POLICY IF EXISTS "Users can delete own projects" ON projects;
+
 -- Projects policies (user can only access their own projects)
 CREATE POLICY "Users can view own projects" ON projects
   FOR SELECT USING (auth.uid() = user_id);
@@ -120,6 +133,12 @@ CREATE POLICY "Users can update own projects" ON projects
 
 CREATE POLICY "Users can delete own projects" ON projects
   FOR DELETE USING (auth.uid() = user_id);
+
+-- Drop existing task policies
+DROP POLICY IF EXISTS "Users can view own tasks" ON tasks;
+DROP POLICY IF EXISTS "Users can insert own tasks" ON tasks;
+DROP POLICY IF EXISTS "Users can update own tasks" ON tasks;
+DROP POLICY IF EXISTS "Users can delete own tasks" ON tasks;
 
 -- Tasks policies
 CREATE POLICY "Users can view own tasks" ON tasks
@@ -134,6 +153,12 @@ CREATE POLICY "Users can update own tasks" ON tasks
 CREATE POLICY "Users can delete own tasks" ON tasks
   FOR DELETE USING (auth.uid() = user_id);
 
+-- Drop existing team policies
+DROP POLICY IF EXISTS "Users can view own teams" ON teams;
+DROP POLICY IF EXISTS "Users can insert own teams" ON teams;
+DROP POLICY IF EXISTS "Users can update own teams" ON teams;
+DROP POLICY IF EXISTS "Users can delete own teams" ON teams;
+
 -- Teams policies
 CREATE POLICY "Users can view own teams" ON teams
   FOR SELECT USING (auth.uid() = user_id);
@@ -147,6 +172,12 @@ CREATE POLICY "Users can update own teams" ON teams
 CREATE POLICY "Users can delete own teams" ON teams
   FOR DELETE USING (auth.uid() = user_id);
 
+-- Drop existing team member policies
+DROP POLICY IF EXISTS "Users can view team members" ON team_members;
+DROP POLICY IF EXISTS "Users can insert team members" ON team_members;
+DROP POLICY IF EXISTS "Users can update team members" ON team_members;
+DROP POLICY IF EXISTS "Users can delete team members" ON team_members;
+
 -- Team members policies
 CREATE POLICY "Users can view team members" ON team_members
   FOR SELECT USING (auth.uid() = user_id);
@@ -159,6 +190,12 @@ CREATE POLICY "Users can update team members" ON team_members
 
 CREATE POLICY "Users can delete team members" ON team_members
   FOR DELETE USING (auth.uid() = user_id);
+
+-- Drop existing team invite policies
+DROP POLICY IF EXISTS "Users can view team invites" ON team_invites;
+DROP POLICY IF EXISTS "Users can insert team invites" ON team_invites;
+DROP POLICY IF EXISTS "Users can update team invites" ON team_invites;
+DROP POLICY IF EXISTS "Users can delete team invites" ON team_invites;
 
 -- Team invites policies
 CREATE POLICY "Users can view team invites" ON team_invites
