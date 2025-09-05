@@ -32,11 +32,11 @@ const Dashboard: React.FC = () => {
 
   // Calcular estatísticas baseadas nos dados reais
   const stats = {
-    totalTasks: 24, // TODO: Implementar contagem de tarefas
+    totalTasks: 0, // TODO: Implementar contagem de tarefas
     inProgress: projects.filter(p => p.status === 'active').length,
     completed: projects.filter(p => p.status === 'completed').length,
     projects: projects.length,
-    teams: 3, // TODO: Implementar contagem de equipes
+    teams: 0, // TODO: Implementar contagem de equipes
     overdue: projects.filter(p => p.deadline && new Date(p.deadline) < new Date()).length
   };
 

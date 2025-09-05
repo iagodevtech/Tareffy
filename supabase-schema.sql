@@ -70,6 +70,18 @@ CREATE TABLE IF NOT EXISTS team_members (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Create team_invites table
+CREATE TABLE IF NOT EXISTS team_invites (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
+  email VARCHAR(255) NOT NULL,
+  role VARCHAR(50) DEFAULT 'member',
+  status VARCHAR(50) DEFAULT 'pending',
+  invited_by UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
 -- Create RLS policies
 ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
@@ -77,6 +89,7 @@ ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE teams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_invites ENABLE ROW LEVEL SECURITY;
 
 -- Contacts policies (admin can read all, public can insert)
 CREATE POLICY "Contacts are viewable by admin" ON contacts
@@ -147,10 +160,27 @@ CREATE POLICY "Users can update team members" ON team_members
 CREATE POLICY "Users can delete team members" ON team_members
   FOR DELETE USING (auth.uid() = user_id);
 
+-- Team invites policies
+CREATE POLICY "Users can view team invites" ON team_invites
+  FOR SELECT USING (auth.uid() = invited_by OR email = (SELECT email FROM auth.users WHERE id = auth.uid()));
+
+CREATE POLICY "Users can insert team invites" ON team_invites
+  FOR INSERT WITH CHECK (auth.uid() = invited_by);
+
+CREATE POLICY "Users can update team invites" ON team_invites
+  FOR UPDATE USING (auth.uid() = invited_by OR email = (SELECT email FROM auth.users WHERE id = auth.uid()));
+
+CREATE POLICY "Users can delete team invites" ON team_invites
+  FOR DELETE USING (auth.uid() = invited_by);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_contacts_email ON contacts(email);
 CREATE INDEX IF NOT EXISTS idx_contacts_status ON contacts(status);
 CREATE INDEX IF NOT EXISTS idx_contacts_created_at ON contacts(created_at);
+CREATE INDEX IF NOT EXISTS idx_team_members_team_id ON team_members(team_id);
+CREATE INDEX IF NOT EXISTS idx_team_members_user_id ON team_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_team_invites_email ON team_invites(email);
+CREATE INDEX IF NOT EXISTS idx_team_invites_team_id ON team_invites(team_id);
 CREATE INDEX IF NOT EXISTS idx_projects_created_at ON projects(created_at);
 
 -- Create function to update updated_at timestamp
