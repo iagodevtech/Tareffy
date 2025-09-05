@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, UserPlusIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
-import { teamService, Team, TeamMember, TeamInvite } from '../../services/teamService';
+import { teamService, Team } from '../../services/teamService';
 
 const Teams: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -89,23 +89,6 @@ const Teams: React.FC = () => {
     }
   };
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'admin': return 'bg-red-100 text-red-800';
-      case 'dev': return 'bg-blue-100 text-blue-800';
-      case 'member': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getRoleText = (role: string) => {
-    switch (role) {
-      case 'admin': return 'Administrador';
-      case 'dev': return 'Desenvolvedor';
-      case 'member': return 'Membro';
-      default: return 'Desconhecido';
-    }
-  };
 
   if (loading) {
     return (
