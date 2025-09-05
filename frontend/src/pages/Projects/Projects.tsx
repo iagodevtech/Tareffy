@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { projectService, Project } from '../../services/projectService';
+import KanbanBoard from '../../components/KanbanBoard/KanbanBoard';
 
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -307,6 +308,11 @@ const Projects: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Quadro Kanban */}
+      <div className="mt-8">
+        <KanbanBoard />
+      </div>
     </div>
   );
 };

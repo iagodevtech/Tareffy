@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'Novo projeto criado', message: 'O projeto "Tareffy" foi criado com sucesso', time: '2 min atrás', read: false, type: 'project' },
@@ -23,15 +25,18 @@ const Header: React.FC = () => {
     switch (notification.type) {
       case 'project':
         // Navegar para projetos
-        window.location.href = '/projects';
+        navigate('/projects');
+        setShowNotifications(false);
         break;
       case 'team_invite':
         // Navegar para equipes
-        window.location.href = '/teams';
+        navigate('/teams');
+        setShowNotifications(false);
         break;
       case 'task':
         // Navegar para dashboard
-        window.location.href = '/dashboard';
+        navigate('/dashboard');
+        setShowNotifications(false);
         break;
       default:
         // Recolher notificações
