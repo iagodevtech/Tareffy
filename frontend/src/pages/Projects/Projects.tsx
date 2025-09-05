@@ -1,54 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-
-interface Project {
-  id: string;
-  name: string;
-  description: string;
-  status: 'active' | 'completed' | 'on-hold';
-  progress: number;
-  team: string;
-  deadline: string;
-  createdAt: string;
-}
+import { projectService, Project } from '../../services/projectService';
 
 const Projects: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([
-    {
-      id: '1',
-      name: 'Website Corporativo',
-      description: 'Desenvolvimento do novo website da empresa',
-      status: 'active',
-      progress: 75,
-      team: 'Frontend Team',
-      deadline: '2024-02-15',
-      createdAt: '2024-01-01'
-    },
-    {
-      id: '2',
-      name: 'App Mobile',
-      description: 'Aplicativo móvel para iOS e Android',
-      status: 'completed',
-      progress: 100,
-      team: 'Mobile Team',
-      deadline: '2024-01-30',
-      createdAt: '2023-12-01'
-    },
-    {
-      id: '3',
-      name: 'Sistema de Vendas',
-      description: 'Sistema completo de gestão de vendas',
-      status: 'on-hold',
-      progress: 25,
-      team: 'Backend Team',
-      deadline: '2024-03-01',
-      createdAt: '2024-01-15'
-    }
-  ]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [showModal, setShowModal] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+
+  // Carregar projetos do Supabase
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    try {
+      setLoading(true);
+      const data = await projectService.getProjects();
+      setProjects(data);
+    } catch (error) {
+      console.error('Erro ao carregar projetos:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -70,14 +47,16 @@ const Projects: React.FC = () => {
 
   const handleNewProject = () => {
     setEditingProject({
-      id: Date.now().toString(),
+      id: '',
       name: '',
       description: '',
       status: 'active',
       progress: 0,
       team: '',
       deadline: '',
-      createdAt: new Date().toISOString()
+      created_at: '',
+      updated_at: '',
+      user_id: ''
     });
     setShowModal(true);
   };
@@ -87,21 +66,51 @@ const Projects: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleSaveProject = () => {
-    if (editingProject) {
-      if (projects.find(p => p.id === editingProject.id)) {
-        setProjects(projects.map(p => p.id === editingProject.id ? editingProject : p));
+  const handleSaveProject = async () => {
+    if (!editingProject) return;
+
+    try {
+      if (editingProject.id) {
+        // Atualizar projeto existente
+        await projectService.updateProject(editingProject.id, editingProject);
       } else {
-        setProjects([...projects, editingProject]);
+        // Criar novo projeto
+        await projectService.createProject(editingProject);
       }
+      await loadProjects(); // Recarregar lista
+      setShowModal(false);
+      setEditingProject(null);
+    } catch (error) {
+      console.error('Erro ao salvar projeto:', error);
     }
-    setShowModal(false);
-    setEditingProject(null);
   };
 
-  const handleDeleteProject = (id: string) => {
-    setProjects(projects.filter(p => p.id !== id));
+  const handleDeleteProject = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja excluir este projeto?')) {
+      try {
+        await projectService.deleteProject(id);
+        await loadProjects(); // Recarregar lista
+      } catch (error) {
+        console.error('Erro ao excluir projeto:', error);
+      }
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Projetos</h1>
+            <p className="text-gray-600">Carregando projetos...</p>
+          </div>
+        </div>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -119,7 +128,24 @@ const Projects: React.FC = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {projects.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="text-gray-400 mb-4">
+            <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum projeto encontrado</h3>
+          <p className="text-gray-500 mb-4">Comece criando seu primeiro projeto</p>
+          <button
+            onClick={handleNewProject}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Criar Projeto
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
           <div key={project.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
             <div className="flex justify-between items-start mb-4">
@@ -176,7 +202,8 @@ const Projects: React.FC = () => {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
 
       {/* Modal para criar/editar projeto */}
       {showModal && editingProject && (

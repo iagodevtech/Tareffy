@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ClipboardDocumentListIcon, 
@@ -8,16 +8,36 @@ import {
   UserGroupIcon,
   ChartBarIcon
 } from '@heroicons/react/24/outline';
+import { projectService, Project } from '../../services/projectService';
 
 const Dashboard: React.FC = () => {
-  // Dados mockados para demonstração
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      const data = await projectService.getProjects();
+      setProjects(data);
+    } catch (error) {
+      console.error('Erro ao carregar dados do dashboard:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Calcular estatísticas baseadas nos dados reais
   const stats = {
-    totalTasks: 24,
-    inProgress: 8,
-    completed: 14,
-    projects: 3,
-    teams: 3,
-    overdue: 2
+    totalTasks: 24, // TODO: Implementar contagem de tarefas
+    inProgress: projects.filter(p => p.status === 'active').length,
+    completed: projects.filter(p => p.status === 'completed').length,
+    projects: projects.length,
+    teams: 3, // TODO: Implementar contagem de equipes
+    overdue: projects.filter(p => p.deadline && new Date(p.deadline) < new Date()).length
   };
 
   const recentTasks = [
@@ -44,6 +64,20 @@ const Dashboard: React.FC = () => {
       default: return 'Desconhecida';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600">Carregando dados...</p>
+        </div>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

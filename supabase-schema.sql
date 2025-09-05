@@ -25,20 +25,58 @@ CREATE TABLE IF NOT EXISTS users (
 -- Create projects table
 CREATE TABLE IF NOT EXISTS projects (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
   description TEXT,
-  image_url TEXT,
-  github_url TEXT,
-  live_url TEXT,
-  technologies TEXT[],
+  status VARCHAR(50) DEFAULT 'active',
+  progress INTEGER DEFAULT 0,
+  team VARCHAR(255),
+  deadline DATE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create tasks table
+CREATE TABLE IF NOT EXISTS tasks (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  status VARCHAR(50) DEFAULT 'todo',
+  priority VARCHAR(20) DEFAULT 'medium',
+  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  assignee_id UUID REFERENCES auth.users(id),
+  due_date TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create teams table
+CREATE TABLE IF NOT EXISTS teams (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create team_members table
+CREATE TABLE IF NOT EXISTS team_members (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  role VARCHAR(50) DEFAULT 'member',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Create RLS policies
 ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE teams ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
 
 -- Contacts policies (admin can read all, public can insert)
 CREATE POLICY "Contacts are viewable by admin" ON contacts
@@ -57,15 +95,57 @@ CREATE POLICY "Users can view own profile" ON users
 CREATE POLICY "Users can update own profile" ON users
   FOR UPDATE USING (auth.uid() = id);
 
--- Projects policies (public read, admin write)
-CREATE POLICY "Projects are viewable by everyone" ON projects
-  FOR SELECT USING (true);
+-- Projects policies (user can only access their own projects)
+CREATE POLICY "Users can view own projects" ON projects
+  FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "Projects are insertable by admin" ON projects
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Users can insert own projects" ON projects
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Projects are updatable by admin" ON projects
-  FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "Users can update own projects" ON projects
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own projects" ON projects
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Tasks policies
+CREATE POLICY "Users can view own tasks" ON tasks
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own tasks" ON tasks
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own tasks" ON tasks
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own tasks" ON tasks
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Teams policies
+CREATE POLICY "Users can view own teams" ON teams
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own teams" ON teams
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own teams" ON teams
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own teams" ON teams
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Team members policies
+CREATE POLICY "Users can view team members" ON team_members
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert team members" ON team_members
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update team members" ON team_members
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete team members" ON team_members
+  FOR DELETE USING (auth.uid() = user_id);
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_contacts_email ON contacts(email);
@@ -90,4 +170,10 @@ CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_projects_updated_at BEFORE UPDATE ON projects
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_tasks_updated_at BEFORE UPDATE ON tasks
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_teams_updated_at BEFORE UPDATE ON teams
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

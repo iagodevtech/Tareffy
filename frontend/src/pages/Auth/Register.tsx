@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Register: React.FC = () => {
   const [name, setName] = useState('');
@@ -8,6 +9,7 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -16,12 +18,8 @@ const Register: React.FC = () => {
     setError('');
 
     try {
-      // Simular registro por enquanto
-      if (name && email && password) {
-        navigate('/dashboard');
-      } else {
-        setError('Por favor, preencha todos os campos');
-      }
+      await register(name, email, password);
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Erro ao criar conta');
     } finally {
