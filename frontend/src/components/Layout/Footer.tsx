@@ -7,17 +7,17 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-center md:text-left mb-4 md:mb-0">
             <p className="text-sm text-gray-300">
-              © 2024 Tareffy. Todos os direitos reservados.
+              © 2025 Tareffy. Todos os direitos reservados.
             </p>
             <p className="text-xs text-gray-400 mt-1">
               Desenvolvido por{' '}
               <a 
-                href="https://iagodev.oline" 
+                href="https://iagodev.online" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-400 hover:text-blue-300 transition-colors"
               >
-                iagodev.oline
+                Iago Alves
               </a>
             </p>
           </div>
@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
             </a>
             
             <a
-              href="https://iagodev.oline"
+              href="https://iagodev.online"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"

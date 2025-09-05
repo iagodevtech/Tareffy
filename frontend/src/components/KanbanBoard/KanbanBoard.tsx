@@ -47,6 +47,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [showIssuesModal, setShowIssuesModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [newComment, setNewComment] = useState('');
+  const [newIssue, setNewIssue] = useState({ title: '', description: '', severity: 'medium' as 'low' | 'medium' | 'high' | 'critical' });
 
   // Carregar tarefas do localStorage
   useEffect(() => {
@@ -219,6 +221,46 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
     if (window.confirm('Tem certeza que deseja excluir esta tarefa?')) {
       setTasks(prev => prev.filter(task => task.id !== taskId));
     }
+  };
+
+  const handleAddComment = () => {
+    if (!selectedTask || !newComment.trim()) return;
+
+    const comment: Comment = {
+      id: Date.now().toString(),
+      text: newComment.trim(),
+      author: 'Usuário Atual', // Em um app real, pegaria do contexto de auth
+      createdAt: new Date().toISOString()
+    };
+
+    setTasks(prev => prev.map(task => 
+      task.id === selectedTask.id 
+        ? { ...task, comments: [comment, ...task.comments] }
+        : task
+    ));
+
+    setNewComment('');
+  };
+
+  const handleAddIssue = () => {
+    if (!selectedTask || !newIssue.title.trim() || !newIssue.description.trim()) return;
+
+    const issue: Issue = {
+      id: Date.now().toString(),
+      title: newIssue.title.trim(),
+      description: newIssue.description.trim(),
+      severity: newIssue.severity,
+      status: 'open',
+      createdAt: new Date().toISOString()
+    };
+
+    setTasks(prev => prev.map(task => 
+      task.id === selectedTask.id 
+        ? { ...task, issues: [issue, ...task.issues] }
+        : task
+    ));
+
+    setNewIssue({ title: '', description: '', severity: 'medium' });
   };
 
   return (
@@ -453,6 +495,24 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h3 className="text-lg font-bold mb-4">Comentários - {selectedTask.title}</h3>
             
+            {/* Adicionar novo comentário */}
+            <div className="mb-4">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Adicionar comentário..."
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                rows={3}
+              />
+              <button
+                onClick={handleAddComment}
+                disabled={!newComment.trim()}
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Adicionar Comentário
+              </button>
+            </div>
+            
             <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
               {selectedTask.comments.map((comment) => (
                 <div key={comment.id} className="bg-gray-50 p-3 rounded-lg">
@@ -469,7 +529,10 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
             
             <div className="flex justify-end gap-3">
               <button
-                onClick={() => setShowCommentsModal(false)}
+                onClick={() => {
+                  setShowCommentsModal(false);
+                  setNewComment('');
+                }}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
               >
                 Fechar
@@ -484,6 +547,41 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h3 className="text-lg font-bold mb-4">Issues - {selectedTask.title}</h3>
+            
+            {/* Adicionar nova issue */}
+            <div className="mb-4 space-y-3">
+              <input
+                type="text"
+                value={newIssue.title}
+                onChange={(e) => setNewIssue({...newIssue, title: e.target.value})}
+                placeholder="Título da issue..."
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <textarea
+                value={newIssue.description}
+                onChange={(e) => setNewIssue({...newIssue, description: e.target.value})}
+                placeholder="Descrição da issue..."
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                rows={3}
+              />
+              <select
+                value={newIssue.severity}
+                onChange={(e) => setNewIssue({...newIssue, severity: e.target.value as any})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="low">Baixa</option>
+                <option value="medium">Média</option>
+                <option value="high">Alta</option>
+                <option value="critical">Crítica</option>
+              </select>
+              <button
+                onClick={handleAddIssue}
+                disabled={!newIssue.title.trim() || !newIssue.description.trim()}
+                className="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Adicionar Issue
+              </button>
+            </div>
             
             <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
               {selectedTask.issues.map((issue) => (
@@ -511,7 +609,10 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
             
             <div className="flex justify-end gap-3">
               <button
-                onClick={() => setShowIssuesModal(false)}
+                onClick={() => {
+                  setShowIssuesModal(false);
+                  setNewIssue({ title: '', description: '', severity: 'medium' });
+                }}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
               >
                 Fechar
