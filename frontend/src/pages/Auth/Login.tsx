@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -8,7 +7,6 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -17,8 +15,12 @@ const Login: React.FC = () => {
     setError('');
 
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      // Simular login por enquanto
+      if (email && password) {
+        navigate('/dashboard');
+      } else {
+        setError('Por favor, preencha todos os campos');
+      }
     } catch (err: any) {
       setError(err.message || 'Erro ao fazer login');
     } finally {
