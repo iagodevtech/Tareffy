@@ -30,6 +30,7 @@ interface Task {
   startedAt?: string;
   completedAt?: string;
   duration?: number; // em horas
+  projectId?: string; // ID do projeto
   comments: Comment[];
   issues: Issue[];
 }
@@ -54,7 +55,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   useEffect(() => {
     const savedTasks = localStorage.getItem('kanban-tasks');
     if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
+      const allTasks = JSON.parse(savedTasks);
+      // Filtrar tarefas por projeto se projectId for fornecido
+      const filteredTasks = projectId 
+        ? allTasks.filter((task: Task) => task.projectId === projectId)
+        : allTasks;
+      setTasks(filteredTasks);
     } else {
       // Tarefas de exemplo se não houver dados salvos
       const exampleTasks: Task[] = [
@@ -67,6 +73,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
           assignee: 'João Silva',
           dueDate: '2024-01-15',
           createdAt: new Date().toISOString(),
+          projectId: projectId || 'default',
           comments: [],
           issues: []
         },
@@ -80,6 +87,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
           dueDate: '2024-01-20',
           createdAt: new Date().toISOString(),
           startedAt: new Date().toISOString(),
+          projectId: projectId || 'default',
           comments: [],
           issues: []
         },
@@ -92,6 +100,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
           assignee: 'Pedro Costa',
           dueDate: '2024-01-25',
           createdAt: new Date().toISOString(),
+          projectId: projectId || 'default',
           comments: [],
           issues: []
         }
@@ -99,7 +108,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
       setTasks(exampleTasks);
       localStorage.setItem('kanban-tasks', JSON.stringify(exampleTasks));
     }
-  }, []);
+  }, [projectId]);
 
   // Salvar tarefas no localStorage sempre que houver mudanças
   useEffect(() => {
@@ -109,12 +118,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   }, [tasks]);
 
   const columns = [
-    { id: 'todo', title: 'A Fazer', color: 'bg-gray-100' },
-    { id: 'in_progress', title: 'Em Progresso', color: 'bg-blue-100' },
-    { id: 'review', title: 'Em Revisão', color: 'bg-yellow-100' },
-    { id: 'testing', title: 'Em Teste', color: 'bg-orange-100' },
-    { id: 'homologation', title: 'Homologação', color: 'bg-purple-100' },
-    { id: 'production', title: 'Produção', color: 'bg-green-100' }
+    { id: 'todo', title: 'A Fazer', color: 'bg-gray-100', emoji: '📝' },
+    { id: 'in_progress', title: 'Em Progresso', color: 'bg-blue-100', emoji: '🔄' },
+    { id: 'review', title: 'Em Revisão', color: 'bg-yellow-100', emoji: '👀' },
+    { id: 'testing', title: 'Em Teste', color: 'bg-orange-100', emoji: '🧪' },
+    { id: 'homologation', title: 'Homologação', color: 'bg-purple-100', emoji: '✅' },
+    { id: 'production', title: 'Produção', color: 'bg-green-100', emoji: '🚀' }
   ];
 
   const getPriorityColor = (priority: string) => {
@@ -175,6 +184,37 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
     setDraggedTask(null);
   };
 
+  // Touch events para mobile
+  const handleTouchStart = (e: React.TouchEvent, task: Task) => {
+    setDraggedTask(task);
+    e.preventDefault();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!draggedTask) return;
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent, newStatus: string) => {
+    if (!draggedTask) return;
+    
+    const updatedTask = { ...draggedTask, status: newStatus as any };
+    
+    // Atualizar timestamps baseado no status
+    if (newStatus === 'in_progress' && !updatedTask.startedAt) {
+      updatedTask.startedAt = new Date().toISOString();
+    } else if (newStatus === 'production' && !updatedTask.completedAt) {
+      updatedTask.completedAt = new Date().toISOString();
+      updatedTask.duration = calculateDuration(updatedTask) ? 
+        Math.floor((new Date().getTime() - new Date(updatedTask.startedAt || updatedTask.createdAt).getTime()) / (1000 * 60 * 60)) : 0;
+    }
+    
+    setTasks(prev => prev.map(task => 
+      task.id === draggedTask.id ? updatedTask : task
+    ));
+    
+    setDraggedTask(null);
+  };
 
   const handleNewTask = () => {
     setEditingTask({
@@ -184,6 +224,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
       status: 'todo',
       priority: 'medium',
       createdAt: new Date().toISOString(),
+      projectId: projectId,
       comments: [],
       issues: []
     });
@@ -280,11 +321,14 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {columns.map(column => (
           <div key={column.id} className="bg-white rounded-lg shadow-sm border">
             <div className={`p-4 rounded-t-lg ${column.color}`}>
-              <h3 className="font-semibold text-gray-900">{column.title}</h3>
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <span className="text-lg">{column.emoji}</span>
+                {column.title}
+              </h3>
               <span className="text-sm text-gray-600">
                 {tasks.filter(task => task.status === column.id).length} tarefas
               </span>
@@ -294,15 +338,20 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
               className="p-4 space-y-3 min-h-[400px]"
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, column.id)}
+              onTouchEnd={(e) => handleTouchEnd(e, column.id)}
             >
               {tasks
                 .filter(task => task.status === column.id)
                 .map(task => (
                   <div
                     key={task.id}
-                    className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-move"
+                    className={`bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-all cursor-move ${
+                      draggedTask?.id === task.id ? 'opacity-50 scale-95 rotate-2' : ''
+                    }`}
                     draggable
                     onDragStart={(e) => handleDragStart(e, task)}
+                    onTouchStart={(e) => handleTouchStart(e, task)}
+                    onTouchMove={handleTouchMove}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium text-gray-900 text-sm">{task.title}</h4>
@@ -312,12 +361,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                             setSelectedTask(task);
                             setShowCommentsModal(true);
                           }}
-                          className="text-gray-400 hover:text-blue-600"
+                          className="relative text-gray-400 hover:text-blue-600 p-1 rounded-md hover:bg-blue-50 transition-colors"
                           title="Comentários"
                         >
                           <ChatBubbleLeftIcon className="h-4 w-4" />
                           {task.comments.length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                            <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium shadow-sm">
                               {task.comments.length}
                             </span>
                           )}
@@ -327,12 +376,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                             setSelectedTask(task);
                             setShowIssuesModal(true);
                           }}
-                          className="text-gray-400 hover:text-orange-600"
+                          className="relative text-gray-400 hover:text-red-600 p-1 rounded-md hover:bg-red-50 transition-colors"
                           title="Issues"
                         >
                           <ExclamationTriangleIcon className="h-4 w-4" />
                           {task.issues.filter(issue => issue.status === 'open').length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium shadow-sm animate-pulse">
                               {task.issues.filter(issue => issue.status === 'open').length}
                             </span>
                           )}
@@ -354,10 +403,13 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                     
                     <p className="text-xs text-gray-600 mb-2">{task.description}</p>
                     
-                    <div className="flex justify-between items-center">
-                      <div className={`w-3 h-3 rounded-full ${getPriorityColor(task.priority)}`}></div>
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${getPriorityColor(task.priority)}`}></div>
+                        <span className="text-xs text-gray-500 capitalize">{task.priority}</span>
+                      </div>
                       {task.assignee && (
-                        <span className="text-xs text-gray-500">{task.assignee}</span>
+                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{task.assignee}</span>
                       )}
                     </div>
                     
@@ -368,8 +420,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                     )}
                     
                     {calculateDuration(task) && (
-                      <div className="mt-2 text-xs text-green-600 font-medium">
-                        ⏱️ {calculateDuration(task)}
+                      <div className="mt-2 flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                        <span>⏱️</span>
+                        <span className="font-medium">{calculateDuration(task)}</span>
                       </div>
                     )}
                   </div>
