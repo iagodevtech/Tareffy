@@ -5,7 +5,7 @@ interface Task {
   id: string;
   title: string;
   description: string;
-  status: 'todo' | 'in_progress' | 'review' | 'done';
+  status: 'todo' | 'in_progress' | 'review' | 'testing' | 'homologation' | 'production';
   priority: 'low' | 'medium' | 'high';
   assignee?: string;
   dueDate?: string;
@@ -43,6 +43,24 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
       priority: 'low',
       assignee: 'Pedro Costa',
       dueDate: '2024-01-25'
+    },
+    {
+      id: '4',
+      title: 'Testes de integração',
+      description: 'Testar integração entre módulos',
+      status: 'testing',
+      priority: 'medium',
+      assignee: 'Ana Lima',
+      dueDate: '2024-01-30'
+    },
+    {
+      id: '5',
+      title: 'Homologação final',
+      description: 'Aprovação para produção',
+      status: 'homologation',
+      priority: 'high',
+      assignee: 'Carlos Silva',
+      dueDate: '2024-02-05'
     }
   ]);
 
@@ -53,7 +71,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
     { id: 'todo', title: 'A Fazer', color: 'bg-gray-100' },
     { id: 'in_progress', title: 'Em Progresso', color: 'bg-blue-100' },
     { id: 'review', title: 'Em Revisão', color: 'bg-yellow-100' },
-    { id: 'done', title: 'Concluído', color: 'bg-green-100' }
+    { id: 'testing', title: 'Em Teste', color: 'bg-orange-100' },
+    { id: 'homologation', title: 'Homologação', color: 'bg-purple-100' },
+    { id: 'production', title: 'Produção', color: 'bg-green-100' }
   ];
 
   const getPriorityColor = (priority: string) => {
@@ -232,7 +252,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                     <option value="todo">A Fazer</option>
                     <option value="in_progress">Em Progresso</option>
                     <option value="review">Em Revisão</option>
-                    <option value="done">Concluído</option>
+                    <option value="testing">Em Teste</option>
+                    <option value="homologation">Homologação</option>
+                    <option value="production">Produção</option>
                   </select>
                 </div>
                 

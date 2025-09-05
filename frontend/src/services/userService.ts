@@ -182,18 +182,24 @@ export const userService = {
 
     const fileExt = file.name.split('.').pop();
     const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-    const filePath = `avatars/${fileName}`;
+    const filePath = fileName; // Remover o prefixo avatars/ se o bucket já tem essa estrutura
+
+    console.log('🔧 Tentando fazer upload do avatar:', { fileName, filePath });
 
     const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, file);
 
-    if (uploadError) throw uploadError;
+    if (uploadError) {
+      console.error('❌ Erro no upload:', uploadError);
+      throw new Error(`Erro no upload: ${uploadError.message}`);
+    }
 
     const { data } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);
 
+    console.log('✅ Avatar enviado com sucesso:', data.publicUrl);
     return data.publicUrl;
   },
 

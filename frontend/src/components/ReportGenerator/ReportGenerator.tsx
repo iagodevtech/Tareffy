@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { DocumentArrowDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { emailService } from '../../services/emailService';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ReportGeneratorProps {
   isOpen: boolean;
@@ -7,10 +9,12 @@ interface ReportGeneratorProps {
 }
 
 const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) => {
+  const { user } = useAuth();
   const [reportType, setReportType] = useState<'projects' | 'teams' | 'tasks' | 'all'>('all');
   const [format, setFormat] = useState<'pdf' | 'excel' | 'docx'>('pdf');
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year' | 'all'>('month');
   const [generating, setGenerating] = useState(false);
+  const [sendEmail, setSendEmail] = useState(true);
 
   const handleGenerateReport = async () => {
     setGenerating(true);
@@ -18,28 +22,67 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
       // Simular geração de relatório
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Aqui você implementaria a lógica real de geração
       const reportData = {
         type: reportType,
         format,
         dateRange,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        content: `Relatório ${reportType} - ${dateRange}\n\nEste é um relatório gerado pelo Tareffy.\nData: ${new Date().toLocaleDateString('pt-BR')}\n\nDados do relatório:\n- Tipo: ${reportType}\n- Período: ${dateRange}\n- Formato: ${format.toUpperCase()}\n\nAtenciosamente,\nEquipe Tareffy`
       };
       
       console.log('Gerando relatório:', reportData);
       
-      // Simular download
-      const blob = new Blob(['Relatório gerado com sucesso!'], { type: 'text/plain' });
+      // Criar conteúdo baseado no formato
+      let mimeType = 'text/plain';
+      let fileExtension = 'txt';
+      
+      switch (format) {
+        case 'pdf':
+          mimeType = 'application/pdf';
+          fileExtension = 'pdf';
+          break;
+        case 'excel':
+          mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+          fileExtension = 'xlsx';
+          break;
+        case 'docx':
+          mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+          fileExtension = 'docx';
+          break;
+      }
+      
+      // Criar blob com o conteúdo
+      const blob = new Blob([reportData.content], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `relatorio_${reportType}_${new Date().toISOString().split('T')[0]}.${format}`;
+      a.download = `relatorio_${reportType}_${new Date().toISOString().split('T')[0]}.${fileExtension}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
       
-      alert('Relatório gerado e baixado com sucesso!');
+      // Enviar por email se solicitado
+      if (sendEmail && user?.email) {
+        try {
+          const emailContent = emailService.generateEmailContent(reportType, dateRange, format);
+          await emailService.sendReport({
+            to: user.email,
+            subject: `Relatório Tareffy - ${reportType} (${dateRange})`,
+            content: emailContent,
+            attachment: {
+              filename: `relatorio_${reportType}_${new Date().toISOString().split('T')[0]}.${fileExtension}`,
+              content: reportData.content,
+              mimeType: mimeType
+            }
+          });
+          console.log('📧 Relatório enviado por email com sucesso!');
+        } catch (emailError) {
+          console.warn('⚠️ Erro ao enviar email, mas relatório foi baixado:', emailError);
+        }
+      }
+      
+      alert('Relatório gerado e baixado com sucesso!' + (sendEmail ? ' Também foi enviado por email.' : ''));
       onClose();
     } catch (error) {
       console.error('Erro ao gerar relatório:', error);
@@ -137,6 +180,21 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
               <option value="year">Último Ano</option>
               <option value="all">Todo o Período</option>
             </select>
+          </div>
+
+          {/* Envio por email */}
+          <div>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={sendEmail}
+                onChange={(e) => setSendEmail(e.target.checked)}
+                className="mr-2"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                Enviar relatório por email ({user?.email})
+              </span>
+            </label>
           </div>
         </div>
 
