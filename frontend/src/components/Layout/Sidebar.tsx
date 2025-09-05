@@ -4,6 +4,7 @@ import {
   HomeIcon, 
   FolderIcon, 
   UserGroupIcon, 
+  DocumentTextIcon,
   UserIcon, 
   CogIcon 
 } from '@heroicons/react/24/outline';
@@ -13,6 +14,7 @@ const Sidebar: React.FC = () => {
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
     { name: 'Projetos', href: '/projects', icon: FolderIcon },
     { name: 'Equipes', href: '/teams', icon: UserGroupIcon },
+    { name: 'Relatórios', href: '/reports', icon: DocumentTextIcon },
     { name: 'Perfil', href: '/profile', icon: UserIcon },
     { name: 'Configurações', href: '/settings', icon: CogIcon },
   ];

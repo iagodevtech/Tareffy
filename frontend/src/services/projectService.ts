@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { reportService } from './reportService';
 
 export interface Project {
   id: string;
@@ -44,6 +45,19 @@ export const projectService = {
       .single();
 
     if (error) throw error;
+
+    // Registrar atividade
+    try {
+      await reportService.logActivity(
+        'create',
+        'project',
+        data.id,
+        `Projeto "${project.name}" foi criado`
+      );
+    } catch (logError) {
+      console.warn('Erro ao registrar atividade:', logError);
+    }
+
     return data;
   },
 
@@ -51,6 +65,14 @@ export const projectService = {
   async updateProject(id: string, updates: Partial<Project>): Promise<Project> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
+
+    // Buscar dados antigos para log
+    const { data: oldData } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single();
 
     const { data, error } = await supabase
       .from('projects')
@@ -61,6 +83,21 @@ export const projectService = {
       .single();
 
     if (error) throw error;
+
+    // Registrar atividade
+    try {
+      await reportService.logActivity(
+        'update',
+        'project',
+        id,
+        `Projeto "${data.name}" foi atualizado`,
+        oldData,
+        data
+      );
+    } catch (logError) {
+      console.warn('Erro ao registrar atividade:', logError);
+    }
+
     return data;
   },
 
@@ -69,6 +106,14 @@ export const projectService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
+    // Buscar dados para log
+    const { data: projectData } = await supabase
+      .from('projects')
+      .select('name')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single();
+
     const { error } = await supabase
       .from('projects')
       .delete()
@@ -76,5 +121,17 @@ export const projectService = {
       .eq('user_id', user.id);
 
     if (error) throw error;
+
+    // Registrar atividade
+    try {
+      await reportService.logActivity(
+        'delete',
+        'project',
+        id,
+        `Projeto "${projectData?.name || 'Desconhecido'}" foi excluído`
+      );
+    } catch (logError) {
+      console.warn('Erro ao registrar atividade:', logError);
+    }
   }
 };

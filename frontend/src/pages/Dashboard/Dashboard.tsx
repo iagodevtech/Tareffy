@@ -40,12 +40,7 @@ const Dashboard: React.FC = () => {
     overdue: projects.filter(p => p.deadline && new Date(p.deadline) < new Date()).length
   };
 
-  const recentTasks = [
-    { id: '1', title: 'Criar wireframes do projeto', project: 'Website Corporativo', assignee: 'João Silva', dueDate: '2024-02-15', priority: 'high' },
-    { id: '2', title: 'Configurar ambiente de desenvolvimento', project: 'App Mobile', assignee: 'Maria Santos', dueDate: '2024-02-10', priority: 'medium' },
-    { id: '3', title: 'Implementar autenticação', project: 'Sistema de Vendas', assignee: 'Pedro Costa', dueDate: '2024-02-20', priority: 'high' },
-    { id: '4', title: 'Revisar documentação', project: 'Website Corporativo', assignee: 'Ana Lima', dueDate: '2024-02-12', priority: 'low' }
-  ];
+  const recentTasks: any[] = []; // Será implementado com dados reais do Supabase
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -180,25 +175,46 @@ const Dashboard: React.FC = () => {
         </div>
         
         <div className="p-6">
-          <div className="space-y-4">
-            {recentTasks.map((task) => (
-              <div key={task.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className="flex-1">
-                  <h4 className="text-sm font-medium text-gray-900">{task.title}</h4>
-                  <div className="flex items-center gap-4 mt-1">
-                    <span className="text-xs text-gray-500">{task.project}</span>
-                    <span className="text-xs text-gray-500">•</span>
-                    <span className="text-xs text-gray-500">{task.assignee}</span>
-                    <span className="text-xs text-gray-500">•</span>
-                    <span className="text-xs text-gray-500">Prazo: {new Date(task.dueDate).toLocaleDateString('pt-BR')}</span>
+          {recentTasks.length > 0 ? (
+            <div className="space-y-4">
+              {recentTasks.map((task) => (
+                <div key={task.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div className="flex-1">
+                    <h4 className="text-sm font-medium text-gray-900">{task.title}</h4>
+                    <div className="flex items-center gap-4 mt-1">
+                      <span className="text-xs text-gray-500">{task.project}</span>
+                      <span className="text-xs text-gray-500">•</span>
+                      <span className="text-xs text-gray-500">{task.assignee}</span>
+                      <span className="text-xs text-gray-500">•</span>
+                      <span className="text-xs text-gray-500">Prazo: {new Date(task.dueDate).toLocaleDateString('pt-BR')}</span>
+                    </div>
                   </div>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
+                    {getPriorityText(task.priority)}
+                  </span>
                 </div>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
-                  {getPriorityText(task.priority)}
-                </span>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="text-gray-400 mb-4">
+                <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
               </div>
-            ))}
-          </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma tarefa encontrada</h3>
+              <p className="text-gray-500 mb-4">Crie projetos e tarefas para ver suas atividades aqui</p>
+              <Link 
+                to="/projects" 
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Criar Projeto
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 

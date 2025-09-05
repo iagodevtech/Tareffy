@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import KanbanBoard from './pages/KanbanBoard/KanbanBoard';
 import Projects from './pages/Projects/Projects';
 import Teams from './pages/Teams/Teams';
+import Reports from './pages/Reports/Reports';
 import Profile from './pages/Profile/Profile';
 import Settings from './pages/Settings/Settings';
 
@@ -41,6 +42,7 @@ function App() {
                 <Route path="projects" element={<Projects />} />
                 <Route path="projects/:projectId" element={<KanbanBoard />} />
                 <Route path="teams" element={<Teams />} />
+                <Route path="reports" element={<Reports />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
