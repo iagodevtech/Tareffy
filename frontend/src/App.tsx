@@ -11,9 +11,8 @@ import Teams from './pages/Teams/Teams.tsx';
 import Profile from './pages/Profile/Profile.tsx';
 import Settings from './pages/Settings/Settings.tsx';
 
-// TESTE DIRETO - Deve aparecer sempre
-console.log('🔥 TESTE DIRETO - App.tsx carregado!');
-alert('🔥 TESTE DIRETO - App.tsx carregado!');
+// App carregado com sucesso
+console.log('🚀 Tareffy App carregado com sucesso!');
 
 // Debug: Verificar variáveis de ambiente
 console.log('🔍 App.tsx - Variáveis de ambiente:', {
