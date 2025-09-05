@@ -65,7 +65,7 @@ export const teamService = {
       .eq('user_id', user.id);
 
     if (error) throw error;
-    return data?.map(item => item.teams).filter(Boolean) || [];
+    return data?.map(item => item.teams).flat().filter(Boolean) || [];
   },
 
   // Criar nova equipe
