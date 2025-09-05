@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+// import { useAuth } from '../../contexts/AuthContext'; // Removido temporariamente
 import { userService, UserSettings } from '../../services/userService';
 import { 
   CogIcon,
@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 const Settings: React.FC = () => {
-  const { user, logout } = useAuth();
+  // const { user, logout } = useAuth(); // Removido temporariamente para evitar warning
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -85,8 +85,8 @@ const Settings: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
           <p className="text-gray-600">Gerencie suas preferências e configurações</p>
         </div>
         <button
@@ -107,7 +107,7 @@ const Settings: React.FC = () => {
           )}
         </button>
       </div>
-
+      
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar de navegação */}
         <div className="lg:col-span-1">

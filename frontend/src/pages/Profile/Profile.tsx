@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+// import { useAuth } from '../../contexts/AuthContext'; // Removido temporariamente
 import { userService, UserProfile } from '../../services/userService';
 import { 
   UserIcon, 
@@ -10,7 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 const Profile: React.FC = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth(); // Removido temporariamente para evitar warning
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
