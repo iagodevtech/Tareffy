@@ -14,7 +14,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
   const [format, setFormat] = useState<'pdf' | 'excel' | 'docx'>('pdf');
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year' | 'all'>('month');
   const [generating, setGenerating] = useState(false);
-  const [sendEmail, setSendEmail] = useState(true);
+  const [sendEmail, setSendEmail] = useState(false);
 
   const handleGenerateReport = async () => {
     setGenerating(true);
@@ -32,88 +32,113 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
       switch (reportType) {
         case 'all':
           reportContent = `
-RELATÓRIO COMPLETO - TAREFFY
-Data: ${new Date().toLocaleDateString('pt-BR')}
-Período: ${dateRange}
+📊 RELATÓRIO COMPLETO - TAREFFY
+📅 Data: ${new Date().toLocaleDateString('pt-BR')}
+⏰ Período: ${dateRange}
 
-=== RESUMO GERAL ===
-- Total de Projetos: ${projects.length}
-- Total de Equipes: ${teams.length}
-- Total de Tarefas: ${kanbanTasks.length}
-- Tarefas Concluídas: ${kanbanTasks.filter((t: any) => t.status === 'production').length}
-- Tarefas em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').length}
+🎯 RESUMO GERAL
+📁 Total de Projetos: ${projects.length}
+👥 Total de Equipes: ${teams.length}
+📋 Total de Tarefas: ${kanbanTasks.length}
+✅ Tarefas Concluídas: ${kanbanTasks.filter((t: any) => t.status === 'production').length}
+🔄 Tarefas em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').length}
 
-=== PROJETOS ===
-${projects.map((p: any) => `- ${p.name}: ${p.description || 'Sem descrição'}`).join('\n')}
+📁 PROJETOS
+${projects.map((p: any) => `📂 ${p.name}: ${p.description || 'Sem descrição'}`).join('\n')}
 
-=== EQUIPES ===
-${teams.map((t: any) => `- ${t.name}: ${t.description || 'Sem descrição'}`).join('\n')}
+👥 EQUIPES
+${teams.map((t: any) => `👨‍💼 ${t.name}: ${t.description || 'Sem descrição'}`).join('\n')}
 
-=== TAREFAS ===
-${kanbanTasks.map((t: any) => `- ${t.title} (${t.status}): ${t.description || 'Sem descrição'}`).join('\n')}
+📋 TAREFAS
+${kanbanTasks.map((t: any) => {
+  const statusEmoji = {
+    'todo': '📝',
+    'in_progress': '🔄',
+    'review': '👀',
+    'testing': '🧪',
+    'homologation': '✅',
+    'production': '🚀'
+  };
+  return `📌 ${t.title} ${statusEmoji[t.status] || '📋'} (${t.status}): ${t.description || 'Sem descrição'}`;
+}).join('\n')}
 
-=== COMENTÁRIOS E ISSUES ===
+💬 COMENTÁRIOS E ISSUES
 ${kanbanTasks.map((t: any) => {
   const comments = t.comments?.length || 0;
   const issues = t.issues?.filter((i: any) => i.status === 'open').length || 0;
-  return `- ${t.title}: ${comments} comentários, ${issues} issues abertas`;
+  return `💭 ${t.title}: ${comments} comentários, ${issues} issues abertas`;
 }).join('\n')}
 
-Atenciosamente,
+🙏 Atenciosamente,
 Equipe Tareffy
           `;
           break;
         case 'projects':
           reportContent = `
-RELATÓRIO DE PROJETOS - TAREFFY
-Data: ${new Date().toLocaleDateString('pt-BR')}
+📁 RELATÓRIO DE PROJETOS - TAREFFY
+📅 Data: ${new Date().toLocaleDateString('pt-BR')}
 
-=== PROJETOS ===
+📂 PROJETOS
 ${projects.map((p: any) => `
-Projeto: ${p.name}
-Descrição: ${p.description || 'Sem descrição'}
-Status: ${p.status || 'Ativo'}
-Data de Criação: ${new Date(p.created_at || Date.now()).toLocaleDateString('pt-BR')}
+📋 Projeto: ${p.name}
+📝 Descrição: ${p.description || 'Sem descrição'}
+📊 Status: ${p.status || 'Ativo'}
+📅 Data de Criação: ${new Date(p.created_at || Date.now()).toLocaleDateString('pt-BR')}
 `).join('\n')}
 
-Total: ${projects.length} projetos
+📊 Total: ${projects.length} projetos
           `;
           break;
         case 'teams':
           reportContent = `
-RELATÓRIO DE EQUIPES - TAREFFY
-Data: ${new Date().toLocaleDateString('pt-BR')}
+👥 RELATÓRIO DE EQUIPES - TAREFFY
+📅 Data: ${new Date().toLocaleDateString('pt-BR')}
 
-=== EQUIPES ===
+👨‍💼 EQUIPES
 ${teams.map((t: any) => `
-Equipe: ${t.name}
-Descrição: ${t.description || 'Sem descrição'}
-Data de Criação: ${new Date(t.created_at || Date.now()).toLocaleDateString('pt-BR')}
+👥 Equipe: ${t.name}
+📝 Descrição: ${t.description || 'Sem descrição'}
+📅 Data de Criação: ${new Date(t.created_at || Date.now()).toLocaleDateString('pt-BR')}
 `).join('\n')}
 
-Total: ${teams.length} equipes
+📊 Total: ${teams.length} equipes
           `;
           break;
         case 'tasks':
           reportContent = `
-RELATÓRIO DE TAREFAS - TAREFFY
-Data: ${new Date().toLocaleDateString('pt-BR')}
+📋 RELATÓRIO DE TAREFAS - TAREFFY
+📅 Data: ${new Date().toLocaleDateString('pt-BR')}
 
-=== TAREFAS ===
-${kanbanTasks.map((t: any) => `
-Tarefa: ${t.title}
-Descrição: ${t.description || 'Sem descrição'}
-Status: ${t.status}
-Prioridade: ${t.priority}
-Responsável: ${t.assignee || 'Não atribuído'}
-Comentários: ${t.comments?.length || 0}
-Issues Abertas: ${t.issues?.filter((i: any) => i.status === 'open').length || 0}
-Duração: ${t.duration ? `${t.duration}h` : 'Não iniciada'}
-`).join('\n')}
+📌 TAREFAS
+${kanbanTasks.map((t: any) => {
+  const statusEmoji = {
+    'todo': '📝',
+    'in_progress': '🔄',
+    'review': '👀',
+    'testing': '🧪',
+    'homologation': '✅',
+    'production': '🚀'
+  };
+  const priorityEmoji = {
+    'low': '🟢',
+    'medium': '🟡',
+    'high': '🔴'
+  };
+  return `
+📌 Tarefa: ${t.title}
+📝 Descrição: ${t.description || 'Sem descrição'}
+📊 Status: ${statusEmoji[t.status] || '📋'} ${t.status}
+⚡ Prioridade: ${priorityEmoji[t.priority] || '⚪'} ${t.priority}
+👤 Responsável: ${t.assignee || 'Não atribuído'}
+💬 Comentários: ${t.comments?.length || 0}
+🐛 Issues Abertas: ${t.issues?.filter((i: any) => i.status === 'open').length || 0}
+⏱️ Duração: ${t.duration ? `${t.duration}h` : 'Não iniciada'}
+`;
+}).join('\n')}
 
-Total: ${kanbanTasks.length} tarefas
-Concluídas: ${kanbanTasks.filter((t: any) => t.status === 'production').length}
-Em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').length}
+📊 Total: ${kanbanTasks.length} tarefas
+✅ Concluídas: ${kanbanTasks.filter((t: any) => t.status === 'production').length}
+🔄 Em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').length}
           `;
           break;
       }
@@ -143,11 +168,12 @@ Em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').lengt
               <meta charset="UTF-8">
               <title>Relatório Tareffy</title>
               <style>
-                body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-                h1 { color: #2563eb; }
-                .header { border-bottom: 2px solid #2563eb; padding-bottom: 10px; }
-                .content { margin-top: 20px; white-space: pre-line; }
-                .footer { margin-top: 40px; font-size: 12px; color: #666; }
+                body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.8; background: #f8fafc; }
+                h1 { color: #1e40af; font-size: 28px; margin-bottom: 20px; }
+                .header { border-bottom: 3px solid #3b82f6; padding-bottom: 15px; background: linear-gradient(135deg, #3b82f6, #1e40af); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+                .content { margin-top: 20px; white-space: pre-line; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); font-size: 14px; }
+                .footer { margin-top: 30px; font-size: 12px; color: #666; text-align: center; padding: 15px; background: #f1f5f9; border-radius: 8px; }
+                .section { margin: 15px 0; padding: 10px; border-left: 4px solid #3b82f6; background: #f8fafc; }
               </style>
             </head>
             <body>
