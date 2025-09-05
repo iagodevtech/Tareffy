@@ -63,14 +63,15 @@ const Teams: React.FC = () => {
         await teamService.createTeam(editingTeam);
       }
       await loadTeams();
-      setShowModal(false);
-      setEditingTeam(null);
       alert('Equipe salva com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar equipe:', error);
       alert('Erro ao salvar equipe. Tente novamente.');
     } finally {
       setSaving(false);
+      // Sempre limpar o modal após salvar ou erro
+      setShowModal(false);
+      setEditingTeam(null);
     }
   };
 
@@ -83,6 +84,18 @@ const Teams: React.FC = () => {
         console.error('Erro ao excluir equipe:', error);
       }
     }
+  };
+
+  const handleCancelModal = () => {
+    setShowModal(false);
+    setEditingTeam(null);
+  };
+
+  const handleCancelInviteModal = () => {
+    setShowInviteModal(false);
+    setSelectedTeam('');
+    setInviteEmail('');
+    setInviteRole('member');
   };
 
   const handleInviteMember = async () => {
@@ -238,7 +251,7 @@ const Teams: React.FC = () => {
             
             <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-6">
               <button
-                onClick={() => setShowModal(false)}
+                onClick={handleCancelModal}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100 transition-colors order-2 sm:order-1"
               >
                 Cancelar
@@ -311,7 +324,7 @@ const Teams: React.FC = () => {
             
             <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-6">
               <button
-                onClick={() => setShowInviteModal(false)}
+                onClick={handleCancelInviteModal}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100 transition-colors order-2 sm:order-1"
               >
                 Cancelar

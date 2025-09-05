@@ -59,6 +59,12 @@ export const projectService = {
 
     if (error) {
       console.error('❌ Erro ao criar projeto:', error);
+      console.error('❌ Detalhes do erro:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
       throw error;
     }
     
