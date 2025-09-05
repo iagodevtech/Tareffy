@@ -5,6 +5,7 @@
 DROP POLICY IF EXISTS "Users can view team invites" ON team_invites;
 DROP POLICY IF EXISTS "Users can insert team invites" ON team_invites;
 DROP POLICY IF EXISTS "Users can update team invites" ON team_invites;
+DROP POLICY IF EXISTS "Users can delete team invites" ON team_invites;
 
 -- Políticas simplificadas para team_invites
 -- Permitir que usuários vejam convites que enviaram ou receberam
