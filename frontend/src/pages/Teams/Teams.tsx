@@ -11,6 +11,7 @@ const Teams: React.FC = () => {
   const [selectedTeam, setSelectedTeam] = useState<string>('');
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'admin' | 'dev' | 'member'>('member');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadTeams();
@@ -48,6 +49,13 @@ const Teams: React.FC = () => {
   const handleSaveTeam = async () => {
     if (!editingTeam) return;
 
+    // Validação básica
+    if (!editingTeam.name.trim()) {
+      alert('Por favor, insira um nome para a equipe');
+      return;
+    }
+
+    setSaving(true);
     try {
       if (editingTeam.id) {
         await teamService.updateTeam(editingTeam.id, editingTeam);
@@ -57,8 +65,12 @@ const Teams: React.FC = () => {
       await loadTeams();
       setShowModal(false);
       setEditingTeam(null);
+      alert('Equipe salva com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar equipe:', error);
+      alert('Erro ao salvar equipe. Tente novamente.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -233,9 +245,17 @@ const Teams: React.FC = () => {
               </button>
               <button
                 onClick={handleSaveTeam}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                disabled={saving}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                Salvar
+                {saving ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Salvando...
+                  </>
+                ) : (
+                  'Salvar'
+                )}
               </button>
             </div>
           </div>

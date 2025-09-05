@@ -9,6 +9,7 @@ const Projects: React.FC = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [saving, setSaving] = useState(false);
 
   // Carregar projetos do Supabase
   useEffect(() => {
@@ -69,6 +70,13 @@ const Projects: React.FC = () => {
   const handleSaveProject = async () => {
     if (!editingProject) return;
 
+    // Validação básica
+    if (!editingProject.name.trim()) {
+      alert('Por favor, insira um nome para o projeto');
+      return;
+    }
+
+    setSaving(true);
     try {
       if (editingProject.id) {
         // Atualizar projeto existente
@@ -80,8 +88,12 @@ const Projects: React.FC = () => {
       await loadProjects(); // Recarregar lista
       setShowModal(false);
       setEditingProject(null);
+      alert('Projeto salvo com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar projeto:', error);
+      alert('Erro ao salvar projeto. Tente novamente.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -264,9 +276,17 @@ const Projects: React.FC = () => {
               </button>
               <button
                 onClick={handleSaveProject}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                disabled={saving}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                Salvar
+                {saving ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Salvando...
+                  </>
+                ) : (
+                  'Salvar'
+                )}
               </button>
             </div>
           </div>
