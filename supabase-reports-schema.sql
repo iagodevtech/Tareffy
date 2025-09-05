@@ -227,12 +227,12 @@ BEGIN
         )
       ) FROM (
         SELECT 
-          generate_series(p_start_date, end_date, '1 day'::interval)::date as day_date,
+          d::date as day_date,
           COUNT(DISTINCT c.id) as day_contacts,
           COUNT(DISTINCT a.id) as day_activities
-        FROM generate_series(p_start_date, end_date, '1 day'::interval)::date d
-        LEFT JOIN contacts c ON DATE(c.created_at) = d
-        LEFT JOIN activities a ON DATE(a.created_at) = d
+        FROM generate_series(p_start_date, end_date, '1 day'::interval) d
+        LEFT JOIN contacts c ON DATE(c.created_at) = d::date
+        LEFT JOIN activities a ON DATE(a.created_at) = d::date
         GROUP BY d
         ORDER BY d
       ) daily_stats
