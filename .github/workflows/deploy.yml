@@ -23,6 +23,14 @@ jobs:
           cd frontend
           npm ci --legacy-peer-deps
         
+      - name: Debug - List files
+        run: |
+          cd frontend
+          echo "=== Frontend directory structure ==="
+          find src -name "*.tsx" -o -name "*.ts" | head -20
+          echo "=== Contexts directory ==="
+          ls -la src/contexts/
+        
       - name: Build
         run: |
           cd frontend
