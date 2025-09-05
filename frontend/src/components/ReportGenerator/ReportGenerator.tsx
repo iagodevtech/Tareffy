@@ -51,7 +51,7 @@ ${teams.map((t: any) => `👨‍💼 ${t.name}: ${t.description || 'Sem descriç
 
 📋 TAREFAS
 ${kanbanTasks.map((t: any) => {
-  const statusEmoji = {
+  const statusEmoji: { [key: string]: string } = {
     'todo': '📝',
     'in_progress': '🔄',
     'review': '👀',
@@ -111,7 +111,7 @@ ${teams.map((t: any) => `
 
 📌 TAREFAS
 ${kanbanTasks.map((t: any) => {
-  const statusEmoji = {
+  const statusEmoji: { [key: string]: string } = {
     'todo': '📝',
     'in_progress': '🔄',
     'review': '👀',
@@ -119,7 +119,7 @@ ${kanbanTasks.map((t: any) => {
     'homologation': '✅',
     'production': '🚀'
   };
-  const priorityEmoji = {
+  const priorityEmoji: { [key: string]: string } = {
     'low': '🟢',
     'medium': '🟡',
     'high': '🔴'
