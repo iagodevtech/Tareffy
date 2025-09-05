@@ -5,13 +5,46 @@ import { BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: 'Novo projeto criado', message: 'O projeto "Tareffy" foi criado com sucesso', time: '2 min atrás', read: false, type: 'project' },
+    { id: 2, title: 'Convite para equipe', message: 'Você foi convidado para a equipe "Desenvolvimento"', time: '1 hora atrás', read: false, type: 'team_invite' },
+    { id: 3, title: 'Tarefa concluída', message: 'A tarefa "Implementar login" foi marcada como concluída', time: '3 horas atrás', read: true, type: 'task' },
+  ]);
 
-  // Notificações mockadas - em produção viria do Supabase
-  const notifications = [
-    { id: 1, title: 'Novo projeto criado', message: 'O projeto "Tareffy" foi criado com sucesso', time: '2 min atrás', read: false },
-    { id: 2, title: 'Convite para equipe', message: 'Você foi convidado para a equipe "Desenvolvimento"', time: '1 hora atrás', read: false },
-    { id: 3, title: 'Tarefa concluída', message: 'A tarefa "Implementar login" foi marcada como concluída', time: '3 horas atrás', read: true },
-  ];
+  const handleNotificationClick = (notification: any) => {
+    // Marcar como lida
+    setNotifications(prev => 
+      prev.map(n => 
+        n.id === notification.id ? { ...n, read: true } : n
+      )
+    );
+
+    // Executar ação baseada no tipo
+    switch (notification.type) {
+      case 'project':
+        // Navegar para projetos
+        window.location.href = '/projects';
+        break;
+      case 'team_invite':
+        // Navegar para equipes
+        window.location.href = '/teams';
+        break;
+      case 'task':
+        // Navegar para dashboard
+        window.location.href = '/dashboard';
+        break;
+      default:
+        // Recolher notificações
+        setShowNotifications(false);
+    }
+  };
+
+  const handleMarkAllAsRead = () => {
+    setNotifications(prev => 
+      prev.map(n => ({ ...n, read: true }))
+    );
+    setShowNotifications(false);
+  };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -56,7 +89,8 @@ const Header: React.FC = () => {
                       notifications.map((notification) => (
                         <div
                           key={notification.id}
-                          className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${
+                          onClick={() => handleNotificationClick(notification)}
+                          className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
                             !notification.read ? 'bg-blue-50' : ''
                           }`}
                         >
@@ -82,7 +116,10 @@ const Header: React.FC = () => {
                   </div>
                   {notifications.length > 0 && (
                     <div className="p-3 border-t border-gray-200">
-                      <button className="w-full text-sm text-blue-600 hover:text-blue-800 font-medium">
+                      <button 
+                        onClick={handleMarkAllAsRead}
+                        className="w-full text-sm text-blue-600 hover:text-blue-800 font-medium"
+                      >
                         Marcar todas como lidas
                       </button>
                     </div>
