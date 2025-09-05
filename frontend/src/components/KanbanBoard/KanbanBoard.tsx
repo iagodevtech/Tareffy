@@ -233,12 +233,14 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
       createdAt: new Date().toISOString()
     };
 
+    const updatedTask = { ...selectedTask, comments: [comment, ...selectedTask.comments] };
+    
     setTasks(prev => prev.map(task => 
-      task.id === selectedTask.id 
-        ? { ...task, comments: [comment, ...task.comments] }
-        : task
+      task.id === selectedTask.id ? updatedTask : task
     ));
 
+    // Atualizar a tarefa selecionada para mostrar o comentário imediatamente
+    setSelectedTask(updatedTask);
     setNewComment('');
   };
 
@@ -254,12 +256,14 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
       createdAt: new Date().toISOString()
     };
 
+    const updatedTask = { ...selectedTask, issues: [issue, ...selectedTask.issues] };
+    
     setTasks(prev => prev.map(task => 
-      task.id === selectedTask.id 
-        ? { ...task, issues: [issue, ...task.issues] }
-        : task
+      task.id === selectedTask.id ? updatedTask : task
     ));
 
+    // Atualizar a tarefa selecionada para mostrar a issue imediatamente
+    setSelectedTask(updatedTask);
     setNewIssue({ title: '', description: '', severity: 'medium' });
   };
 

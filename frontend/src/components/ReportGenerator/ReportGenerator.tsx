@@ -22,12 +22,108 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
       // Simular geração de relatório
       await new Promise(resolve => setTimeout(resolve, 2000));
       
+      // Buscar dados reais do localStorage
+      const kanbanTasks = JSON.parse(localStorage.getItem('kanban-tasks') || '[]');
+      const projects = JSON.parse(localStorage.getItem('projects') || '[]');
+      const teams = JSON.parse(localStorage.getItem('teams') || '[]');
+
+      let reportContent = '';
+      
+      switch (reportType) {
+        case 'all':
+          reportContent = `
+RELATÓRIO COMPLETO - TAREFFY
+Data: ${new Date().toLocaleDateString('pt-BR')}
+Período: ${dateRange}
+
+=== RESUMO GERAL ===
+- Total de Projetos: ${projects.length}
+- Total de Equipes: ${teams.length}
+- Total de Tarefas: ${kanbanTasks.length}
+- Tarefas Concluídas: ${kanbanTasks.filter(t => t.status === 'production').length}
+- Tarefas em Progresso: ${kanbanTasks.filter(t => t.status === 'in_progress').length}
+
+=== PROJETOS ===
+${projects.map(p => `- ${p.name}: ${p.description || 'Sem descrição'}`).join('\n')}
+
+=== EQUIPES ===
+${teams.map(t => `- ${t.name}: ${t.description || 'Sem descrição'}`).join('\n')}
+
+=== TAREFAS ===
+${kanbanTasks.map(t => `- ${t.title} (${t.status}): ${t.description || 'Sem descrição'}`).join('\n')}
+
+=== COMENTÁRIOS E ISSUES ===
+${kanbanTasks.map(t => {
+  const comments = t.comments?.length || 0;
+  const issues = t.issues?.filter(i => i.status === 'open').length || 0;
+  return `- ${t.title}: ${comments} comentários, ${issues} issues abertas`;
+}).join('\n')}
+
+Atenciosamente,
+Equipe Tareffy
+          `;
+          break;
+        case 'projects':
+          reportContent = `
+RELATÓRIO DE PROJETOS - TAREFFY
+Data: ${new Date().toLocaleDateString('pt-BR')}
+
+=== PROJETOS ===
+${projects.map(p => `
+Projeto: ${p.name}
+Descrição: ${p.description || 'Sem descrição'}
+Status: ${p.status || 'Ativo'}
+Data de Criação: ${new Date(p.created_at || Date.now()).toLocaleDateString('pt-BR')}
+`).join('\n')}
+
+Total: ${projects.length} projetos
+          `;
+          break;
+        case 'teams':
+          reportContent = `
+RELATÓRIO DE EQUIPES - TAREFFY
+Data: ${new Date().toLocaleDateString('pt-BR')}
+
+=== EQUIPES ===
+${teams.map(t => `
+Equipe: ${t.name}
+Descrição: ${t.description || 'Sem descrição'}
+Data de Criação: ${new Date(t.created_at || Date.now()).toLocaleDateString('pt-BR')}
+`).join('\n')}
+
+Total: ${teams.length} equipes
+          `;
+          break;
+        case 'tasks':
+          reportContent = `
+RELATÓRIO DE TAREFAS - TAREFFY
+Data: ${new Date().toLocaleDateString('pt-BR')}
+
+=== TAREFAS ===
+${kanbanTasks.map(t => `
+Tarefa: ${t.title}
+Descrição: ${t.description || 'Sem descrição'}
+Status: ${t.status}
+Prioridade: ${t.priority}
+Responsável: ${t.assignee || 'Não atribuído'}
+Comentários: ${t.comments?.length || 0}
+Issues Abertas: ${t.issues?.filter(i => i.status === 'open').length || 0}
+Duração: ${t.duration ? `${t.duration}h` : 'Não iniciada'}
+`).join('\n')}
+
+Total: ${kanbanTasks.length} tarefas
+Concluídas: ${kanbanTasks.filter(t => t.status === 'production').length}
+Em Progresso: ${kanbanTasks.filter(t => t.status === 'in_progress').length}
+          `;
+          break;
+      }
+
       const reportData = {
         type: reportType,
         format,
         dateRange,
         timestamp: new Date().toISOString(),
-        content: `Relatório ${reportType} - ${dateRange}\n\nEste é um relatório gerado pelo Tareffy.\nData: ${new Date().toLocaleDateString('pt-BR')}\n\nDados do relatório:\n- Tipo: ${reportType}\n- Período: ${dateRange}\n- Formato: ${format.toUpperCase()}\n\nAtenciosamente,\nEquipe Tareffy`
+        content: reportContent
       };
       
       console.log('Gerando relatório:', reportData);
@@ -147,56 +243,66 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
         <div className="space-y-4">
           {/* Tipo de Relatório */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-base font-medium text-gray-700 mb-3">
               Tipo de Relatório
             </label>
-            <select
-              value={reportType}
-              onChange={(e) => setReportType(e.target.value as any)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">Todos os Dados</option>
-              <option value="projects">Projetos</option>
-              <option value="teams">Equipes</option>
-              <option value="tasks">Tarefas</option>
-            </select>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { value: 'all', label: 'Todos' },
+                { value: 'projects', label: 'Projetos' },
+                { value: 'teams', label: 'Equipes' },
+                { value: 'tasks', label: 'Tarefas' }
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setReportType(option.value as any)}
+                  className={`p-4 text-base rounded-lg border-2 transition-all duration-200 ${
+                    reportType === option.value
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-lg transform scale-105'
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Formato */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-base font-medium text-gray-700 mb-3">
               Formato
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-3">
               <button
                 onClick={() => setFormat('pdf')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                className={`p-4 text-base border-2 rounded-lg text-center transition-all duration-200 ${
                   format === 'pdf'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-300 hover:bg-gray-50'
+                    ? 'border-green-600 bg-green-600 text-white shadow-lg transform scale-105'
+                    : 'border-gray-300 hover:bg-gray-50 hover:border-gray-400'
                 }`}
               >
-                <div className="text-sm font-medium">PDF</div>
+                <div className="font-medium">PDF</div>
               </button>
               <button
                 onClick={() => setFormat('excel')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                className={`p-4 text-base border-2 rounded-lg text-center transition-all duration-200 ${
                   format === 'excel'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-300 hover:bg-gray-50'
+                    ? 'border-green-600 bg-green-600 text-white shadow-lg transform scale-105'
+                    : 'border-gray-300 hover:bg-gray-50 hover:border-gray-400'
                 }`}
               >
-                <div className="text-sm font-medium">Excel</div>
+                <div className="font-medium">Excel</div>
               </button>
               <button
                 onClick={() => setFormat('docx')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                className={`p-4 text-base border-2 rounded-lg text-center transition-all duration-200 ${
                   format === 'docx'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-300 hover:bg-gray-50'
+                    ? 'border-green-600 bg-green-600 text-white shadow-lg transform scale-105'
+                    : 'border-gray-300 hover:bg-gray-50 hover:border-gray-400'
                 }`}
               >
-                <div className="text-sm font-medium">Word</div>
+                <div className="font-medium">Word</div>
               </button>
             </div>
           </div>
@@ -221,14 +327,14 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
 
           {/* Envio por email */}
           <div>
-            <label className="flex items-center">
+            <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={sendEmail}
                 onChange={(e) => setSendEmail(e.target.checked)}
-                className="mr-2"
+                className="mr-3 w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-base font-medium text-gray-700">
                 Enviar relatório por email ({user?.email})
               </span>
             </label>
