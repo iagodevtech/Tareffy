@@ -55,14 +55,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
       )}
 
       {/* Sidebar */}
-      <div className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static inset-y-0 left-0 z-50 ${isCollapsed ? 'w-16' : 'w-64'} bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out md:flex md:flex-shrink-0 shadow-lg`}>
+      <div className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static inset-y-0 left-0 z-50 w-64 md:${isCollapsed ? 'w-16' : 'w-64'} bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out md:flex md:flex-shrink-0 shadow-lg`}>
         <div className="flex flex-col w-full">
           <div className="flex flex-col h-0 flex-1">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center justify-between flex-shrink-0 px-4">
-                {!isCollapsed && (
-                  <h1 className="text-gray-900 text-xl font-bold">Tareffy</h1>
-                )}
+                <h1 className="text-gray-900 text-xl font-bold md:block" style={{ display: isCollapsed ? 'none' : 'block' }}>Tareffy</h1>
                 <div className="flex items-center space-x-2">
                   {/* Desktop collapse button */}
                   {onCollapse && (
@@ -108,7 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
                     title={isCollapsed ? item.name : undefined}
                   >
                     <item.icon className={`${isCollapsed ? 'mx-auto' : 'mr-3'} flex-shrink-0 h-6 w-6 text-current`} />
-                    {!isCollapsed && item.name}
+                    <span className="md:block" style={{ display: isCollapsed ? 'none' : 'block' }}>{item.name}</span>
                   </NavLink>
                 ))}
               </nav>

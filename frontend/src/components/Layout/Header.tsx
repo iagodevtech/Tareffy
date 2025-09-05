@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -7,6 +7,15 @@ const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'Novo projeto criado', message: 'O projeto "Tareffy" foi criado com sucesso', time: '2 min atrás', read: false, type: 'project' },
     { id: 2, title: 'Convite para equipe', message: 'Você foi convidado para a equipe "Desenvolvimento"', time: '1 hora atrás', read: false, type: 'team_invite' },
@@ -58,6 +67,11 @@ const Header: React.FC = () => {
           <div className="flex items-center">
             {/* Espaço para o título do sidebar em mobile */}
             <div className="md:hidden w-12"></div>
+            {/* Data e hora */}
+            <div className="hidden sm:block text-sm text-gray-600 ml-4">
+              <div>{currentDateTime.toLocaleDateString('pt-BR')}</div>
+              <div className="text-xs">{currentDateTime.toLocaleTimeString('pt-BR')}</div>
+            </div>
           </div>
           <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="relative">

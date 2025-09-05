@@ -1,5 +1,22 @@
-import React, { useState } from 'react';
-import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import React, { useState, useEffect } from 'react';
+import { PlusIcon, PencilIcon, TrashIcon, ChatBubbleLeftIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+
+interface Comment {
+  id: string;
+  text: string;
+  author: string;
+  createdAt: string;
+}
+
+interface Issue {
+  id: string;
+  title: string;
+  description: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  status: 'open' | 'resolved';
+  createdAt: string;
+  resolvedAt?: string;
+}
 
 interface Task {
   id: string;
@@ -9,6 +26,12 @@ interface Task {
   priority: 'low' | 'medium' | 'high';
   assignee?: string;
   dueDate?: string;
+  createdAt: string;
+  startedAt?: string;
+  completedAt?: string;
+  duration?: number; // em horas
+  comments: Comment[];
+  issues: Issue[];
 }
 
 interface KanbanBoardProps {
@@ -16,56 +39,72 @@ interface KanbanBoardProps {
 }
 
 const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: '1',
-      title: 'Implementar login',
-      description: 'Criar sistema de autenticação',
-      status: 'todo',
-      priority: 'high',
-      assignee: 'João Silva',
-      dueDate: '2024-01-15'
-    },
-    {
-      id: '2',
-      title: 'Design da interface',
-      description: 'Criar mockups das telas principais',
-      status: 'in_progress',
-      priority: 'medium',
-      assignee: 'Maria Santos',
-      dueDate: '2024-01-20'
-    },
-    {
-      id: '3',
-      title: 'Testes unitários',
-      description: 'Implementar testes para componentes',
-      status: 'review',
-      priority: 'low',
-      assignee: 'Pedro Costa',
-      dueDate: '2024-01-25'
-    },
-    {
-      id: '4',
-      title: 'Testes de integração',
-      description: 'Testar integração entre módulos',
-      status: 'testing',
-      priority: 'medium',
-      assignee: 'Ana Lima',
-      dueDate: '2024-01-30'
-    },
-    {
-      id: '5',
-      title: 'Homologação final',
-      description: 'Aprovação para produção',
-      status: 'homologation',
-      priority: 'high',
-      assignee: 'Carlos Silva',
-      dueDate: '2024-02-05'
-    }
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [draggedTask, setDraggedTask] = useState<Task | null>(null);
 
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
+  const [showIssuesModal, setShowIssuesModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+  // Carregar tarefas do localStorage
+  useEffect(() => {
+    const savedTasks = localStorage.getItem('kanban-tasks');
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    } else {
+      // Tarefas de exemplo se não houver dados salvos
+      const exampleTasks: Task[] = [
+        {
+          id: '1',
+          title: 'Implementar login',
+          description: 'Criar sistema de autenticação',
+          status: 'todo',
+          priority: 'high',
+          assignee: 'João Silva',
+          dueDate: '2024-01-15',
+          createdAt: new Date().toISOString(),
+          comments: [],
+          issues: []
+        },
+        {
+          id: '2',
+          title: 'Design da interface',
+          description: 'Criar mockups das telas principais',
+          status: 'in_progress',
+          priority: 'medium',
+          assignee: 'Maria Santos',
+          dueDate: '2024-01-20',
+          createdAt: new Date().toISOString(),
+          startedAt: new Date().toISOString(),
+          comments: [],
+          issues: []
+        },
+        {
+          id: '3',
+          title: 'Testes unitários',
+          description: 'Implementar testes para componentes',
+          status: 'review',
+          priority: 'low',
+          assignee: 'Pedro Costa',
+          dueDate: '2024-01-25',
+          createdAt: new Date().toISOString(),
+          comments: [],
+          issues: []
+        }
+      ];
+      setTasks(exampleTasks);
+      localStorage.setItem('kanban-tasks', JSON.stringify(exampleTasks));
+    }
+  }, []);
+
+  // Salvar tarefas no localStorage sempre que houver mudanças
+  useEffect(() => {
+    if (tasks.length > 0) {
+      localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
+    }
+  }, [tasks]);
 
   const columns = [
     { id: 'todo', title: 'A Fazer', color: 'bg-gray-100' },
@@ -85,6 +124,55 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
     }
   };
 
+  const calculateDuration = (task: Task) => {
+    if (!task.startedAt) return null;
+    
+    const start = new Date(task.startedAt);
+    const end = task.completedAt ? new Date(task.completedAt) : new Date();
+    const diffMs = end.getTime() - start.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
+    const remainingHours = diffHours % 24;
+    
+    if (diffDays > 0) {
+      return `${diffDays} dia${diffDays > 1 ? 's' : ''} e ${remainingHours}h`;
+    }
+    return `${diffHours}h`;
+  };
+
+  const handleDragStart = (e: React.DragEvent, task: Task) => {
+    setDraggedTask(task);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, newStatus: string) => {
+    e.preventDefault();
+    
+    if (!draggedTask) return;
+    
+    const updatedTask = { ...draggedTask, status: newStatus as any };
+    
+    // Atualizar timestamps baseado no status
+    if (newStatus === 'in_progress' && !updatedTask.startedAt) {
+      updatedTask.startedAt = new Date().toISOString();
+    } else if (newStatus === 'production' && !updatedTask.completedAt) {
+      updatedTask.completedAt = new Date().toISOString();
+      updatedTask.duration = calculateDuration(updatedTask) ? 
+        Math.floor((new Date().getTime() - new Date(updatedTask.startedAt || updatedTask.createdAt).getTime()) / (1000 * 60 * 60)) : 0;
+    }
+    
+    setTasks(prev => prev.map(task => 
+      task.id === draggedTask.id ? updatedTask : task
+    ));
+    
+    setDraggedTask(null);
+  };
+
 
   const handleNewTask = () => {
     setEditingTask({
@@ -92,7 +180,10 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
       title: '',
       description: '',
       status: 'todo',
-      priority: 'medium'
+      priority: 'medium',
+      createdAt: new Date().toISOString(),
+      comments: [],
+      issues: []
     });
     setShowTaskModal(true);
   };
@@ -114,7 +205,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
       // Nova tarefa
       const newTask = {
         ...editingTask,
-        id: Date.now().toString()
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString()
       };
       setTasks(prev => [...prev, newTask]);
     }
@@ -152,7 +244,11 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
               </span>
             </div>
             
-            <div className="p-4 space-y-3 min-h-[400px]">
+            <div 
+              className="p-4 space-y-3 min-h-[400px]"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, column.id)}
+            >
               {tasks
                 .filter(task => task.status === column.id)
                 .map(task => (
@@ -160,14 +256,41 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                     key={task.id}
                     className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-move"
                     draggable
-                    onDragEnd={(e) => {
-                      // Implementar drag and drop aqui
-                      console.log('Task moved:', task.id, 'to', column.id);
-                    }}
+                    onDragStart={(e) => handleDragStart(e, task)}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium text-gray-900 text-sm">{task.title}</h4>
                       <div className="flex gap-1">
+                        <button
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setShowCommentsModal(true);
+                          }}
+                          className="text-gray-400 hover:text-blue-600"
+                          title="Comentários"
+                        >
+                          <ChatBubbleLeftIcon className="h-4 w-4" />
+                          {task.comments.length > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                              {task.comments.length}
+                            </span>
+                          )}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setShowIssuesModal(true);
+                          }}
+                          className="text-gray-400 hover:text-orange-600"
+                          title="Issues"
+                        >
+                          <ExclamationTriangleIcon className="h-4 w-4" />
+                          {task.issues.filter(issue => issue.status === 'open').length > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                              {task.issues.filter(issue => issue.status === 'open').length}
+                            </span>
+                          )}
+                        </button>
                         <button
                           onClick={() => handleEditTask(task)}
                           className="text-gray-400 hover:text-blue-600"
@@ -195,6 +318,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                     {task.dueDate && (
                       <div className="mt-2 text-xs text-gray-500">
                         Vence: {new Date(task.dueDate).toLocaleDateString('pt-BR')}
+                      </div>
+                    )}
+                    
+                    {calculateDuration(task) && (
+                      <div className="mt-2 text-xs text-green-600 font-medium">
+                        ⏱️ {calculateDuration(task)}
                       </div>
                     )}
                   </div>
@@ -312,6 +441,80 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 Salvar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Comentários */}
+      {showCommentsModal && selectedTask && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold mb-4">Comentários - {selectedTask.title}</h3>
+            
+            <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
+              {selectedTask.comments.map((comment) => (
+                <div key={comment.id} className="bg-gray-50 p-3 rounded-lg">
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="text-sm font-medium text-gray-900">{comment.author}</span>
+                    <span className="text-xs text-gray-500">
+                      {new Date(comment.createdAt).toLocaleDateString('pt-BR')}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-700">{comment.text}</p>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowCommentsModal(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Issues */}
+      {showIssuesModal && selectedTask && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold mb-4">Issues - {selectedTask.title}</h3>
+            
+            <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
+              {selectedTask.issues.map((issue) => (
+                <div key={issue.id} className={`p-3 rounded-lg border-l-4 ${
+                  issue.severity === 'critical' ? 'border-red-500 bg-red-50' :
+                  issue.severity === 'high' ? 'border-orange-500 bg-orange-50' :
+                  issue.severity === 'medium' ? 'border-yellow-500 bg-yellow-50' :
+                  'border-blue-500 bg-blue-50'
+                }`}>
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="text-sm font-medium text-gray-900">{issue.title}</span>
+                    <span className={`text-xs px-2 py-1 rounded ${
+                      issue.status === 'open' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                    }`}>
+                      {issue.status === 'open' ? 'Aberto' : 'Resolvido'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-700">{issue.description}</p>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {issue.severity.toUpperCase()} • {new Date(issue.createdAt).toLocaleDateString('pt-BR')}
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowIssuesModal(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Fechar
               </button>
             </div>
           </div>

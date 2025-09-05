@@ -35,24 +35,61 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
       // Criar conteúdo baseado no formato
       let mimeType = 'text/plain';
       let fileExtension = 'txt';
+      let content = reportData.content;
       
       switch (format) {
         case 'pdf':
-          mimeType = 'application/pdf';
-          fileExtension = 'pdf';
+          // Para PDF, criar um HTML simples que pode ser convertido
+          content = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8">
+              <title>Relatório Tareffy</title>
+              <style>
+                body { font-family: Arial, sans-serif; margin: 40px; }
+                h1 { color: #2563eb; }
+                .header { border-bottom: 2px solid #2563eb; padding-bottom: 10px; }
+                .content { margin-top: 20px; }
+                .footer { margin-top: 40px; font-size: 12px; color: #666; }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <h1>Relatório Tareffy</h1>
+                <p><strong>Tipo:</strong> ${reportType}</p>
+                <p><strong>Período:</strong> ${dateRange}</p>
+                <p><strong>Data:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
+              </div>
+              <div class="content">
+                <p>Este é um relatório gerado pelo sistema Tareffy.</p>
+                <p>Conteúdo do relatório baseado nas suas atividades e projetos.</p>
+              </div>
+              <div class="footer">
+                <p>Atenciosamente,<br>Equipe Tareffy</p>
+                <p>Para mais informações: https://iagodevtech.github.io/Tareffy/</p>
+              </div>
+            </body>
+            </html>
+          `;
+          mimeType = 'text/html';
+          fileExtension = 'html';
           break;
         case 'excel':
-          mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-          fileExtension = 'xlsx';
+          // Para Excel, criar CSV
+          content = `Tipo,Período,Data,Descrição\n${reportType},${dateRange},${new Date().toLocaleDateString('pt-BR')},Relatório gerado pelo Tareffy`;
+          mimeType = 'text/csv';
+          fileExtension = 'csv';
           break;
         case 'docx':
-          mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-          fileExtension = 'docx';
+          // Para Word, manter como texto simples
+          mimeType = 'text/plain';
+          fileExtension = 'txt';
           break;
       }
       
       // Criar blob com o conteúdo
-      const blob = new Blob([reportData.content], { type: mimeType });
+      const blob = new Blob([content], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

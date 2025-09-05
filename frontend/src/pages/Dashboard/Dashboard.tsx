@@ -251,13 +251,13 @@ const Dashboard: React.FC = () => {
             <p className="text-sm font-medium text-gray-900">Gerenciar Equipes</p>
           </Link>
           
-          <Link
-            to="/profile"
+          <button
+            onClick={() => setShowReportGenerator(true)}
             className="p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors text-center"
           >
             <ChartBarIcon className="h-8 w-8 text-purple-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-900">Ver Relatórios</p>
-          </Link>
+          </button>
         </div>
       </div>
 
