@@ -82,8 +82,8 @@ const Dashboard: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-lg text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
         </div>
         <button
           onClick={() => setShowReportGenerator(true)}

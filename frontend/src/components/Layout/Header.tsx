@@ -68,9 +68,9 @@ const Header: React.FC = () => {
             {/* Espaço para o título do sidebar em mobile */}
             <div className="md:hidden w-12"></div>
             {/* Data e hora */}
-            <div className="hidden sm:block text-sm text-gray-600 ml-4">
+            <div className="hidden sm:block text-base text-gray-600 ml-4">
               <div>{currentDateTime.toLocaleDateString('pt-BR')}</div>
-              <div className="text-xs">{currentDateTime.toLocaleTimeString('pt-BR')}</div>
+              <div className="text-sm">{currentDateTime.toLocaleTimeString('pt-BR')}</div>
             </div>
           </div>
           <div className="flex items-center space-x-2 sm:space-x-4">
@@ -147,22 +147,22 @@ const Header: React.FC = () => {
               )}
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="hidden sm:block text-sm text-gray-700">
-                <p className="font-medium truncate max-w-32 lg:max-w-none">
-                  {user?.user_metadata?.full_name || user?.email}
-                </p>
-                <p className="text-gray-500 text-xs truncate max-w-32 lg:max-w-none">
-                  {user?.email}
-                </p>
-              </div>
-              <div className="sm:hidden text-sm text-gray-700">
-                <p className="font-medium truncate max-w-20">
-                  {user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0]}
-                </p>
-              </div>
+                                      <div className="hidden sm:block text-base text-gray-700">
+                          <p className="font-medium truncate max-w-32 lg:max-w-none">
+                            {user?.user_metadata?.full_name || user?.email}
+                          </p>
+                          <p className="text-gray-500 text-sm truncate max-w-32 lg:max-w-none">
+                            {user?.email}
+                          </p>
+                        </div>
+                        <div className="sm:hidden text-base text-gray-700">
+                          <p className="font-medium truncate max-w-20">
+                            {user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0]}
+                          </p>
+                        </div>
               <button
                 onClick={logout}
-                className="px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                className="px-2 sm:px-3 py-1 sm:py-2 text-sm sm:text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 <span className="hidden sm:inline">Sair</span>
                 <span className="sm:hidden">×</span>

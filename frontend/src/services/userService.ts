@@ -94,8 +94,8 @@ export const userService = {
     // Atualizar metadados do usuário no auth
     const { error: authError } = await supabase.auth.updateUser({
       data: {
-        full_name: updates.full_name,
-        avatar_url: updates.avatar_url
+        full_name: updates.full_name || data.full_name,
+        avatar_url: updates.avatar_url || data.avatar_url
       }
     });
 

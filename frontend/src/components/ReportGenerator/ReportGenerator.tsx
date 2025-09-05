@@ -143,10 +143,10 @@ Em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').lengt
               <meta charset="UTF-8">
               <title>Relatório Tareffy</title>
               <style>
-                body { font-family: Arial, sans-serif; margin: 40px; }
+                body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
                 h1 { color: #2563eb; }
                 .header { border-bottom: 2px solid #2563eb; padding-bottom: 10px; }
-                .content { margin-top: 20px; }
+                .content { margin-top: 20px; white-space: pre-line; }
                 .footer { margin-top: 40px; font-size: 12px; color: #666; }
               </style>
             </head>
@@ -158,8 +158,7 @@ Em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').lengt
                 <p><strong>Data:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
               </div>
               <div class="content">
-                <p>Este é um relatório gerado pelo sistema Tareffy.</p>
-                <p>Conteúdo do relatório baseado nas suas atividades e projetos.</p>
+                ${reportContent}
               </div>
               <div class="footer">
                 <p>Atenciosamente,<br>Equipe Tareffy</p>
