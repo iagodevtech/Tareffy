@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Frontend React para o sistema Tareffy",
   "private": true,
-  "homepage": "https://seu-usuario.github.io/tareffy",
+  "homepage": "https://iagodevtech.github.io/Tareffy",
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@supabase/supabase-js": "^2.57.0",
