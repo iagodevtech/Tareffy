@@ -77,8 +77,10 @@ export const teamService = {
     
     if (!user) throw new Error('Usuário não autenticado');
 
+    // Remover campos que devem ser gerados automaticamente pelo Supabase
     const teamData = {
-      ...team,
+      name: team.name,
+      description: team.description,
       user_id: user.id
     };
     console.log('📝 Dados da equipe para inserir:', teamData);
@@ -113,9 +115,13 @@ export const teamService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
+    // Remover campos que não devem ser atualizados manualmente
+    const { id: _, created_at, updated_at, user_id, ...updateData } = updates;
+    console.log('📝 Dados para atualizar equipe:', updateData);
+
     const { data, error } = await supabase
       .from('teams')
-      .update(updates)
+      .update(updateData)
       .eq('id', id)
       .eq('user_id', user.id)
       .select()
