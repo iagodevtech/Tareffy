@@ -159,6 +159,8 @@ export const teamService = {
 
   // Convidar membro para equipe
   async inviteMember(teamId: string, email: string, role: 'admin' | 'dev' | 'member'): Promise<TeamInvite> {
+    console.log('🔧 teamService.inviteMember - Iniciando...', { teamId, email, role });
+    
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
@@ -190,22 +192,33 @@ export const teamService = {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // Expira em 7 dias
 
+    // Criar convite sem verificar se o usuário existe na tabela users
+    // O convite será válido mesmo se o usuário não estiver registrado ainda
+    const inviteData = {
+      team_id: teamId,
+      email,
+      role,
+      invited_by: user.id,
+      expires_at: expiresAt.toISOString().split('T')[0] // Converter para formato DATE
+    };
+    
+    console.log('📝 Dados do convite para inserir:', inviteData);
+
     const { data, error } = await supabase
       .from('team_invites')
-      .insert({
-        team_id: teamId,
-        email,
-        role,
-        invited_by: user.id,
-        expires_at: expiresAt.toISOString().split('T')[0] // Converter para formato DATE
-      })
+      .insert(inviteData)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Erro ao criar convite:', error);
+      throw error;
+    }
 
-    // TODO: Enviar email de convite
-    console.log(`Convite enviado para ${email} com role ${role}`);
+    console.log('✅ Convite criado com sucesso:', data);
+
+    // TODO: Enviar email de convite com link para registro/login
+    console.log(`Convite enviado para ${email} com role ${role}. Se o usuário não estiver registrado, será direcionado para registro.`);
 
     return data;
   },

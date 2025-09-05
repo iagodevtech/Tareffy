@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // import { useAuth } from '../../contexts/AuthContext'; // Removido temporariamente
 import { userService, UserProfile } from '../../services/userService';
 import { 
@@ -16,7 +16,10 @@ const Profile: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [cropImage, setCropImage] = useState<string>('');
   const [avatarPreview, setAvatarPreview] = useState<string>('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadProfile();
@@ -32,6 +35,31 @@ const Profile: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setCropImage(e.target?.result as string);
+        setShowCropModal(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCropComplete = (croppedImage: string) => {
+    setAvatarPreview(croppedImage);
+    setShowCropModal(false);
+    
+    // Converter base64 para File
+    fetch(croppedImage)
+      .then(res => res.blob())
+      .then(blob => {
+        const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
+        setAvatarFile(file);
+      });
   };
 
   const handleSave = async () => {
@@ -71,17 +99,6 @@ const Profile: React.FC = () => {
     loadProfile(); // Recarregar dados originais
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setAvatarFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setAvatarPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   if (loading) {
     return (
@@ -155,9 +172,10 @@ const Profile: React.FC = () => {
                   <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700">
                     <CameraIcon className="h-5 w-5" />
                     <input
+                      ref={fileInputRef}
                       type="file"
                       accept="image/*"
-                      onChange={handleAvatarChange}
+                      onChange={handleFileSelect}
                       className="hidden"
                     />
                   </label>
@@ -196,7 +214,11 @@ const Profile: React.FC = () => {
                   value={profile.full_name || ''}
                   onChange={(e) => setProfile({...profile, full_name: e.target.value})}
                   disabled={!editing}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  editing 
+                    ? 'border-gray-300 bg-white' 
+                    : 'border-gray-200 bg-gray-100 text-gray-600'
+                }`}
                 />
               </div>
               
@@ -222,7 +244,11 @@ const Profile: React.FC = () => {
                   value={profile.phone || ''}
                   onChange={(e) => setProfile({...profile, phone: e.target.value})}
                   disabled={!editing}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  editing 
+                    ? 'border-gray-300 bg-white' 
+                    : 'border-gray-200 bg-gray-100 text-gray-600'
+                }`}
                 />
               </div>
               
@@ -235,7 +261,11 @@ const Profile: React.FC = () => {
                   value={profile.company || ''}
                   onChange={(e) => setProfile({...profile, company: e.target.value})}
                   disabled={!editing}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  editing 
+                    ? 'border-gray-300 bg-white' 
+                    : 'border-gray-200 bg-gray-100 text-gray-600'
+                }`}
                 />
               </div>
               
@@ -248,7 +278,11 @@ const Profile: React.FC = () => {
                   value={profile.position || ''}
                   onChange={(e) => setProfile({...profile, position: e.target.value})}
                   disabled={!editing}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  editing 
+                    ? 'border-gray-300 bg-white' 
+                    : 'border-gray-200 bg-gray-100 text-gray-600'
+                }`}
                 />
               </div>
               
@@ -260,7 +294,11 @@ const Profile: React.FC = () => {
                   value={profile.timezone || 'America/Sao_Paulo'}
                   onChange={(e) => setProfile({...profile, timezone: e.target.value})}
                   disabled={!editing}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  editing 
+                    ? 'border-gray-300 bg-white' 
+                    : 'border-gray-200 bg-gray-100 text-gray-600'
+                }`}
                 >
                   <option value="America/Sao_Paulo">São Paulo (GMT-3)</option>
                   <option value="America/New_York">Nova York (GMT-5)</option>
@@ -280,7 +318,11 @@ const Profile: React.FC = () => {
                 onChange={(e) => setProfile({...profile, bio: e.target.value})}
                 disabled={!editing}
                 rows={3}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  editing 
+                    ? 'border-gray-300 bg-white' 
+                    : 'border-gray-200 bg-gray-100 text-gray-600'
+                }`}
                 placeholder="Conte um pouco sobre você..."
               />
             </div>
@@ -316,6 +358,37 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal de recorte de imagem */}
+      {showCropModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold mb-4">Recortar Foto</h3>
+            <div className="mb-4">
+              <img 
+                src={cropImage} 
+                alt="Preview" 
+                className="w-full h-64 object-cover rounded-lg border"
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowCropModal(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => handleCropComplete(cropImage)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Usar Foto
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

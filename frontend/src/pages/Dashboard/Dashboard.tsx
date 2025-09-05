@@ -6,11 +6,9 @@ import {
   CheckCircleIcon, 
   FolderIcon,
   UserGroupIcon,
-  ChartBarIcon,
-  WrenchScrewdriverIcon
+  ChartBarIcon
 } from '@heroicons/react/24/outline';
 import { projectService, Project } from '../../services/projectService';
-import { testSupabaseConnection, testCreateProject } from '../../utils/testSupabase';
 
 const Dashboard: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -32,26 +30,6 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleTestConnection = async () => {
-    console.log('🔧 Iniciando teste de conexão...');
-    const connectionOk = await testSupabaseConnection();
-    if (connectionOk) {
-      alert('✅ Conexão com Supabase OK!');
-    } else {
-      alert('❌ Problema na conexão com Supabase!');
-    }
-  };
-
-  const handleTestCreateProject = async () => {
-    console.log('🔧 Iniciando teste de criação de projeto...');
-    const createOk = await testCreateProject();
-    if (createOk) {
-      alert('✅ Criação de projeto OK!');
-      loadDashboardData(); // Recarregar dados
-    } else {
-      alert('❌ Problema na criação de projeto!');
-    }
-  };
 
   // Calcular estatísticas baseadas nos dados reais
   const stats = {
@@ -100,28 +78,8 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={handleTestConnection}
-              className="px-3 py-2 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2"
-            >
-              <WrenchScrewdriverIcon className="h-4 w-4" />
-              Testar Conexão
-            </button>
-            <button
-              onClick={handleTestCreateProject}
-              className="px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-            >
-              <WrenchScrewdriverIcon className="h-4 w-4" />
-              Testar Projeto
-            </button>
-          </div>
-        </div>
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
       </div>
       
       {/* Cards de estatísticas */}

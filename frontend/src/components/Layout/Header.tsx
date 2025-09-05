@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { BellIcon } from '@heroicons/react/24/outline';
+import { BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  // Notificações mockadas - em produção viria do Supabase
+  const notifications = [
+    { id: 1, title: 'Novo projeto criado', message: 'O projeto "Tareffy" foi criado com sucesso', time: '2 min atrás', read: false },
+    { id: 2, title: 'Convite para equipe', message: 'Você foi convidado para a equipe "Desenvolvimento"', time: '1 hora atrás', read: false },
+    { id: 3, title: 'Tarefa concluída', message: 'A tarefa "Implementar login" foi marcada como concluída', time: '3 horas atrás', read: true },
+  ];
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -14,9 +22,74 @@ const Header: React.FC = () => {
             <div className="md:hidden w-12"></div>
           </div>
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <button className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors">
-              <BellIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors relative"
+              >
+                <BellIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                {notifications.some(n => !n.read) && (
+                  <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+                )}
+              </button>
+              
+              {/* Dropdown de notificações */}
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                  <div className="p-4 border-b border-gray-200">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-semibold text-gray-900">Notificações</h3>
+                      <button
+                        onClick={() => setShowNotifications(false)}
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        <XMarkIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="max-h-96 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-gray-500">
+                        Nenhuma notificação
+                      </div>
+                    ) : (
+                      notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${
+                            !notification.read ? 'bg-blue-50' : ''
+                          }`}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h4 className="text-sm font-medium text-gray-900">
+                                {notification.title}
+                              </h4>
+                              <p className="text-sm text-gray-600 mt-1">
+                                {notification.message}
+                              </p>
+                              <p className="text-xs text-gray-400 mt-2">
+                                {notification.time}
+                              </p>
+                            </div>
+                            {!notification.read && (
+                              <div className="h-2 w-2 bg-blue-500 rounded-full ml-2 mt-1"></div>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  {notifications.length > 0 && (
+                    <div className="p-3 border-t border-gray-200">
+                      <button className="w-full text-sm text-blue-600 hover:text-blue-800 font-medium">
+                        Marcar todas como lidas
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
               <div className="hidden sm:block text-sm text-gray-700">
                 <p className="font-medium truncate max-w-32 lg:max-w-none">
