@@ -6,19 +6,27 @@ import {
   CheckCircleIcon, 
   FolderIcon,
   UserGroupIcon,
-  ChartBarIcon,
-  DocumentArrowDownIcon
+  ChartBarIcon
 } from '@heroicons/react/24/outline';
 import { projectService, Project } from '../../services/projectService';
-import ReportGenerator from '../../components/ReportGenerator/ReportGenerator';
 
 const Dashboard: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showReportGenerator, setShowReportGenerator] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
+    
+    // Listener para evento de refresh
+    const handleRefresh = () => {
+      loadDashboardData();
+    };
+    
+    window.addEventListener('refreshData', handleRefresh);
+    
+    return () => {
+      window.removeEventListener('refreshData', handleRefresh);
+    };
   }, []);
 
   const loadDashboardData = async () => {
@@ -80,18 +88,9 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-lg text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
-        </div>
-        <button
-          onClick={() => setShowReportGenerator(true)}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
-        >
-          <DocumentArrowDownIcon className="h-5 w-5" />
-          Gerar Relatório
-        </button>
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-lg text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
       </div>
       
       {/* Cards de estatísticas */}
@@ -261,11 +260,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Gerador de Relatórios */}
-      <ReportGenerator 
-        isOpen={showReportGenerator}
-        onClose={() => setShowReportGenerator(false)}
-      />
     </div>
   );
 };

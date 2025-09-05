@@ -129,20 +129,9 @@ const Profile: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Perfil</h1>
-          <p className="text-gray-600">Gerencie suas informações pessoais</p>
-        </div>
-        {!editing && (
-          <button
-            onClick={() => setEditing(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
-          >
-            <PencilIcon className="h-5 w-5" />
-            Editar Perfil
-          </button>
-        )}
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Perfil</h1>
+        <p className="text-gray-600">Gerencie suas informações pessoais</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -352,6 +341,18 @@ const Profile: React.FC = () => {
                       Salvar
                     </>
                   )}
+                </button>
+              </div>
+            )}
+            
+            {!editing && (
+              <div className="flex justify-center mt-6">
+                <button
+                  onClick={() => setEditing(true)}
+                  className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm"
+                >
+                  <PencilIcon className="h-4 w-4" />
+                  Editar Perfil
                 </button>
               </div>
             )}

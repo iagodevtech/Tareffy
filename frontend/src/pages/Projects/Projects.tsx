@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+  import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { projectService, Project } from '../../services/projectService';
@@ -15,6 +15,17 @@ const Projects: React.FC = () => {
   // Carregar projetos do Supabase
   useEffect(() => {
     loadProjects();
+    
+    // Listener para evento de refresh
+    const handleRefresh = () => {
+      loadProjects();
+    };
+    
+    window.addEventListener('refreshData', handleRefresh);
+    
+    return () => {
+      window.removeEventListener('refreshData', handleRefresh);
+    };
   }, []);
 
   const loadProjects = async () => {
@@ -45,6 +56,23 @@ const Projects: React.FC = () => {
       case 'on-hold': return 'Pausado';
       default: return 'Desconhecido';
     }
+  };
+
+  const getProjectEmoji = (name: string) => {
+    const nameLower = name.toLowerCase();
+    if (nameLower.includes('web') || nameLower.includes('site')) return '🌐';
+    if (nameLower.includes('app') || nameLower.includes('mobile')) return '📱';
+    if (nameLower.includes('api') || nameLower.includes('backend')) return '⚙️';
+    if (nameLower.includes('design') || nameLower.includes('ui')) return '🎨';
+    if (nameLower.includes('ecommerce') || nameLower.includes('loja')) return '🛒';
+    if (nameLower.includes('blog') || nameLower.includes('cms')) return '📝';
+    if (nameLower.includes('game') || nameLower.includes('jogo')) return '🎮';
+    if (nameLower.includes('ai') || nameLower.includes('inteligencia')) return '🤖';
+    if (nameLower.includes('data') || nameLower.includes('dados')) return '📊';
+    if (nameLower.includes('security') || nameLower.includes('segurança')) return '🔒';
+    if (nameLower.includes('cloud') || nameLower.includes('nuvem')) return '☁️';
+    if (nameLower.includes('devops') || nameLower.includes('deploy')) return '🚀';
+    return '📁'; // Emoji padrão para projetos
   };
 
   const handleNewProject = () => {
@@ -176,7 +204,10 @@ const Projects: React.FC = () => {
         {projects.map((project) => (
           <div key={project.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <span className="text-xl">{getProjectEmoji(project.name)}</span>
+                {project.name}
+              </h3>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status)}`}>
                 {getStatusText(project.status)}
               </span>

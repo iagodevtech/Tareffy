@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import { useAuth } from '../../contexts/AuthContext'; // Removido temporariamente
+import { useAuth } from '../../contexts/AuthContext';
 import { userService, UserSettings } from '../../services/userService';
 import { 
   CogIcon,
@@ -7,18 +7,30 @@ import {
   ShieldCheckIcon,
   KeyIcon,
   CheckIcon,
-  TrashIcon
+  TrashIcon,
+  DocumentTextIcon,
+  RocketLaunchIcon,
+  ArrowRightOnRectangleIcon,
+  CodeBracketIcon,
+  ServerIcon,
+  DatabaseIcon,
+  GlobeAltIcon,
+  CpuChipIcon,
+  PaintBrushIcon
 } from '@heroicons/react/24/outline';
 
 const Settings: React.FC = () => {
-  // const { user, logout } = useAuth(); // Removido temporariamente para evitar warning
+  const { user, logout } = useAuth();
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState<'general' | 'notifications' | 'privacy' | 'security'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'notifications' | 'privacy' | 'security' | 'technical' | 'cockpit'>('general');
+  const [cockpitNotes, setCockpitNotes] = useState('');
+  const [newProjectIdea, setNewProjectIdea] = useState('');
 
   useEffect(() => {
     loadSettings();
+    loadCockpitData();
   }, []);
 
   const loadSettings = async () => {
@@ -33,6 +45,19 @@ const Settings: React.FC = () => {
     }
   };
 
+  const loadCockpitData = () => {
+    const savedNotes = localStorage.getItem('cockpit-notes') || '';
+    const savedIdeas = localStorage.getItem('project-ideas') || '';
+    setCockpitNotes(savedNotes);
+    setNewProjectIdea(savedIdeas);
+  };
+
+  const saveCockpitData = () => {
+    localStorage.setItem('cockpit-notes', cockpitNotes);
+    localStorage.setItem('project-ideas', newProjectIdea);
+    alert('Dados do cockpit salvos com sucesso!');
+  };
+
   const handleSaveSettings = async () => {
     if (!settings) return;
 
@@ -45,6 +70,12 @@ const Settings: React.FC = () => {
       alert('Erro ao salvar configurações. Tente novamente.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('Tem certeza que deseja sair?')) {
+      logout();
     }
   };
 
@@ -79,7 +110,20 @@ const Settings: React.FC = () => {
     { id: 'general', name: 'Geral', icon: CogIcon },
     { id: 'notifications', name: 'Notificações', icon: BellIcon },
     { id: 'privacy', name: 'Privacidade', icon: ShieldCheckIcon },
-    { id: 'security', name: 'Segurança', icon: KeyIcon }
+    { id: 'security', name: 'Segurança', icon: KeyIcon },
+    { id: 'technical', name: 'Relatório Técnico', icon: DocumentTextIcon },
+    { id: 'cockpit', name: 'Cockpit', icon: RocketLaunchIcon }
+  ];
+
+  const technologies = [
+    { name: 'React', icon: '⚛️', description: 'Biblioteca JavaScript para interfaces de usuário' },
+    { name: 'TypeScript', icon: '🔷', description: 'Superset tipado do JavaScript' },
+    { name: 'Tailwind CSS', icon: '🎨', description: 'Framework CSS utilitário' },
+    { name: 'Supabase', icon: '🗄️', description: 'Backend-as-a-Service com PostgreSQL' },
+    { name: 'PostgreSQL', icon: '🐘', description: 'Banco de dados relacional' },
+    { name: 'GitHub Pages', icon: '📄', description: 'Hospedagem estática' },
+    { name: 'GitHub Actions', icon: '⚡', description: 'CI/CD automatizado' },
+    { name: 'Heroicons', icon: '🎯', description: 'Biblioteca de ícones SVG' }
   ];
 
   return (
@@ -89,23 +133,43 @@ const Settings: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
           <p className="text-gray-600">Gerencie suas preferências e configurações</p>
         </div>
-        <button
-          onClick={handleSaveSettings}
-          disabled={saving}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-        >
-          {saving ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              Salvando...
-            </>
-          ) : (
-            <>
+        <div className="flex gap-2">
+          {activeTab === 'cockpit' && (
+            <button
+              onClick={saveCockpitData}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
+            >
               <CheckIcon className="h-5 w-5" />
-              Salvar
-            </>
+              Salvar Cockpit
+            </button>
           )}
-        </button>
+          {activeTab !== 'technical' && activeTab !== 'cockpit' && (
+            <button
+              onClick={handleSaveSettings}
+              disabled={saving}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {saving ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <CheckIcon className="h-5 w-5" />
+                  Salvar
+                </>
+              )}
+            </button>
+          )}
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2"
+          >
+            <ArrowRightOnRectangleIcon className="h-5 w-5" />
+            Sair
+          </button>
+        </div>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -372,6 +436,199 @@ const Settings: React.FC = () => {
                     <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm">
                       Excluir Conta
                     </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Relatório Técnico */}
+            {activeTab === 'technical' && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <DocumentTextIcon className="h-5 w-5" />
+                  Relatório Técnico - Tareffy
+                </h3>
+                
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+                  <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <CodeBracketIcon className="h-6 w-6 text-blue-600" />
+                    Sobre o Projeto
+                  </h4>
+                  <p className="text-gray-700 mb-4">
+                    O <strong>Tareffy</strong> é uma aplicação web moderna de gerenciamento de projetos e tarefas, 
+                    desenvolvida com foco na experiência do usuário e funcionalidades em tempo real. 
+                    A aplicação permite que equipes colaborem de forma eficiente, gerenciem projetos, 
+                    acompanhem o progresso de tarefas e gerem relatórios detalhados.
+                  </p>
+                  <p className="text-gray-700 mb-4">
+                    <strong>Desenvolvido por:</strong> <span className="text-blue-600 font-semibold">Iago Alves</span>
+                  </p>
+                  <p className="text-gray-700">
+                    <strong>Ano de Criação:</strong> 2025
+                  </p>
+                </div>
+
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-200">
+                  <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <ServerIcon className="h-6 w-6 text-green-600" />
+                    Arquitetura e Tecnologias
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {technologies.map((tech, index) => (
+                      <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="text-2xl">{tech.icon}</span>
+                          <h5 className="font-semibold text-gray-900">{tech.name}</h5>
+                        </div>
+                        <p className="text-sm text-gray-600">{tech.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
+                  <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <DatabaseIcon className="h-6 w-6 text-purple-600" />
+                    Banco de Dados
+                  </h4>
+                  <p className="text-gray-700 mb-4">
+                    O Tareffy utiliza o <strong>Supabase</strong> como Backend-as-a-Service, 
+                    que fornece uma instância PostgreSQL gerenciada com as seguintes características:
+                  </p>
+                  <ul className="list-disc list-inside text-gray-700 space-y-2">
+                    <li><strong>PostgreSQL:</strong> Banco de dados relacional robusto e confiável</li>
+                    <li><strong>Row Level Security (RLS):</strong> Segurança a nível de linha para proteção de dados</li>
+                    <li><strong>Real-time:</strong> Atualizações em tempo real via WebSockets</li>
+                    <li><strong>Storage:</strong> Armazenamento de arquivos (avatars, documentos)</li>
+                    <li><strong>Auth:</strong> Sistema de autenticação integrado</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-lg p-6 border border-orange-200">
+                  <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <GlobeAltIcon className="h-6 w-6 text-orange-600" />
+                    Deploy e Hospedagem
+                  </h4>
+                  <p className="text-gray-700 mb-4">
+                    A aplicação está hospedada no <strong>GitHub Pages</strong> com as seguintes configurações:
+                  </p>
+                  <ul className="list-disc list-inside text-gray-700 space-y-2">
+                    <li><strong>GitHub Pages:</strong> Hospedagem estática gratuita</li>
+                    <li><strong>GitHub Actions:</strong> CI/CD automatizado para builds e deploys</li>
+                    <li><strong>SPA Routing:</strong> Configuração para Single Page Application</li>
+                    <li><strong>Custom 404:</strong> Redirecionamento para index.html</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-6 border border-indigo-200">
+                  <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <CpuChipIcon className="h-6 w-6 text-indigo-600" />
+                    Funcionalidades Principais
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <h5 className="font-semibold text-gray-900">Gerenciamento de Projetos</h5>
+                      <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+                        <li>Criação e edição de projetos</li>
+                        <li>Controle de progresso</li>
+                        <li>Definição de prazos</li>
+                        <li>Status de projeto</li>
+                      </ul>
+                    </div>
+                    <div className="space-y-2">
+                      <h5 className="font-semibold text-gray-900">Sistema de Equipes</h5>
+                      <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+                        <li>Convites para equipes</li>
+                        <li>Gerenciamento de membros</li>
+                        <li>Permissões de acesso</li>
+                        <li>Colaboração em tempo real</li>
+                      </ul>
+                    </div>
+                    <div className="space-y-2">
+                      <h5 className="font-semibold text-gray-900">Kanban Board</h5>
+                      <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+                        <li>Drag & Drop de tarefas</li>
+                        <li>Comentários e issues</li>
+                        <li>Cálculo de duração</li>
+                        <li>Persistência local</li>
+                      </ul>
+                    </div>
+                    <div className="space-y-2">
+                      <h5 className="font-semibold text-gray-900">Relatórios</h5>
+                      <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+                        <li>Geração de PDF/Excel/Word</li>
+                        <li>Envio por email</li>
+                        <li>Dados em tempo real</li>
+                        <li>Múltiplos formatos</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Cockpit */}
+            {activeTab === 'cockpit' && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <RocketLaunchIcon className="h-5 w-5" />
+                  Cockpit - Área de Trabalho
+                </h3>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Anotações Pessoais */}
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <DocumentTextIcon className="h-5 w-5 text-blue-600" />
+                      Anotações Pessoais
+                    </h4>
+                    <textarea
+                      value={cockpitNotes}
+                      onChange={(e) => setCockpitNotes(e.target.value)}
+                      placeholder="Digite suas anotações, lembretes, ideias..."
+                      className="w-full h-64 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    />
+                  </div>
+
+                  {/* Prospecção de Projetos */}
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6 border border-green-200">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <RocketLaunchIcon className="h-5 w-5 text-green-600" />
+                      Prospecção de Novos Projetos
+                    </h4>
+                    <textarea
+                      value={newProjectIdea}
+                      onChange={(e) => setNewProjectIdea(e.target.value)}
+                      placeholder="Descreva suas ideias para novos projetos, funcionalidades, melhorias..."
+                      className="w-full h-64 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-6 border border-yellow-200">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <PaintBrushIcon className="h-5 w-5 text-yellow-600" />
+                    Dicas de Produtividade
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="font-semibold text-gray-900 mb-2">📝 Para Anotações:</h5>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Use para lembretes importantes</li>
+                        <li>• Registre insights e aprendizados</li>
+                        <li>• Anote feedbacks recebidos</li>
+                        <li>• Mantenha uma lista de tarefas pessoais</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-gray-900 mb-2">🚀 Para Projetos:</h5>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Descreva funcionalidades futuras</li>
+                        <li>• Anote melhorias de UX/UI</li>
+                        <li>• Registre ideias de integração</li>
+                        <li>• Planeje novas funcionalidades</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>

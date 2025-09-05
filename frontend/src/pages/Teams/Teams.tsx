@@ -15,6 +15,17 @@ const Teams: React.FC = () => {
 
   useEffect(() => {
     loadTeams();
+    
+    // Listener para evento de refresh
+    const handleRefresh = () => {
+      loadTeams();
+    };
+    
+    window.addEventListener('refreshData', handleRefresh);
+    
+    return () => {
+      window.removeEventListener('refreshData', handleRefresh);
+    };
   }, []);
 
   const loadTeams = async () => {

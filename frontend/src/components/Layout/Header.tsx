@@ -87,7 +87,7 @@ const Header: React.FC = () => {
               
               {/* Dropdown de notificações */}
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                   <div className="p-4 border-b border-gray-200">
                     <div className="flex justify-between items-center">
                       <h3 className="text-lg font-semibold text-gray-900">Notificações</h3>
@@ -147,19 +147,27 @@ const Header: React.FC = () => {
               )}
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
-                                      <div className="hidden sm:block text-base text-gray-700">
-                          <p className="font-medium truncate max-w-32 lg:max-w-none">
-                            {user?.user_metadata?.full_name || user?.email}
-                          </p>
-                          <p className="text-gray-500 text-sm truncate max-w-32 lg:max-w-none">
-                            {user?.email}
-                          </p>
-                        </div>
-                        <div className="sm:hidden text-base text-gray-700">
-                          <p className="font-medium truncate max-w-20">
-                            {user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0]}
-                          </p>
-                        </div>
+              {/* Avatar e nome do usuário */}
+              <div className="flex items-center space-x-2">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                  {user?.user_metadata?.avatar_url ? (
+                    <img 
+                      src={user.user_metadata.avatar_url} 
+                      alt="Avatar" 
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-sm sm:text-base font-medium text-gray-600">
+                      {(user?.user_metadata?.full_name || user?.email || 'U').charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <div className="text-base text-gray-700">
+                  <p className="font-medium truncate max-w-20 sm:max-w-32">
+                    {user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0]}
+                  </p>
+                </div>
+              </div>
               <button
                 onClick={logout}
                 className="px-2 sm:px-3 py-1 sm:py-2 text-sm sm:text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"

@@ -351,15 +351,15 @@ ${kanbanTasks.map((t: any) => {
           </div>
 
           {/* Envio por email */}
-          <div>
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={sendEmail}
                 onChange={(e) => setSendEmail(e.target.checked)}
-                className="mr-3 w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                className="mr-3 w-6 h-6 text-blue-600 bg-white border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
               />
-              <span className="text-base font-medium text-gray-700">
+              <span className="text-base font-medium text-gray-700 cursor-pointer">
                 Enviar relatório por email ({user?.email})
               </span>
             </label>

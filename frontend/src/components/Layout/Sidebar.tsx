@@ -10,7 +10,8 @@ import {
   Bars3Icon,
   XMarkIcon,
   ChevronLeftIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  ArrowPathIcon
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -29,6 +30,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
     { name: 'Perfil', href: '/profile', icon: UserIcon },
     { name: 'Configurações', href: '/settings', icon: CogIcon },
   ];
+
+  const handleRefresh = () => {
+    // Disparar evento customizado para atualizar componentes
+    window.dispatchEvent(new CustomEvent('refreshData'));
+  };
 
   return (
     <>
@@ -110,6 +116,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
                   </NavLink>
                 ))}
               </nav>
+              
+              {/* Botão de Atualização */}
+              <div className="px-2 pb-4">
+                <button
+                  onClick={handleRefresh}
+                  className="w-full flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                  title={isCollapsed ? 'Atualizar dados' : undefined}
+                >
+                  <ArrowPathIcon className="mr-3 flex-shrink-0 h-7 w-7 text-current" />
+                  <span className="block text-base">Atualizar</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
