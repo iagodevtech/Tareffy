@@ -40,22 +40,22 @@ Período: ${dateRange}
 - Total de Projetos: ${projects.length}
 - Total de Equipes: ${teams.length}
 - Total de Tarefas: ${kanbanTasks.length}
-- Tarefas Concluídas: ${kanbanTasks.filter(t => t.status === 'production').length}
-- Tarefas em Progresso: ${kanbanTasks.filter(t => t.status === 'in_progress').length}
+- Tarefas Concluídas: ${kanbanTasks.filter((t: any) => t.status === 'production').length}
+- Tarefas em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').length}
 
 === PROJETOS ===
-${projects.map(p => `- ${p.name}: ${p.description || 'Sem descrição'}`).join('\n')}
+${projects.map((p: any) => `- ${p.name}: ${p.description || 'Sem descrição'}`).join('\n')}
 
 === EQUIPES ===
-${teams.map(t => `- ${t.name}: ${t.description || 'Sem descrição'}`).join('\n')}
+${teams.map((t: any) => `- ${t.name}: ${t.description || 'Sem descrição'}`).join('\n')}
 
 === TAREFAS ===
-${kanbanTasks.map(t => `- ${t.title} (${t.status}): ${t.description || 'Sem descrição'}`).join('\n')}
+${kanbanTasks.map((t: any) => `- ${t.title} (${t.status}): ${t.description || 'Sem descrição'}`).join('\n')}
 
 === COMENTÁRIOS E ISSUES ===
-${kanbanTasks.map(t => {
+${kanbanTasks.map((t: any) => {
   const comments = t.comments?.length || 0;
-  const issues = t.issues?.filter(i => i.status === 'open').length || 0;
+  const issues = t.issues?.filter((i: any) => i.status === 'open').length || 0;
   return `- ${t.title}: ${comments} comentários, ${issues} issues abertas`;
 }).join('\n')}
 
@@ -69,7 +69,7 @@ RELATÓRIO DE PROJETOS - TAREFFY
 Data: ${new Date().toLocaleDateString('pt-BR')}
 
 === PROJETOS ===
-${projects.map(p => `
+${projects.map((p: any) => `
 Projeto: ${p.name}
 Descrição: ${p.description || 'Sem descrição'}
 Status: ${p.status || 'Ativo'}
@@ -85,7 +85,7 @@ RELATÓRIO DE EQUIPES - TAREFFY
 Data: ${new Date().toLocaleDateString('pt-BR')}
 
 === EQUIPES ===
-${teams.map(t => `
+${teams.map((t: any) => `
 Equipe: ${t.name}
 Descrição: ${t.description || 'Sem descrição'}
 Data de Criação: ${new Date(t.created_at || Date.now()).toLocaleDateString('pt-BR')}
@@ -100,20 +100,20 @@ RELATÓRIO DE TAREFAS - TAREFFY
 Data: ${new Date().toLocaleDateString('pt-BR')}
 
 === TAREFAS ===
-${kanbanTasks.map(t => `
+${kanbanTasks.map((t: any) => `
 Tarefa: ${t.title}
 Descrição: ${t.description || 'Sem descrição'}
 Status: ${t.status}
 Prioridade: ${t.priority}
 Responsável: ${t.assignee || 'Não atribuído'}
 Comentários: ${t.comments?.length || 0}
-Issues Abertas: ${t.issues?.filter(i => i.status === 'open').length || 0}
+Issues Abertas: ${t.issues?.filter((i: any) => i.status === 'open').length || 0}
 Duração: ${t.duration ? `${t.duration}h` : 'Não iniciada'}
 `).join('\n')}
 
 Total: ${kanbanTasks.length} tarefas
-Concluídas: ${kanbanTasks.filter(t => t.status === 'production').length}
-Em Progresso: ${kanbanTasks.filter(t => t.status === 'in_progress').length}
+Concluídas: ${kanbanTasks.filter((t: any) => t.status === 'production').length}
+Em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').length}
           `;
           break;
       }
