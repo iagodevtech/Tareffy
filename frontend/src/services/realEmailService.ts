@@ -89,13 +89,21 @@ export const realEmailService = {
         subject: emailData.subject
       });
 
+      // Verificar se o email de destino não está vazio
+      if (!emailData.to || emailData.to.trim() === '') {
+        console.error('❌ Email de destino está vazio!');
+        return false;
+      }
+
       const templateParams = {
-        to_email: emailData.to,
-        subject: emailData.subject,
-        message: emailData.text || emailData.html,
+        to_email: emailData.to.trim(),
+        subject: emailData.subject || 'Notificação do Tareffy',
+        message: emailData.text || emailData.html || 'Email do Tareffy',
         from_name: 'Tareffy',
         reply_to: 'noreply@tareffy.com'
       };
+
+      console.log('📤 Parâmetros do email:', templateParams);
 
       const response = await emailjs.send(
         EMAILJS_CONFIG.SERVICE_ID,
@@ -105,8 +113,13 @@ export const realEmailService = {
 
       console.log('✅ Email enviado com sucesso:', response);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erro ao enviar email:', error);
+      console.error('❌ Detalhes do erro:', {
+        status: error.status,
+        text: error.text,
+        message: error.message
+      });
       return false;
     }
   }

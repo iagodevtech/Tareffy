@@ -232,7 +232,15 @@ export const teamService = {
       
       const teamName = team?.name || 'Equipe';
       
-      const emailSent = await realEmailService.sendTeamInvite(email, teamName, role, inviterName);
+      // Verificar se o email não está vazio
+      if (!email || email.trim() === '') {
+        console.error('❌ Email de destino está vazio!');
+        return data;
+      }
+      
+      console.log('📧 Enviando convite para:', { email, teamName, role, inviterName });
+      
+      const emailSent = await realEmailService.sendTeamInvite(email.trim(), teamName, role, inviterName);
       
       if (emailSent) {
         console.log(`✅ Email de convite enviado com sucesso para ${email}`);
