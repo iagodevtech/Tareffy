@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, UserPlusIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import { teamService, Team } from '../../services/teamService';
 import { emailDebugService } from '../../services/emailDebugService';
+import { emailTemplateFinder } from '../../services/emailTemplateFinder';
 
 const Teams: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -165,6 +166,19 @@ const Teams: React.FC = () => {
     }
   };
 
+  const handleFindTemplate = async () => {
+    console.log('🔍 Procurando template funcional...');
+    const workingTemplate = await emailTemplateFinder.findWorkingTemplate();
+    
+    if (workingTemplate) {
+      alert(`✅ Template funcional encontrado: ${workingTemplate}`);
+      console.log(`✅ Use este template: ${workingTemplate}`);
+    } else {
+      alert('❌ Nenhum template funcional encontrado. Verifique o EmailJS.');
+      await emailTemplateFinder.listAvailableTemplates();
+    }
+  };
+
 
   if (loading) {
     return (
@@ -215,6 +229,12 @@ const Teams: React.FC = () => {
             className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2"
           >
             🧪 Teste Email
+          </button>
+          <button
+            onClick={handleFindTemplate}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2"
+          >
+            🔍 Encontrar Template
           </button>
         </div>
       </div>
