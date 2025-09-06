@@ -30,6 +30,22 @@ export const projectService = {
     return data || [];
   },
 
+  // Buscar um projeto específico por ID
+  async getProject(id: string): Promise<Project> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Usuário não autenticado');
+
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
   // Criar novo projeto
   async createProject(project: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'user_id'>): Promise<Project> {
     console.log('🔧 projectService.createProject - Iniciando...', project);
