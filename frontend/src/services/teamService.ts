@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { emailService } from './emailService';
 
 export interface Team {
   id: string;
@@ -217,8 +218,21 @@ export const teamService = {
 
     console.log('✅ Convite criado com sucesso:', data);
 
-    // TODO: Enviar email de convite com link para registro/login
-    console.log(`Convite enviado para ${email} com role ${role}. Se o usuário não estiver registrado, será direcionado para registro.`);
+    // Enviar email de convite
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const inviterName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuário';
+      
+      const emailSent = await emailService.sendTeamInvite(email, teamName, role, inviterName);
+      
+      if (emailSent) {
+        console.log(`✅ Email de convite enviado com sucesso para ${email}`);
+      } else {
+        console.log(`⚠️ Convite criado no banco, mas falha ao enviar email para ${email}`);
+      }
+    } catch (emailError) {
+      console.error('❌ Erro ao enviar email de convite:', emailError);
+    }
 
     return data;
   },
