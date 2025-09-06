@@ -199,8 +199,8 @@ const Settings: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
-          <p className="text-gray-600">Gerencie suas preferências e configurações</p>
+          <h1 className="text-4xl font-bold text-gray-900">Configurações</h1>
+          <p className="text-xl text-gray-600">Gerencie suas preferências e configurações</p>
         </div>
       </div>
       
@@ -212,13 +212,13 @@ const Settings: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={`w-full flex items-center px-4 py-3 text-lg font-medium rounded-lg transition-colors ${
                   activeTab === tab.id
                     ? 'bg-blue-100 text-blue-700'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <tab.icon className="mr-3 h-5 w-5" />
+                <tab.icon className="mr-4 h-6 w-6" />
                 {tab.name}
               </button>
             ))}
@@ -231,20 +231,20 @@ const Settings: React.FC = () => {
             {/* Configurações Gerais */}
             {activeTab === 'general' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <CogIcon className="h-5 w-5" />
+                <h3 className="text-2xl font-semibold text-gray-900 flex items-center gap-3">
+                  <CogIcon className="h-7 w-7" />
                   Configurações Gerais
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-lg font-medium text-gray-700 mb-2">
                       Tema
                     </label>
                     <select
                       value={settings.theme}
                       onChange={(e) => setSettings({...settings, theme: e.target.value as 'light' | 'dark' | 'system'})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="light">Claro</option>
                       <option value="dark">Escuro</option>
@@ -324,21 +324,22 @@ const Settings: React.FC = () => {
                 </div>
                 
                 {/* Botões de ação para configurações gerais */}
-                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
                   <button
                     onClick={handleSaveSettings}
                     disabled={saving}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                    className="group relative bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold text-lg"
                   >
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                     {saving ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Salvando...
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Salvando...</span>
                       </>
                     ) : (
                       <>
-                        <CheckIcon className="h-5 w-5" />
-                        Salvar Configurações
+                        <CheckIcon className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
+                        <span>Salvar Configurações</span>
                       </>
                     )}
                   </button>
@@ -392,21 +393,22 @@ const Settings: React.FC = () => {
                 </div>
                 
                 {/* Botões de ação para notificações */}
-                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
                   <button
                     onClick={handleSaveSettings}
                     disabled={saving}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                    className="group relative bg-gradient-to-r from-purple-600 to-purple-700 text-white px-8 py-3 rounded-xl hover:from-purple-700 hover:to-purple-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold text-lg"
                   >
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                     {saving ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Salvando...
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Salvando...</span>
                       </>
                     ) : (
                       <>
-                        <CheckIcon className="h-5 w-5" />
-                        Salvar Notificações
+                        <BellIcon className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
+                        <span>Salvar Notificações</span>
                       </>
                     )}
                   </button>
@@ -481,21 +483,22 @@ const Settings: React.FC = () => {
                 </div>
                 
                 {/* Botões de ação para privacidade */}
-                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
                   <button
                     onClick={handleSaveSettings}
                     disabled={saving}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                    className="group relative bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-xl hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold text-lg"
                   >
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-500 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                     {saving ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Salvando...
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Salvando...</span>
                       </>
                     ) : (
                       <>
-                        <CheckIcon className="h-5 w-5" />
-                        Salvar Privacidade
+                        <ShieldCheckIcon className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
+                        <span>Salvar Privacidade</span>
                       </>
                     )}
                   </button>
@@ -535,13 +538,14 @@ const Settings: React.FC = () => {
                 </div>
                 
                 {/* Botões de ação para segurança */}
-                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
                   <button
                     onClick={handleLogout}
-                    className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                    className="group relative bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-3 rounded-xl hover:from-red-700 hover:to-red-800 flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold text-lg"
                   >
-                    <ArrowRightOnRectangleIcon className="h-5 w-5" />
-                    Sair da Conta
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    <ArrowRightOnRectangleIcon className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
+                    <span>Sair da Conta</span>
                   </button>
                 </div>
               </div>
@@ -739,13 +743,14 @@ const Settings: React.FC = () => {
                 </div>
                 
                 {/* Botões de ação para cockpit */}
-                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
                   <button
                     onClick={saveCockpitData}
-                    className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                    className="group relative bg-gradient-to-r from-orange-600 to-orange-700 text-white px-8 py-3 rounded-xl hover:from-orange-700 hover:to-orange-800 flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold text-lg"
                   >
-                    <CheckIcon className="h-5 w-5" />
-                    Salvar Cockpit
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-500 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    <RocketLaunchIcon className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
+                    <span>Salvar Cockpit</span>
                   </button>
                 </div>
               </div>
