@@ -8,9 +8,9 @@
 export const EMAILJS_CONFIG = {
   // Substitua pelos seus IDs do EmailJS
   SERVICE_ID: 'service_5henv2w', // Seu Service ID
-  TEMPLATE_ID_TEAM_INVITE: 'template_team_invite', // Template para convites de equipe
-  TEMPLATE_ID_REPORT: 'template_report', // Template para relatórios
-  TEMPLATE_ID_GENERIC: 'template_generic', // Template genérico
+  TEMPLATE_ID_TEAM_INVITE: 'template_team_invite', // Template único para tudo
+  TEMPLATE_ID_REPORT: 'template_team_invite', // Usar o mesmo template
+  TEMPLATE_ID_GENERIC: 'template_team_invite', // Usar o mesmo template
   PUBLIC_KEY: 'bjfW0uesXzvSFem-9', // Sua Public Key
 };
 

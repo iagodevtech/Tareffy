@@ -21,7 +21,7 @@ export const realEmailService = {
     try {
       console.log('📧 Enviando convite real via EmailJS...', { email, teamName, role, inviterName });
 
-      // Parâmetros mais simples e compatíveis
+      // Parâmetros para o template único
       const templateParams = {
         to_email: email,
         team_name: teamName,
@@ -58,25 +58,30 @@ export const realEmailService = {
     try {
       console.log('📧 Enviando relatório real via EmailJS...', { email, reportType });
 
+      // Usar o template de convite para relatórios também
       const templateParams = {
         to_email: email,
-        report_type: reportType,
-        report_content: reportContent,
-        app_url: 'https://iagodevtech.github.io/Tareffy/dashboard',
-        from_name: 'Tareffy',
-        reply_to: 'noreply@tareffy.com'
+        team_name: `Relatório ${reportType}`,
+        role: 'Usuário',
+        inviter_name: 'Sistema Tareffy',
+        app_url: 'https://iagodevtech.github.io/Tareffy/dashboard'
       };
 
       const response = await emailjs.send(
         EMAILJS_CONFIG.SERVICE_ID,
-        EMAILJS_CONFIG.TEMPLATE_ID_REPORT,
+        EMAILJS_CONFIG.TEMPLATE_ID_TEAM_INVITE,
         templateParams
       );
 
       console.log('✅ Relatório enviado com sucesso via EmailJS:', response);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erro ao enviar relatório via EmailJS:', error);
+      console.error('❌ Detalhes do erro:', {
+        status: error.status,
+        text: error.text,
+        message: error.message
+      });
       return false;
     }
   },
@@ -95,19 +100,20 @@ export const realEmailService = {
         return false;
       }
 
+      // Usar o template de convite para emails genéricos também
       const templateParams = {
         to_email: emailData.to.trim(),
-        subject: emailData.subject || 'Notificação do Tareffy',
-        message: emailData.text || emailData.html || 'Email do Tareffy',
-        from_name: 'Tareffy',
-        reply_to: 'noreply@tareffy.com'
+        team_name: emailData.subject || 'Notificação do Tareffy',
+        role: 'Usuário',
+        inviter_name: 'Sistema Tareffy',
+        app_url: 'https://iagodevtech.github.io/Tareffy/dashboard'
       };
 
       console.log('📤 Parâmetros do email:', templateParams);
 
       const response = await emailjs.send(
         EMAILJS_CONFIG.SERVICE_ID,
-        EMAILJS_CONFIG.TEMPLATE_ID_GENERIC,
+        EMAILJS_CONFIG.TEMPLATE_ID_TEAM_INVITE,
         templateParams
       );
 
