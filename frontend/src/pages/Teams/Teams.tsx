@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, UserPlusIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import { teamService, Team } from '../../services/teamService';
+import { emailDebugService } from '../../services/emailDebugService';
 
 const Teams: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -125,6 +126,11 @@ const Teams: React.FC = () => {
     }
   };
 
+  const handleDebugEmail = async () => {
+    console.log('🔍 Iniciando debug do sistema de email...');
+    await emailDebugService.runFullDiagnostic();
+  };
+
 
   if (loading) {
     return (
@@ -163,6 +169,12 @@ const Teams: React.FC = () => {
           >
             <PlusIcon className="h-5 w-5" />
             Nova Equipe
+          </button>
+          <button
+            onClick={handleDebugEmail}
+            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 flex items-center gap-2"
+          >
+            🔍 Debug Email
           </button>
         </div>
       </div>

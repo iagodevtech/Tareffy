@@ -21,15 +21,18 @@ export const realEmailService = {
     try {
       console.log('📧 Enviando convite real via EmailJS...', { email, teamName, role, inviterName });
 
+      // Parâmetros mais simples e compatíveis
       const templateParams = {
         to_email: email,
         team_name: teamName,
         role: role === 'admin' ? 'Administrador' : role === 'dev' ? 'Desenvolvedor' : 'Membro',
         inviter_name: inviterName,
-        app_url: 'https://iagodevtech.github.io/Tareffy/login',
-        from_name: 'Tareffy',
-        reply_to: 'noreply@tareffy.com'
+        app_url: 'https://iagodevtech.github.io/Tareffy/login'
       };
+
+      console.log('📤 Parâmetros do template:', templateParams);
+      console.log('🔧 Service ID:', EMAILJS_CONFIG.SERVICE_ID);
+      console.log('📋 Template ID:', EMAILJS_CONFIG.TEMPLATE_ID_TEAM_INVITE);
 
       const response = await emailjs.send(
         EMAILJS_CONFIG.SERVICE_ID,
@@ -39,8 +42,13 @@ export const realEmailService = {
 
       console.log('✅ Email enviado com sucesso via EmailJS:', response);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erro ao enviar email via EmailJS:', error);
+      console.error('❌ Detalhes do erro:', {
+        status: error.status,
+        text: error.text,
+        message: error.message
+      });
       return false;
     }
   },
