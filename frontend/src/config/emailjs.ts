@@ -7,11 +7,11 @@
 
 export const EMAILJS_CONFIG = {
   // Substitua pelos seus IDs do EmailJS
-  SERVICE_ID: 'service_tareffy', // Seu Service ID
+  SERVICE_ID: 'service_5henv2w', // Seu Service ID
   TEMPLATE_ID_TEAM_INVITE: 'template_team_invite', // Template para convites de equipe
   TEMPLATE_ID_REPORT: 'template_report', // Template para relatórios
   TEMPLATE_ID_GENERIC: 'template_generic', // Template genérico
-  PUBLIC_KEY: 'YOUR_PUBLIC_KEY', // Sua Public Key
+  PUBLIC_KEY: 'bjfW0uesXzvSFem-9', // Sua Public Key
 };
 
 // Instruções para configurar o EmailJS:
