@@ -2,17 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeftIcon, PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import KanbanBoard from '../../components/KanbanBoard/KanbanBoard';
-import { projectService } from '../../services/projectService';
-
-interface Project {
-  id: string;
-  name: string;
-  description: string;
-  status: 'active' | 'completed' | 'on_hold';
-  deadline: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import { projectService, Project } from '../../services/projectService';
 
 const ProjectDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -70,7 +60,7 @@ const ProjectDetails: React.FC = () => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800';
       case 'completed': return 'bg-blue-100 text-blue-800';
-      case 'on_hold': return 'bg-yellow-100 text-yellow-800';
+      case 'on-hold': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -79,7 +69,7 @@ const ProjectDetails: React.FC = () => {
     switch (status) {
       case 'active': return 'Ativo';
       case 'completed': return 'Concluído';
-      case 'on_hold': return 'Pausado';
+      case 'on-hold': return 'Pausado';
       default: return 'Desconhecido';
     }
   };
