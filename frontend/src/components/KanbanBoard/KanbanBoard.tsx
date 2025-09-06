@@ -407,7 +407,11 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                             setSelectedTask(task);
                             setShowCommentsModal(true);
                             // Marcar comentários como lidos
-                            setReadComments(prev => new Set([...prev, task.id]));
+                            setReadComments(prev => {
+                              const newSet = new Set(prev);
+                              newSet.add(task.id);
+                              return newSet;
+                            });
                           }}
                           className="relative text-gray-400 hover:text-blue-600 p-1 rounded-md hover:bg-blue-50 transition-colors"
                           title="Comentários"
@@ -424,7 +428,11 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                             setSelectedTask(task);
                             setShowIssuesModal(true);
                             // Marcar issues como lidas
-                            setReadIssues(prev => new Set([...prev, task.id]));
+                            setReadIssues(prev => {
+                              const newSet = new Set(prev);
+                              newSet.add(task.id);
+                              return newSet;
+                            });
                           }}
                           className="relative text-gray-400 hover:text-red-600 p-1 rounded-md hover:bg-red-50 transition-colors"
                           title="Issues"
