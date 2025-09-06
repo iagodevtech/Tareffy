@@ -387,13 +387,15 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                  .map(task => (
                   <div
                     key={task.id}
-                    className={`bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-all cursor-move ${
-                      draggedTask?.id === task.id ? 'opacity-50 scale-95 rotate-2' : ''
+                    className={`bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-all cursor-move touch-manipulation ${
+                      draggedTask?.id === task.id ? 'opacity-50 scale-95 rotate-2 shadow-lg' : ''
                     }`}
                     draggable
                     onDragStart={(e) => handleDragStart(e, task)}
                     onTouchStart={(e) => handleTouchStart(e, task)}
                     onTouchMove={handleTouchMove}
+                    onTouchEnd={(e) => handleTouchEnd(e, column.id)}
+                    style={{ touchAction: 'none' }}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium text-gray-900 text-sm">{task.title}</h4>
