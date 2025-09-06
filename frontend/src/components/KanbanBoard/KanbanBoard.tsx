@@ -311,11 +311,41 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   };
 
   const handleCloseIssuesModal = () => {
+    // Marcar issues como lidas quando fechar o modal
+    if (selectedTask) {
+      const updatedTask = {
+        ...selectedTask,
+        issues: selectedTask.issues.map(issue => ({
+          ...issue,
+          status: 'read' as any // Marcar como lida
+        }))
+      };
+      
+      setTasks(prev => prev.map(task => 
+        task.id === selectedTask.id ? updatedTask : task
+      ));
+    }
+    
     setShowIssuesModal(false);
     setSelectedTask(null);
   };
 
   const handleCloseCommentsModal = () => {
+    // Marcar comentários como lidos quando fechar o modal
+    if (selectedTask) {
+      const updatedTask = {
+        ...selectedTask,
+        comments: selectedTask.comments.map(comment => ({
+          ...comment,
+          read: true // Marcar como lido
+        }))
+      };
+      
+      setTasks(prev => prev.map(task => 
+        task.id === selectedTask.id ? updatedTask : task
+      ));
+    }
+    
     setShowCommentsModal(false);
     setSelectedTask(null);
   };
@@ -420,7 +450,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                         >
                           <ChatBubbleLeftIcon className="h-4 w-4" />
                           {task.comments.length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium shadow-sm">
+                            <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-3 w-3 flex items-center justify-center font-medium shadow-sm">
                               {task.comments.length}
                             </span>
                           )}
@@ -435,7 +465,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                         >
                           <ExclamationTriangleIcon className="h-4 w-4" />
                           {task.issues.filter(issue => issue.status === 'open').length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium shadow-sm animate-pulse">
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-3 w-3 flex items-center justify-center font-medium shadow-sm animate-pulse">
                               {task.issues.filter(issue => issue.status === 'open').length}
                             </span>
                           )}

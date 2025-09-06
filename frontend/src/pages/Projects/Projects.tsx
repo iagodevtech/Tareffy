@@ -172,8 +172,8 @@ const Projects: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Projetos</h1>
-          <p className="text-lg text-gray-600">Gerencie seus projetos e acompanhe o progresso</p>
+          <h1 className="text-xl font-bold text-gray-900">Projetos</h1>
+          <p className="text-sm text-gray-600">Gerencie seus projetos e acompanhe o progresso</p>
         </div>
         <button
           onClick={handleNewProject}

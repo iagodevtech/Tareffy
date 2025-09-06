@@ -117,8 +117,8 @@ const Settings: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
-          <p className="text-base text-gray-600">Gerencie suas preferências e configurações</p>
+          <h1 className="text-xl font-bold text-gray-900">Configurações</h1>
+          <p className="text-sm text-gray-600">Gerencie suas preferências e configurações</p>
         </div>
       </div>
       
@@ -129,14 +129,14 @@ const Settings: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-               className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
+               className={`flex items-center px-3 py-2 text-xs font-medium rounded-md transition-all duration-300 ${
                 activeTab === tab.id
                   ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg transform scale-105'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 hover:shadow-md'
               }`}
             >
-               <span className="text-sm mr-2">{tab.name.split(' ')[0]}</span>
-               <span className="text-sm">{tab.name.split(' ').slice(1).join(' ')}</span>
+               <span className="text-xs mr-1">{tab.name.split(' ')[0]}</span>
+               <span className="text-xs">{tab.name.split(' ').slice(1).join(' ')}</span>
             </button>
           ))}
         </div>

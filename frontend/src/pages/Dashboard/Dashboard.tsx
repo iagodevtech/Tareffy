@@ -89,8 +89,8 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-lg text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
+        <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-sm text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
       </div>
       
       {/* Cards de estatísticas */}
@@ -98,11 +98,11 @@ const Dashboard: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center">
             <div className="p-2 bg-blue-100 rounded-lg">
-              <ClipboardDocumentListIcon className="h-7 w-7 text-blue-600" />
+              <ClipboardDocumentListIcon className="h-5 w-5 text-blue-600" />
             </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-500">Total de Tarefas</h3>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalTasks}</p>
+            <div className="ml-3">
+              <h3 className="text-xs font-medium text-gray-500">Total de Tarefas</h3>
+              <p className="text-lg font-bold text-gray-900">{stats.totalTasks}</p>
             </div>
           </div>
         </div>
@@ -110,11 +110,11 @@ const Dashboard: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center">
             <div className="p-2 bg-yellow-100 rounded-lg">
-              <ClockIcon className="h-7 w-7 text-yellow-600" />
+              <ClockIcon className="h-5 w-5 text-yellow-600" />
             </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-500">Em Progresso</h3>
-              <p className="text-2xl font-bold text-gray-900">{stats.inProgress}</p>
+            <div className="ml-3">
+              <h3 className="text-xs font-medium text-gray-500">Em Progresso</h3>
+              <p className="text-lg font-bold text-gray-900">{stats.inProgress}</p>
             </div>
           </div>
         </div>
@@ -122,11 +122,11 @@ const Dashboard: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center">
             <div className="p-2 bg-green-100 rounded-lg">
-              <CheckCircleIcon className="h-7 w-7 text-green-600" />
+              <CheckCircleIcon className="h-5 w-5 text-green-600" />
             </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-500">Concluídas</h3>
-              <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
+            <div className="ml-3">
+              <h3 className="text-xs font-medium text-gray-500">Concluídas</h3>
+              <p className="text-lg font-bold text-gray-900">{stats.completed}</p>
             </div>
           </div>
         </div>
@@ -134,11 +134,11 @@ const Dashboard: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center">
             <div className="p-2 bg-purple-100 rounded-lg">
-              <FolderIcon className="h-7 w-7 text-purple-600" />
+              <FolderIcon className="h-5 w-5 text-purple-600" />
             </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-500">Projetos</h3>
-              <p className="text-2xl font-bold text-gray-900">{stats.projects}</p>
+            <div className="ml-3">
+              <h3 className="text-xs font-medium text-gray-500">Projetos</h3>
+              <p className="text-lg font-bold text-gray-900">{stats.projects}</p>
             </div>
           </div>
         </div>
