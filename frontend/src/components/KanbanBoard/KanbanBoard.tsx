@@ -6,6 +6,7 @@ interface Comment {
   text: string;
   author: string;
   createdAt: string;
+  read?: boolean;
 }
 
 interface Issue {
