@@ -256,16 +256,7 @@ ${kanbanTasks.map((t: any) => {
         try {
           console.log('📧 Iniciando envio de email para:', user.email);
           const emailContent = emailService.generateEmailContent(reportType, dateRange, format);
-          await emailService.sendReport({
-            to: user.email,
-            subject: `Relatório Tareffy - ${reportType} (${dateRange})`,
-            content: emailContent,
-            attachment: {
-              filename: `relatorio_${reportType}_${new Date().toISOString().split('T')[0]}.${fileExtension}`,
-              content: reportData.content,
-              mimeType: mimeType
-            }
-          });
+          await emailService.sendReport(user.email, emailContent, reportType);
           emailSent = true;
           console.log('✅ Relatório enviado por email com sucesso!');
         } catch (emailError) {

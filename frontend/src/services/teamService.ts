@@ -223,6 +223,15 @@ export const teamService = {
       const { data: { user } } = await supabase.auth.getUser();
       const inviterName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuário';
       
+      // Buscar nome da equipe
+      const { data: team } = await supabase
+        .from('teams')
+        .select('name')
+        .eq('id', teamId)
+        .single();
+      
+      const teamName = team?.name || 'Equipe';
+      
       const emailSent = await emailService.sendTeamInvite(email, teamName, role, inviterName);
       
       if (emailSent) {
