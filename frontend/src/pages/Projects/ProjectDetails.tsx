@@ -10,12 +10,6 @@ const ProjectDetails: React.FC = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (id) {
-      loadProject();
-    }
-  }, [id, loadProject]);
-
   const loadProject = useCallback(async () => {
     if (!id) return;
     
@@ -29,6 +23,12 @@ const ProjectDetails: React.FC = () => {
       setLoading(false);
     }
   }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      loadProject();
+    }
+  }, [id, loadProject]);
 
   const getProjectEmoji = (name: string) => {
     const emojiMap: { [key: string]: string } = {
