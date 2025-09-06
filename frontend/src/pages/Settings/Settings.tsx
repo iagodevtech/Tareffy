@@ -4,10 +4,7 @@ import {
   BellIcon, 
   ShieldCheckIcon, 
   LockClosedIcon, 
-  RocketLaunchIcon,
-  CheckIcon,
-  UserIcon,
-  ArrowRightOnRectangleIcon
+  RocketLaunchIcon
 } from '@heroicons/react/24/outline';
 import { userService, UserSettings } from '../../services/userService';
 import { useAuth } from '../../contexts/AuthContext';
@@ -19,7 +16,7 @@ const Settings: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [cockpitNotes, setCockpitNotes] = useState('');
   const [newProjectIdea, setNewProjectIdea] = useState('');
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const tabs = [
