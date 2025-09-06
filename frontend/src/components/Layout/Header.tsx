@@ -68,8 +68,8 @@ const Header: React.FC = () => {
             {/* Espaço para o título do sidebar em mobile */}
             <div className="md:hidden w-12"></div>
             {/* Data e hora */}
-            <div className="hidden sm:block text-sm text-gray-600 ml-4">
-              <div className="text-sm">{currentDateTime.toLocaleDateString('pt-BR')}</div>
+            <div className="hidden sm:block text-xs text-gray-600 ml-4">
+              <div className="text-xs">{currentDateTime.toLocaleDateString('pt-BR')}</div>
               <div className="text-xs">{currentDateTime.toLocaleTimeString('pt-BR')}</div>
             </div>
           </div>
@@ -79,7 +79,7 @@ const Header: React.FC = () => {
                 onClick={() => setShowNotifications(!showNotifications)}
                 className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors relative"
               >
-                <BellIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                <BellIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 {notifications.some(n => !n.read) && (
                   <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
                 )}
@@ -90,7 +90,7 @@ const Header: React.FC = () => {
                 <div className="absolute right-0 mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-8rem)] overflow-hidden">
                   <div className="p-4 border-b border-gray-200">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-semibold text-gray-900">Notificações</h3>
+                      <h3 className="text-sm font-semibold text-gray-900">Notificações</h3>
                       <button
                         onClick={() => setShowNotifications(false)}
                         className="text-gray-400 hover:text-gray-600"
@@ -115,10 +115,10 @@ const Header: React.FC = () => {
                         >
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
-                              <h4 className="text-sm font-medium text-gray-900">
+                              <h4 className="text-xs font-medium text-gray-900">
                                 {notification.title}
                               </h4>
-                              <p className="text-sm text-gray-600 mt-1">
+                              <p className="text-xs text-gray-600 mt-1">
                                 {notification.message}
                               </p>
                               <p className="text-sm text-gray-400 mt-2">
@@ -137,7 +137,7 @@ const Header: React.FC = () => {
                     <div className="p-3 border-t border-gray-200">
                       <button 
                         onClick={handleMarkAllAsRead}
-                        className="w-full text-sm text-blue-600 hover:text-blue-800 font-medium"
+                        className="w-full text-xs text-blue-600 hover:text-blue-800 font-medium"
                       >
                         Marcar todas como lidas
                       </button>
@@ -162,7 +162,7 @@ const Header: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <div className="text-sm text-gray-700">
+                <div className="text-xs text-gray-700">
                   <p className="font-medium truncate max-w-20 sm:max-w-32">
                     {user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0]}
                   </p>
@@ -170,7 +170,7 @@ const Header: React.FC = () => {
               </div>
               <button
                 onClick={logout}
-                className="px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 <span className="hidden sm:inline">Sair</span>
                 <span className="sm:hidden">×</span>

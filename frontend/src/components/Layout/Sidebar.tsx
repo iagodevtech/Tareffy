@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
           <div className="flex flex-col h-0 flex-1">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center justify-between flex-shrink-0 px-4">
-                {!isCollapsed && <h1 className="text-gray-900 text-lg font-bold transition-all duration-300">Tareffy</h1>}
+                {!isCollapsed && <h1 className="text-gray-900 text-sm font-bold transition-all duration-300">Tareffy</h1>}
                 <div className="flex items-center space-x-2">
                   {/* Desktop collapse button */}
                   {onCollapse && (
@@ -111,8 +111,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
                     }
                     title={isCollapsed ? item.name : undefined}
                   >
-                    <item.icon className={`flex-shrink-0 h-7 w-7 text-current transition-all duration-300 ${isCollapsed ? 'mr-0' : 'mr-3'}`} />
-                    {!isCollapsed && <span className="block text-base transition-all duration-300">{item.name}</span>}
+                    <item.icon className={`flex-shrink-0 h-5 w-5 text-current transition-all duration-300 ${isCollapsed ? 'mr-0' : 'mr-2'}`} />
+                    {!isCollapsed && <span className="block text-xs transition-all duration-300">{item.name}</span>}
                   </NavLink>
                 ))}
               </nav>
