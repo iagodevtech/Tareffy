@@ -449,9 +449,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                           title="Comentários"
                         >
                           <ChatBubbleLeftIcon className="h-4 w-4" />
-                          {task.comments.length > 0 && (
+                          {task.comments.filter(comment => !comment.read).length > 0 && (
                             <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-3 w-3 flex items-center justify-center font-medium shadow-sm">
-                              {task.comments.length}
+                              {task.comments.filter(comment => !comment.read).length}
                             </span>
                           )}
                         </button>
