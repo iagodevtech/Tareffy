@@ -146,7 +146,7 @@ ${kanbanTasks.map((t: any) => {
   if (t.issues && t.issues.length > 0) {
     taskContent += `\n🐛 Issues (${t.issues.length}):`;
     t.issues.forEach((issue: any, index: number) => {
-      const severityEmoji = {
+      const severityEmoji: { [key: string]: string } = {
         'critical': '🔴',
         'high': '🟠',
         'medium': '🟡',
