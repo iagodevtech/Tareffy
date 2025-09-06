@@ -157,8 +157,8 @@ const Projects: React.FC = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Projetos</h1>
-            <p className="text-gray-600">Carregando projetos...</p>
+            <h1 className="text-4xl font-bold text-gray-900">Projetos</h1>
+            <p className="text-xl text-gray-600">Carregando projetos...</p>
           </div>
         </div>
         <div className="flex items-center justify-center h-64">
@@ -172,8 +172,8 @@ const Projects: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Projetos</h1>
-          <p className="text-gray-600">Gerencie seus projetos e acompanhe o progresso</p>
+          <h1 className="text-4xl font-bold text-gray-900">Projetos</h1>
+          <p className="text-xl text-gray-600">Gerencie seus projetos e acompanhe o progresso</p>
         </div>
         <button
           onClick={handleNewProject}
@@ -268,7 +268,7 @@ const Projects: React.FC = () => {
       {showModal && editingProject && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg sm:text-xl font-bold mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4">
               {projects.find(p => p.id === editingProject.id) ? 'Editar Projeto' : 'Novo Projeto'}
             </h2>
             

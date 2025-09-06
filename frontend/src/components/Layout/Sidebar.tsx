@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
           <div className="flex flex-col h-0 flex-1">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center justify-between flex-shrink-0 px-4">
-                <h1 className={`text-gray-900 text-2xl font-bold transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>Tareffy</h1>
+                <h1 className={`text-gray-900 text-2xl font-bold transition-all duration-300 ${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>Tareffy</h1>
                 <div className="flex items-center space-x-2">
                   {/* Desktop collapse button */}
                   {onCollapse && (
@@ -103,7 +103,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
                       }
                     }}
                     className={({ isActive }) =>
-                      `group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${
+                      `group flex items-center ${isCollapsed ? 'px-2 py-2 justify-center' : 'px-2 py-2'} text-sm font-medium rounded-md transition-all duration-300 ${
                         isActive
                           ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
                           : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
@@ -111,8 +111,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
                     }
                     title={isCollapsed ? item.name : undefined}
                   >
-                    <item.icon className="mr-3 flex-shrink-0 h-7 w-7 text-current" />
-                    <span className={`block text-base transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>{item.name}</span>
+                    <item.icon className={`flex-shrink-0 h-7 w-7 text-current transition-all duration-300 ${isCollapsed ? 'mr-0' : 'mr-3'}`} />
+                    <span className={`block text-base transition-all duration-300 ${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>{item.name}</span>
                   </NavLink>
                 ))}
               </nav>
@@ -124,8 +124,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
                   className="w-full flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                   title={isCollapsed ? 'Atualizar dados' : undefined}
                 >
-                  <ArrowPathIcon className="mr-3 flex-shrink-0 h-7 w-7 text-current" />
-                  <span className={`block text-base transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>Atualizar</span>
+                  <ArrowPathIcon className={`flex-shrink-0 h-7 w-7 text-current transition-all duration-300 ${isCollapsed ? 'mr-0' : 'mr-3'}`} />
+                  <span className={`block text-base transition-all duration-300 ${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>Atualizar</span>
                 </button>
               </div>
             </div>
