@@ -199,8 +199,8 @@ const Settings: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Configurações</h1>
-          <p className="text-xl text-gray-600">Gerencie suas preferências e configurações</p>
+          <h1 className="text-3xl font-bold text-gray-900">Configurações</h1>
+          <p className="text-lg text-gray-600">Gerencie suas preferências e configurações</p>
         </div>
       </div>
       
@@ -212,7 +212,7 @@ const Settings: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`w-full flex items-center px-4 py-3 text-lg font-medium rounded-lg transition-colors ${
+                className={`w-full flex items-center px-4 py-3 text-base font-medium rounded-lg transition-colors ${
                   activeTab === tab.id
                     ? 'bg-blue-100 text-blue-700'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
@@ -231,20 +231,20 @@ const Settings: React.FC = () => {
             {/* Configurações Gerais */}
             {activeTab === 'general' && (
               <div className="space-y-6">
-                <h3 className="text-2xl font-semibold text-gray-900 flex items-center gap-3">
-                  <CogIcon className="h-7 w-7" />
+                <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
+                  <CogIcon className="h-6 w-6" />
                   Configurações Gerais
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                    <label className="block text-base font-medium text-gray-700 mb-2">
                       Tema
                     </label>
                     <select
                       value={settings.theme}
                       onChange={(e) => setSettings({...settings, theme: e.target.value as 'light' | 'dark' | 'system'})}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="light">Claro</option>
                       <option value="dark">Escuro</option>
