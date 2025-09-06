@@ -36,10 +36,71 @@ const Settings: React.FC = () => {
   const loadSettings = async () => {
     try {
       setLoading(true);
-      const data = await userService.getSettings();
-      setSettings(data);
+      // Tentar carregar do Supabase primeiro
+      try {
+        const data = await userService.getSettings();
+        setSettings(data);
+      } catch (supabaseError) {
+        console.warn('Erro ao carregar do Supabase, usando configurações padrão:', supabaseError);
+        // Usar configurações padrão se falhar
+        const defaultSettings: UserSettings = {
+          id: 'default',
+          user_id: 'default',
+          theme: 'system',
+          notifications: {
+            email: true,
+            push: true,
+            desktop: true,
+            project_updates: true,
+            team_invites: true,
+            deadline_reminders: true
+          },
+          privacy: {
+            profile_visibility: 'team_only',
+            show_online_status: true,
+            allow_team_invites: true
+          },
+          preferences: {
+            date_format: 'DD/MM/YYYY',
+            time_format: '24h',
+            week_start: 'monday',
+            default_view: 'dashboard'
+          },
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        setSettings(defaultSettings);
+      }
     } catch (error) {
       console.error('Erro ao carregar configurações:', error);
+      // Configurações de emergência
+      const emergencySettings: UserSettings = {
+        id: 'emergency',
+        user_id: 'emergency',
+        theme: 'system',
+        notifications: {
+          email: true,
+          push: true,
+          desktop: true,
+          project_updates: true,
+          team_invites: true,
+          deadline_reminders: true
+        },
+        privacy: {
+          profile_visibility: 'team_only',
+          show_online_status: true,
+          allow_team_invites: true
+        },
+        preferences: {
+          date_format: 'DD/MM/YYYY',
+          time_format: '24h',
+          week_start: 'monday',
+          default_view: 'dashboard'
+        },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      setSettings(emergencySettings);
     } finally {
       setLoading(false);
     }
@@ -63,8 +124,16 @@ const Settings: React.FC = () => {
 
     setSaving(true);
     try {
-      await userService.updateSettings(settings);
-      alert('Configurações salvas com sucesso!');
+      // Tentar salvar no Supabase
+      try {
+        await userService.updateSettings(settings);
+        alert('Configurações salvas com sucesso!');
+      } catch (supabaseError) {
+        console.warn('Erro ao salvar no Supabase, salvando localmente:', supabaseError);
+        // Salvar no localStorage como fallback
+        localStorage.setItem('user-settings', JSON.stringify(settings));
+        alert('Configurações salvas localmente!');
+      }
     } catch (error) {
       console.error('Erro ao salvar configurações:', error);
       alert('Erro ao salvar configurações. Tente novamente.');

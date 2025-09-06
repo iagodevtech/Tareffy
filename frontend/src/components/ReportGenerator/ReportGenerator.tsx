@@ -352,20 +352,38 @@ ${kanbanTasks.map((t: any) => {
 
           {/* Envio por email */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={sendEmail}
-                onChange={(e) => setSendEmail(e.target.checked)}
-                className="mr-3 w-6 h-6 text-blue-600 bg-white border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer appearance-none checked:bg-blue-600 checked:border-blue-600 relative"
-                style={{
-                  backgroundImage: sendEmail ? 'url("data:image/svg+xml,%3csvg viewBox=\'0 0 16 16\' fill=\'white\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpath d=\'m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z\'/%3e%3c/svg%3e")' : 'none'
-                }}
-              />
-              <span className="text-base font-medium text-gray-700 cursor-pointer">
+            <div 
+              className="flex items-center cursor-pointer"
+              onClick={() => setSendEmail(!sendEmail)}
+            >
+              {/* Checkbox customizado */}
+              <div className="relative mr-3">
+                <div 
+                  className={`w-6 h-6 border-2 rounded transition-all duration-200 ${
+                    sendEmail 
+                      ? 'bg-blue-600 border-blue-600' 
+                      : 'bg-white border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  {sendEmail && (
+                    <svg 
+                      className="w-4 h-4 text-white absolute top-0.5 left-0.5" 
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                    >
+                      <path 
+                        fillRule="evenodd" 
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
+                        clipRule="evenodd" 
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <span className="text-base font-medium text-gray-700 cursor-pointer select-none">
                 Enviar relatório por email ({user?.email})
               </span>
-            </label>
+            </div>
           </div>
         </div>
 
