@@ -198,46 +198,9 @@ const Settings: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
           <p className="text-gray-600">Gerencie suas preferências e configurações</p>
-        </div>
-        <div className="flex gap-2">
-          {activeTab === 'cockpit' && (
-            <button
-              onClick={saveCockpitData}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
-            >
-              <CheckIcon className="h-5 w-5" />
-              Salvar Cockpit
-            </button>
-          )}
-          {activeTab !== 'technical' && activeTab !== 'cockpit' && (
-            <button
-              onClick={handleSaveSettings}
-              disabled={saving}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              {saving ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  Salvando...
-                </>
-              ) : (
-                <>
-                  <CheckIcon className="h-5 w-5" />
-                  Salvar
-                </>
-              )}
-            </button>
-          )}
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2"
-          >
-            <ArrowRightOnRectangleIcon className="h-5 w-5" />
-            Sair
-          </button>
         </div>
       </div>
       
@@ -359,6 +322,27 @@ const Settings: React.FC = () => {
                     </select>
                   </div>
                 </div>
+                
+                {/* Botões de ação para configurações gerais */}
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                  <button
+                    onClick={handleSaveSettings}
+                    disabled={saving}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                  >
+                    {saving ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Salvando...
+                      </>
+                    ) : (
+                      <>
+                        <CheckIcon className="h-5 w-5" />
+                        Salvar Configurações
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             )}
 
@@ -405,6 +389,27 @@ const Settings: React.FC = () => {
                       </label>
                     </div>
                   ))}
+                </div>
+                
+                {/* Botões de ação para notificações */}
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                  <button
+                    onClick={handleSaveSettings}
+                    disabled={saving}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                  >
+                    {saving ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Salvando...
+                      </>
+                    ) : (
+                      <>
+                        <CheckIcon className="h-5 w-5" />
+                        Salvar Notificações
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             )}
@@ -474,6 +479,27 @@ const Settings: React.FC = () => {
                     </label>
                   </div>
                 </div>
+                
+                {/* Botões de ação para privacidade */}
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                  <button
+                    onClick={handleSaveSettings}
+                    disabled={saving}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                  >
+                    {saving ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Salvando...
+                      </>
+                    ) : (
+                      <>
+                        <CheckIcon className="h-5 w-5" />
+                        Salvar Privacidade
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             )}
 
@@ -506,6 +532,17 @@ const Settings: React.FC = () => {
                       Excluir Conta
                     </button>
                   </div>
+                </div>
+                
+                {/* Botões de ação para segurança */}
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                  >
+                    <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                    Sair da Conta
+                  </button>
                 </div>
               </div>
             )}
@@ -699,6 +736,17 @@ const Settings: React.FC = () => {
                       </ul>
                     </div>
                   </div>
+                </div>
+                
+                {/* Botões de ação para cockpit */}
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                  <button
+                    onClick={saveCockpitData}
+                    className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                  >
+                    <CheckIcon className="h-5 w-5" />
+                    Salvar Cockpit
+                  </button>
                 </div>
               </div>
             )}
