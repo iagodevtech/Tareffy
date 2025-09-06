@@ -1,6 +1,6 @@
   import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+// Icons removidos - usando emojis nos botões
 import { projectService, Project } from '../../services/projectService';
 
 const Projects: React.FC = () => {
@@ -177,10 +177,10 @@ const Projects: React.FC = () => {
         </div>
         <button
           onClick={handleNewProject}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-xl hover:from-emerald-600 hover:to-teal-700 flex items-center gap-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
         >
-          <PlusIcon className="h-5 w-5" />
-          Novo Projeto
+          <span className="text-xl">✨</span>
+          <span className="font-semibold">Novo Projeto</span>
         </button>
       </div>
 
@@ -239,23 +239,26 @@ const Projects: React.FC = () => {
             <div className="flex justify-between items-center mt-6">
               <button
                 onClick={() => navigate(`/projects/${project.id}`)}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-indigo-600 hover:to-purple-700 flex items-center gap-2 shadow-md hover:shadow-lg transition-all duration-300"
               >
-                Ver Detalhes
+                <span className="text-sm">👁️</span>
+                <span>Ver Detalhes</span>
               </button>
               
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEditProject(project)}
-                  className="p-2 text-gray-400 hover:text-blue-600"
+                  className="p-2 bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded-lg hover:from-amber-500 hover:to-orange-600 shadow-md hover:shadow-lg transition-all duration-300"
+                  title="Editar projeto"
                 >
-                  <PencilIcon className="h-4 w-4" />
+                  <span className="text-sm">✏️</span>
                 </button>
                 <button
                   onClick={() => handleDeleteProject(project.id)}
-                  className="p-2 text-gray-400 hover:text-red-600"
+                  className="p-2 bg-gradient-to-r from-red-400 to-pink-500 text-white rounded-lg hover:from-red-500 hover:to-pink-600 shadow-md hover:shadow-lg transition-all duration-300"
+                  title="Excluir projeto"
                 >
-                  <TrashIcon className="h-4 w-4" />
+                  <span className="text-sm">🗑️</span>
                 </button>
               </div>
             </div>
@@ -317,14 +320,15 @@ const Projects: React.FC = () => {
             <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-6">
               <button
                 onClick={handleCancelModal}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100 transition-colors order-2 sm:order-1"
+                className="px-6 py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-300 order-2 sm:order-1 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
-                Cancelar
+                <span className="text-sm">❌</span>
+                <span className="font-medium">Cancelar</span>
               </button>
               <button
                 onClick={handleSaveProject}
                 disabled={saving}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors order-1 sm:order-2"
+                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all duration-300 order-1 sm:order-2 shadow-md hover:shadow-lg"
               >
                 {saving ? (
                   <>
@@ -333,7 +337,10 @@ const Projects: React.FC = () => {
                     <span className="sm:hidden">...</span>
                   </>
                 ) : (
-                  'Salvar'
+                  <>
+                    <span className="text-sm">💾</span>
+                    <span className="font-medium">Salvar</span>
+                  </>
                 )}
               </button>
             </div>
