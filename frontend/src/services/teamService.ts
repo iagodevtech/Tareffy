@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { emailService } from './emailService';
+import { realEmailService } from './realEmailService';
 
 export interface Team {
   id: string;
@@ -232,7 +232,7 @@ export const teamService = {
       
       const teamName = team?.name || 'Equipe';
       
-      const emailSent = await emailService.sendTeamInvite(email, teamName, role, inviterName);
+      const emailSent = await realEmailService.sendTeamInvite(email, teamName, role, inviterName);
       
       if (emailSent) {
         console.log(`✅ Email de convite enviado com sucesso para ${email}`);

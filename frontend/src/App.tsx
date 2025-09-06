@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { realEmailService } from './services/realEmailService';
 
 // Pages
 import Login from './pages/Auth/Login';
@@ -21,6 +22,11 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 console.log('🚀 Tareffy App carregado com sucesso!');
 
 function App() {
+  useEffect(() => {
+    // Inicializar EmailJS
+    realEmailService.init();
+  }, []);
+
   return (
     <ThemeProvider>
       <AuthProvider>

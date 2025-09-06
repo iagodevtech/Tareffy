@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DocumentArrowDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { emailService } from '../../services/emailService';
+import { realEmailService } from '../../services/realEmailService';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface ReportGeneratorProps {
@@ -255,8 +255,7 @@ ${kanbanTasks.map((t: any) => {
       if (sendEmail && user?.email) {
         try {
           console.log('📧 Iniciando envio de email para:', user.email);
-          const emailContent = emailService.generateEmailContent(reportType, dateRange, format);
-          await emailService.sendReport(user.email, emailContent, reportType);
+          await realEmailService.sendReport(user.email, reportContent, reportType);
           emailSent = true;
           console.log('✅ Relatório enviado por email com sucesso!');
         } catch (emailError) {

@@ -5,6 +5,7 @@
   "private": true,
   "homepage": "https://iagodevtech.github.io/Tareffy",
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@heroicons/react": "^2.2.0",
     "@supabase/supabase-js": "^2.57.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
