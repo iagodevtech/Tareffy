@@ -117,8 +117,8 @@ const Settings: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Configurações</h1>
-          <p className="text-lg text-gray-600">Gerencie suas preferências e configurações</p>
+          <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
+          <p className="text-base text-gray-600">Gerencie suas preferências e configurações</p>
         </div>
       </div>
       
@@ -129,14 +129,14 @@ const Settings: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center px-6 py-3 text-base font-medium rounded-xl transition-all duration-300 ${
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
                 activeTab === tab.id
                   ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg transform scale-105'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 hover:shadow-md'
               }`}
             >
-              <span className="text-lg mr-2">{tab.name.split(' ')[0]}</span>
-              <span>{tab.name.split(' ').slice(1).join(' ')}</span>
+              <span className="text-sm mr-2">{tab.name.split(' ')[0]}</span>
+              <span className="text-sm">{tab.name.split(' ').slice(1).join(' ')}</span>
             </button>
           ))}
         </div>
@@ -448,37 +448,34 @@ const Settings: React.FC = () => {
           </div>
         )}
 
-        {/* Botão de salvar geral */}
-        {activeTab !== 'cockpit' && (
-          <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
+        {/* Botões centralizados */}
+        <div className="flex justify-center gap-4 pt-8 border-t border-gray-200">
+          {activeTab !== 'cockpit' && (
             <button
               onClick={handleSaveSettings}
               disabled={saving}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-xl hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-2 rounded-lg hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md hover:shadow-lg transition-all duration-300 text-sm font-medium"
             >
               {saving ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   <span>Salvando...</span>
                 </>
               ) : (
                 <>
-                  <span className="text-lg">💾</span>
-                  <span>Salvar Configurações</span>
+                  <span className="text-sm">💾</span>
+                  <span>Salvar</span>
                 </>
               )}
             </button>
-          </div>
-        )}
-
-        {/* Botão de logout */}
-        <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
+          )}
+          
           <button
             onClick={handleLogout}
-            className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-3 rounded-xl hover:from-red-600 hover:to-pink-700 flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-2 rounded-lg hover:from-red-600 hover:to-pink-700 flex items-center gap-2 shadow-md hover:shadow-lg transition-all duration-300 text-sm font-medium"
           >
-            <span className="text-lg">🚪</span>
-            <span className="font-medium">Sair</span>
+            <span className="text-sm">🚪</span>
+            <span>Sair</span>
           </button>
         </div>
       </div>

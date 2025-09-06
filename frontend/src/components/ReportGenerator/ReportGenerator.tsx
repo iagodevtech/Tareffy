@@ -44,7 +44,24 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
 🔄 Tarefas em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').length}
 
 📁 PROJETOS
-${projects.map((p: any) => `📂 ${p.name}: ${p.description || 'Sem descrição'}`).join('\n')}
+${projects.map((p: any) => {
+  const projectTasks = kanbanTasks.filter((t: any) => t.projectId === p.id);
+  const totalComments = projectTasks.reduce((sum: number, task: any) => sum + (task.comments?.length || 0), 0);
+  const totalIssues = projectTasks.reduce((sum: number, task: any) => sum + (task.issues?.length || 0), 0);
+  const openIssues = projectTasks.reduce((sum: number, task: any) => sum + (task.issues?.filter((i: any) => i.status === 'open').length || 0), 0);
+  
+  return `📂 ${p.name}: ${p.description || 'Sem descrição'}
+   📋 Tarefas: ${projectTasks.length}
+   💬 Comentários: ${totalComments}
+   ⚠️ Issues: ${totalIssues} (${openIssues} abertas)
+   ${projectTasks.map((task: any) => {
+     const comments = task.comments?.map((c: any) => `     💬 ${c.author}: ${c.text}`).join('\n') || '';
+     const issues = task.issues?.map((i: any) => `     ⚠️ ${i.title}: ${i.description} (${i.severity})`).join('\n') || '';
+     return `   📝 ${task.title}:
+${comments}
+${issues}`;
+   }).join('\n')}`;
+}).join('\n\n')}
 
 👥 EQUIPES
 ${teams.map((t: any) => `👨‍💼 ${t.name}: ${t.description || 'Sem descrição'}`).join('\n')}
@@ -235,9 +252,13 @@ ${kanbanTasks.map((t: any) => {
             }
           });
           console.log('📧 Relatório enviado por email com sucesso!');
+          alert('✅ Relatório enviado por email com sucesso! Verifique sua caixa de entrada.');
         } catch (emailError) {
           console.warn('⚠️ Erro ao enviar email, mas relatório foi baixado:', emailError);
+          alert('⚠️ Erro ao enviar relatório por email. O arquivo foi baixado localmente.');
         }
+      } else if (sendEmail && !user?.email) {
+        alert('⚠️ Email não encontrado. Faça login novamente para enviar relatórios por email.');
       }
       
       alert('Relatório gerado e baixado com sucesso!' + (sendEmail ? ' Também foi enviado por email.' : ''));

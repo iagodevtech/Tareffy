@@ -50,6 +50,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [newComment, setNewComment] = useState('');
   const [newIssue, setNewIssue] = useState({ title: '', description: '', severity: 'medium' as 'low' | 'medium' | 'high' | 'critical' });
+  const [readComments, setReadComments] = useState<Set<string>>(new Set());
+  const [readIssues, setReadIssues] = useState<Set<string>>(new Set());
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPriority, setFilterPriority] = useState<string>('all');
 
@@ -404,13 +406,15 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                           onClick={() => {
                             setSelectedTask(task);
                             setShowCommentsModal(true);
+                            // Marcar comentários como lidos
+                            setReadComments(prev => new Set([...prev, task.id]));
                           }}
                           className="relative text-gray-400 hover:text-blue-600 p-1 rounded-md hover:bg-blue-50 transition-colors"
                           title="Comentários"
                         >
                           <ChatBubbleLeftIcon className="h-4 w-4" />
-                          {task.comments.length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium shadow-sm">
+                          {task.comments.length > 0 && !readComments.has(task.id) && (
+                            <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium shadow-sm">
                               {task.comments.length}
                             </span>
                           )}
@@ -419,13 +423,15 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                           onClick={() => {
                             setSelectedTask(task);
                             setShowIssuesModal(true);
+                            // Marcar issues como lidas
+                            setReadIssues(prev => new Set([...prev, task.id]));
                           }}
                           className="relative text-gray-400 hover:text-red-600 p-1 rounded-md hover:bg-red-50 transition-colors"
                           title="Issues"
                         >
                           <ExclamationTriangleIcon className="h-4 w-4" />
-                          {task.issues.filter(issue => issue.status === 'open').length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium shadow-sm animate-pulse">
+                          {task.issues.filter(issue => issue.status === 'open').length > 0 && !readIssues.has(task.id) && (
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium shadow-sm animate-pulse">
                               {task.issues.filter(issue => issue.status === 'open').length}
                             </span>
                           )}
