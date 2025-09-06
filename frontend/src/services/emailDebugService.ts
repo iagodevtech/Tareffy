@@ -71,26 +71,42 @@ export const emailDebugService = {
     console.log('🔍 Verificando templates...');
     
     const templates = [
-      EMAILJS_CONFIG.TEMPLATE_ID_TEAM_INVITE,
-      EMAILJS_CONFIG.TEMPLATE_ID_REPORT,
-      EMAILJS_CONFIG.TEMPLATE_ID_GENERIC
+      { id: EMAILJS_CONFIG.TEMPLATE_ID_TEAM_INVITE, name: 'Team Invite' },
+      { id: EMAILJS_CONFIG.TEMPLATE_ID_REPORT, name: 'Report' },
+      { id: EMAILJS_CONFIG.TEMPLATE_ID_GENERIC, name: 'Generic' }
     ];
     
-    for (const templateId of templates) {
+    for (const template of templates) {
       try {
-        console.log(`📋 Testando template: ${templateId}`);
-        // Tentar enviar um email vazio para verificar se o template existe
-        await emailjs.send(
+        console.log(`📋 Testando template: ${template.name} (${template.id})`);
+        
+        // Parâmetros mínimos para teste
+        const testParams = {
+          to_email: 'test@example.com',
+          team_name: 'Teste',
+          role: 'Membro',
+          inviter_name: 'Teste',
+          app_url: 'https://iagodevtech.github.io/Tareffy/login'
+        };
+        
+        const response = await emailjs.send(
           EMAILJS_CONFIG.SERVICE_ID,
-          templateId,
-          { to_email: 'test@test.com' }
+          template.id,
+          testParams
         );
-        console.log(`✅ Template ${templateId} existe`);
+        
+        console.log(`✅ Template ${template.name} funciona!`, response);
       } catch (error: any) {
-        if (error.text?.includes('Template not found')) {
-          console.error(`❌ Template ${templateId} não encontrado!`);
-        } else {
-          console.log(`⚠️ Template ${templateId} existe, mas erro:`, error.text);
+        console.error(`❌ Erro no template ${template.name}:`, {
+          status: error.status,
+          text: error.text,
+          message: error.message
+        });
+        
+        if (error.text?.includes('Template not found') || error.status === 404) {
+          console.error(`❌ Template ${template.id} não encontrado! Verifique se foi criado corretamente.`);
+        } else if (error.status === 400) {
+          console.error(`❌ Template ${template.id} existe mas tem parâmetros incorretos!`);
         }
       }
     }

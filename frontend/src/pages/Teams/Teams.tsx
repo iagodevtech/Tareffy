@@ -131,6 +131,40 @@ const Teams: React.FC = () => {
     await emailDebugService.runFullDiagnostic();
   };
 
+  const handleTestEmail = async () => {
+    try {
+      console.log('🧪 Testando envio de email simples...');
+      
+      // Teste direto com EmailJS
+      const { default: emailjs } = await import('@emailjs/browser');
+      const { EMAILJS_CONFIG } = await import('../../config/emailjs');
+      
+      const templateParams = {
+        to_email: 'iagodevtech@gmail.com',
+        team_name: 'Equipe Teste',
+        role: 'Membro',
+        inviter_name: 'Usuário Teste',
+        app_url: 'https://iagodevtech.github.io/Tareffy/login'
+      };
+
+      console.log('📤 Enviando email de teste...', templateParams);
+      console.log('🔧 Service ID:', EMAILJS_CONFIG.SERVICE_ID);
+      console.log('📋 Template ID:', EMAILJS_CONFIG.TEMPLATE_ID_TEAM_INVITE);
+
+      const response = await emailjs.send(
+        EMAILJS_CONFIG.SERVICE_ID,
+        EMAILJS_CONFIG.TEMPLATE_ID_TEAM_INVITE,
+        templateParams
+      );
+
+      console.log('✅ Email de teste enviado com sucesso!', response);
+      alert('✅ Email de teste enviado com sucesso! Verifique sua caixa de entrada.');
+    } catch (error: any) {
+      console.error('❌ Erro no teste de email:', error);
+      alert(`❌ Erro: ${error.text || error.message}`);
+    }
+  };
+
 
   if (loading) {
     return (
@@ -175,6 +209,12 @@ const Teams: React.FC = () => {
             className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 flex items-center gap-2"
           >
             🔍 Debug Email
+          </button>
+          <button
+            onClick={handleTestEmail}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2"
+          >
+            🧪 Teste Email
           </button>
         </div>
       </div>
