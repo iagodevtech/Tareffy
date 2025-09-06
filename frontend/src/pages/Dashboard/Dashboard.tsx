@@ -89,8 +89,8 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-sm text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
+        <h1 className="text-lg font-bold text-gray-900">Dashboard</h1>
+        <p className="text-xs text-gray-600">Bem-vindo ao Tareffy! Aqui está um resumo do seu trabalho.</p>
       </div>
       
       {/* Cards de estatísticas */}
@@ -102,7 +102,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="ml-3">
               <h3 className="text-xs font-medium text-gray-500">Total de Tarefas</h3>
-              <p className="text-lg font-bold text-gray-900">{stats.totalTasks}</p>
+              <p className="text-sm font-bold text-gray-900">{stats.totalTasks}</p>
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="ml-3">
               <h3 className="text-xs font-medium text-gray-500">Em Progresso</h3>
-              <p className="text-lg font-bold text-gray-900">{stats.inProgress}</p>
+              <p className="text-sm font-bold text-gray-900">{stats.inProgress}</p>
             </div>
           </div>
         </div>
@@ -126,7 +126,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="ml-3">
               <h3 className="text-xs font-medium text-gray-500">Concluídas</h3>
-              <p className="text-lg font-bold text-gray-900">{stats.completed}</p>
+              <p className="text-sm font-bold text-gray-900">{stats.completed}</p>
             </div>
           </div>
         </div>
@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="ml-3">
               <h3 className="text-xs font-medium text-gray-500">Projetos</h3>
-              <p className="text-lg font-bold text-gray-900">{stats.projects}</p>
+              <p className="text-sm font-bold text-gray-900">{stats.projects}</p>
             </div>
           </div>
         </div>

@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
           <div className="flex flex-col h-0 flex-1">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center justify-between flex-shrink-0 px-4">
-                {!isCollapsed && <h1 className="text-gray-900 text-2xl font-bold transition-all duration-300">Tareffy</h1>}
+                {!isCollapsed && <h1 className="text-gray-900 text-lg font-bold transition-all duration-300">Tareffy</h1>}
                 <div className="flex items-center space-x-2">
                   {/* Desktop collapse button */}
                   {onCollapse && (
@@ -118,14 +118,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
               </nav>
               
               {/* Botão de Atualização */}
-              <div className="px-2 pb-4">
+              <div className="px-2 pb-4 flex justify-center">
                 <button
                   onClick={handleRefresh}
-                  className="w-full flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                  title={isCollapsed ? 'Atualizar dados' : undefined}
+                  className="w-10 h-10 flex items-center justify-center text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                  title="Atualizar dados"
                 >
-                  <ArrowPathIcon className={`flex-shrink-0 h-7 w-7 text-current transition-all duration-300 ${isCollapsed ? 'mr-0' : 'mr-3'}`} />
-                  {!isCollapsed && <span className="block text-base transition-all duration-300">Atualizar</span>}
+                  <ArrowPathIcon className="h-5 w-5" />
                 </button>
               </div>
             </div>
