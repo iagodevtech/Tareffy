@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeftIcon, PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import KanbanBoard from '../../components/KanbanBoard/KanbanBoard';
 import { projectService, Project } from '../../services/projectService';
 
@@ -14,9 +14,9 @@ const ProjectDetails: React.FC = () => {
     if (id) {
       loadProject();
     }
-  }, [id]);
+  }, [id, loadProject]);
 
-  const loadProject = async () => {
+  const loadProject = useCallback(async () => {
     if (!id) return;
     
     try {
@@ -28,7 +28,7 @@ const ProjectDetails: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   const getProjectEmoji = (name: string) => {
     const emojiMap: { [key: string]: string } = {

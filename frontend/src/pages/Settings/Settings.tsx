@@ -20,7 +20,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 const Settings: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
