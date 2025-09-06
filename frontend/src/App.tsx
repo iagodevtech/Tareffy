@@ -7,8 +7,8 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
-import KanbanBoard from './pages/KanbanBoard/KanbanBoard';
 import Projects from './pages/Projects/Projects';
+import ProjectDetails from './pages/Projects/ProjectDetails';
 import Teams from './pages/Teams/Teams';
 import Reports from './pages/Reports/Reports';
 import Profile from './pages/Profile/Profile';
@@ -40,7 +40,7 @@ function App() {
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="projects" element={<Projects />} />
-                <Route path="projects/:projectId" element={<KanbanBoard />} />
+                <Route path="projects/:id" element={<ProjectDetails />} />
                 <Route path="teams" element={<Teams />} />
                 <Route path="reports" element={<Reports />} />
                 <Route path="profile" element={<Profile />} />

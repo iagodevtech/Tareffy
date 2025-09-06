@@ -1,18 +1,16 @@
   import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { projectService, Project } from '../../services/projectService';
-import KanbanBoard from '../../components/KanbanBoard/KanbanBoard';
 
 const Projects: React.FC = () => {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [showModal, setShowModal] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [saving, setSaving] = useState(false);
-  const [showKanban, setShowKanban] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   // Carregar projetos do Supabase
   useEffect(() => {
@@ -153,15 +151,6 @@ const Projects: React.FC = () => {
     setEditingProject(null);
   };
 
-  const handleViewKanban = (project: Project) => {
-    setSelectedProject(project);
-    setShowKanban(true);
-  };
-
-  const handleCloseKanban = () => {
-    setShowKanban(false);
-    setSelectedProject(null);
-  };
 
   if (loading) {
     return (
@@ -249,10 +238,10 @@ const Projects: React.FC = () => {
             
             <div className="flex justify-between items-center mt-6">
               <button
-                onClick={() => handleViewKanban(project)}
+                onClick={() => navigate(`/projects/${project.id}`)}
                 className="text-blue-600 hover:text-blue-800 text-sm font-medium"
               >
-                Ver Kanban
+                Ver Detalhes
               </button>
               
               <div className="flex gap-2">
@@ -352,33 +341,6 @@ const Projects: React.FC = () => {
         </div>
       )}
 
-      {/* Modal do Kanban */}
-      {showKanban && selectedProject && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-7xl max-h-[90vh] overflow-hidden">
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <span className="text-2xl">{getProjectEmoji(selectedProject.name)}</span>
-                  Kanban - {selectedProject.name}
-                </h3>
-                <p className="text-gray-600 text-sm mt-1">{selectedProject.description}</p>
-              </div>
-              <button
-                onClick={handleCloseKanban}
-                className="text-gray-400 hover:text-gray-600 p-2 rounded-md hover:bg-gray-100"
-              >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-              <KanbanBoard projectId={selectedProject.id} />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

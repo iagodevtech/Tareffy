@@ -50,6 +50,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [newComment, setNewComment] = useState('');
   const [newIssue, setNewIssue] = useState({ title: '', description: '', severity: 'medium' as 'low' | 'medium' | 'high' | 'critical' });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterPriority, setFilterPriority] = useState<string>('all');
 
   // Carregar tarefas do localStorage
   useEffect(() => {
@@ -308,41 +310,81 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
     setNewIssue({ title: '', description: '', severity: 'medium' });
   };
 
+  // Filtrar tarefas
+  const filteredTasks = tasks.filter(task => {
+    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (task.assignee && task.assignee.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesPriority = filterPriority === 'all' || task.priority === filterPriority;
+    return matchesSearch && matchesPriority;
+  });
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Quadro Kanban</h2>
-        <button
-          onClick={handleNewTask}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-        >
-          <PlusIcon className="h-5 w-5" />
-          Nova Tarefa
-        </button>
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h2 className="text-xl font-semibold text-gray-900">Quadro Kanban</h2>
+          <button
+            onClick={handleNewTask}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          >
+            <PlusIcon className="h-5 w-5" />
+            Nova Tarefa
+          </button>
+        </div>
+        
+        {/* Filtros e busca */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Buscar tarefas..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="sm:w-48">
+            <select
+              value={filterPriority}
+              onChange={(e) => setFilterPriority(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">Todas as prioridades</option>
+              <option value="high">Alta prioridade</option>
+              <option value="medium">Média prioridade</option>
+              <option value="low">Baixa prioridade</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 overflow-x-auto">
         {columns.map(column => (
-          <div key={column.id} className="bg-white rounded-lg shadow-sm border">
+          <div key={column.id} className="bg-white rounded-lg shadow-sm border min-w-[280px] sm:min-w-0">
             <div className={`p-4 rounded-t-lg ${column.color}`}>
               <h3 className="font-semibold text-gray-900 flex items-center gap-2">
                 <span className="text-lg">{column.emoji}</span>
                 {column.title}
               </h3>
               <span className="text-sm text-gray-600">
-                {tasks.filter(task => task.status === column.id).length} tarefas
+                {filteredTasks.filter(task => task.status === column.id).length} tarefas
               </span>
             </div>
             
-            <div 
-              className="p-4 space-y-3 min-h-[400px]"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, column.id)}
-              onTouchEnd={(e) => handleTouchEnd(e, column.id)}
-            >
-              {tasks
-                .filter(task => task.status === column.id)
-                .map(task => (
+             <div 
+               className={`p-4 space-y-3 min-h-[400px] transition-colors ${
+                 draggedTask && draggedTask.status !== column.id 
+                   ? 'bg-blue-50 border-2 border-dashed border-blue-300' 
+                   : ''
+               }`}
+               onDragOver={handleDragOver}
+               onDrop={(e) => handleDrop(e, column.id)}
+               onTouchEnd={(e) => handleTouchEnd(e, column.id)}
+             >
+               {filteredTasks
+                 .filter(task => task.status === column.id)
+                 .map(task => (
                   <div
                     key={task.id}
                     className={`bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-all cursor-move ${
@@ -424,13 +466,23 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                         <span>⏱️</span>
                         <span className="font-medium">{calculateDuration(task)}</span>
                       </div>
-                    )}
-                  </div>
-                ))}
-            </div>
-          </div>
-        ))}
-      </div>
+                     )}
+                   </div>
+                 ))}
+                 
+                 {/* Drop zone vazia */}
+                 {filteredTasks.filter(task => task.status === column.id).length === 0 && (
+                   <div className="flex items-center justify-center h-32 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
+                     <div className="text-center">
+                       <div className="text-2xl mb-2">📋</div>
+                       <p className="text-sm">Arraste tarefas aqui</p>
+                     </div>
+                   </div>
+                 )}
+             </div>
+           </div>
+         ))}
+       </div>
 
       {/* Modal de Tarefa */}
       {showTaskModal && editingTask && (
