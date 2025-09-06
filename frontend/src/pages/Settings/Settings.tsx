@@ -9,27 +9,9 @@ import {
   UserIcon,
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
-import { userService } from '../../services/userService';
+import { userService, UserSettings } from '../../services/userService';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-
-interface UserSettings {
-  theme: 'light' | 'dark' | 'system';
-  language: string;
-  notifications: {
-    email: boolean;
-    push: boolean;
-    sms: boolean;
-  };
-  privacy: {
-    profileVisibility: 'public' | 'private' | 'friends';
-    dataSharing: boolean;
-  };
-  security: {
-    twoFactor: boolean;
-    sessionTimeout: number;
-  };
-}
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'general' | 'notifications' | 'privacy' | 'security' | 'cockpit'>('general');
@@ -61,21 +43,30 @@ const Settings: React.FC = () => {
       console.error('Erro ao carregar configurações:', error);
       // Fallback para configurações padrão
       setSettings({
+        id: '',
+        user_id: '',
         theme: 'light',
-        language: 'pt-BR',
         notifications: {
           email: true,
           push: true,
-          sms: false,
+          desktop: true,
+          project_updates: true,
+          team_invites: true,
+          deadline_reminders: true,
         },
         privacy: {
-          profileVisibility: 'private',
-          dataSharing: false,
+          profile_visibility: 'private',
+          show_online_status: true,
+          allow_team_invites: true,
         },
-        security: {
-          twoFactor: false,
-          sessionTimeout: 30,
+        preferences: {
+          date_format: 'DD/MM/YYYY',
+          time_format: '24h',
+          week_start: 'monday',
+          default_view: 'dashboard',
         },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       });
     }
   };
@@ -182,16 +173,19 @@ const Settings: React.FC = () => {
 
               <div>
                 <label className="block text-base font-medium text-gray-700 mb-2">
-                  Idioma
+                  Formato de Data
                 </label>
                 <select
-                  value={settings.language}
-                  onChange={(e) => setSettings({...settings, language: e.target.value})}
+                  value={settings.preferences.date_format}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    preferences: {...settings.preferences, date_format: e.target.value as 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY-MM-DD'}
+                  })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="pt-BR">🇧🇷 Português (Brasil)</option>
-                  <option value="en-US">🇺🇸 English (US)</option>
-                  <option value="es-ES">🇪🇸 Español</option>
+                  <option value="DD/MM/YYYY">🇧🇷 DD/MM/YYYY</option>
+                  <option value="MM/DD/YYYY">🇺🇸 MM/DD/YYYY</option>
+                  <option value="YYYY-MM-DD">🌍 YYYY-MM-DD</option>
                 </select>
               </div>
             </div>
@@ -244,6 +238,25 @@ const Settings: React.FC = () => {
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
               </div>
+
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <h4 className="font-medium text-gray-900">🖥️ Notificações Desktop</h4>
+                  <p className="text-sm text-gray-600">Receber notificações no desktop</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.notifications.desktop}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      notifications: {...settings.notifications, desktop: e.target.checked}
+                    })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
             </div>
           </div>
         )}
@@ -262,31 +275,50 @@ const Settings: React.FC = () => {
                   Visibilidade do Perfil
                 </label>
                 <select
-                  value={settings.privacy.profileVisibility}
+                  value={settings.privacy.profile_visibility}
                   onChange={(e) => setSettings({
                     ...settings,
-                    privacy: {...settings.privacy, profileVisibility: e.target.value as 'public' | 'private' | 'friends'}
+                    privacy: {...settings.privacy, profile_visibility: e.target.value as 'public' | 'private' | 'team_only'}
                   })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="public">🌍 Público</option>
-                  <option value="friends">👥 Apenas Amigos</option>
+                  <option value="team_only">👥 Apenas Equipe</option>
                   <option value="private">🔒 Privado</option>
                 </select>
               </div>
 
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div>
-                  <h4 className="font-medium text-gray-900">📊 Compartilhamento de Dados</h4>
-                  <p className="text-sm text-gray-600">Permitir uso de dados para melhorias</p>
+                  <h4 className="font-medium text-gray-900">🟢 Status Online</h4>
+                  <p className="text-sm text-gray-600">Mostrar quando estou online</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={settings.privacy.dataSharing}
+                    checked={settings.privacy.show_online_status}
                     onChange={(e) => setSettings({
                       ...settings,
-                      privacy: {...settings.privacy, dataSharing: e.target.checked}
+                      privacy: {...settings.privacy, show_online_status: e.target.checked}
+                    })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <h4 className="font-medium text-gray-900">👥 Convites de Equipe</h4>
+                  <p className="text-sm text-gray-600">Permitir convites para equipes</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.privacy.allow_team_invites}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      privacy: {...settings.privacy, allow_team_invites: e.target.checked}
                     })}
                     className="sr-only peer"
                   />
@@ -305,41 +337,28 @@ const Settings: React.FC = () => {
               Configurações de Segurança
             </h3>
             
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <h4 className="font-medium text-gray-900">🔐 Autenticação de Dois Fatores</h4>
-                  <p className="text-sm text-gray-600">Adicionar uma camada extra de segurança</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={settings.security.twoFactor}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      security: {...settings.security, twoFactor: e.target.checked}
-                    })}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-200">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">🔐</span>
+                <h4 className="text-lg font-semibold text-gray-900">Segurança da Conta</h4>
               </div>
-
-              <div>
-                <label className="block text-base font-medium text-gray-700 mb-2">
-                  ⏰ Timeout da Sessão (minutos)
-                </label>
-                <input
-                  type="number"
-                  min="5"
-                  max="120"
-                  value={settings.security.sessionTimeout}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    security: {...settings.security, sessionTimeout: parseInt(e.target.value)}
-                  })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+              <p className="text-gray-600 mb-4">
+                Sua conta está protegida com autenticação segura do Supabase. 
+                Para alterações de segurança avançadas, entre em contato com o suporte.
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-white rounded-lg">
+                  <span className="font-medium text-gray-700">🛡️ Autenticação Segura</span>
+                  <span className="text-green-600 font-medium">✅ Ativa</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-white rounded-lg">
+                  <span className="font-medium text-gray-700">🔑 Senha Protegida</span>
+                  <span className="text-green-600 font-medium">✅ Protegida</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-white rounded-lg">
+                  <span className="font-medium text-gray-700">🌐 Conexão Segura</span>
+                  <span className="text-green-600 font-medium">✅ HTTPS</span>
+                </div>
               </div>
             </div>
           </div>
