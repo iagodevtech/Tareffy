@@ -44,24 +44,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
 🔄 Tarefas em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').length}
 
 📁 PROJETOS
-${projects.map((p: any) => {
-  const projectTasks = kanbanTasks.filter((t: any) => t.projectId === p.id);
-  const totalComments = projectTasks.reduce((sum: number, task: any) => sum + (task.comments?.length || 0), 0);
-  const totalIssues = projectTasks.reduce((sum: number, task: any) => sum + (task.issues?.length || 0), 0);
-  const openIssues = projectTasks.reduce((sum: number, task: any) => sum + (task.issues?.filter((i: any) => i.status === 'open').length || 0), 0);
-  
-  return `📂 ${p.name}: ${p.description || 'Sem descrição'}
-   📋 Tarefas: ${projectTasks.length}
-   💬 Comentários: ${totalComments}
-   ⚠️ Issues: ${totalIssues} (${openIssues} abertas)
-   ${projectTasks.map((task: any) => {
-     const comments = task.comments?.map((c: any) => `     💬 ${c.author}: ${c.text}`).join('\n') || '';
-     const issues = task.issues?.map((i: any) => `     ⚠️ ${i.title}: ${i.description} (${i.severity})`).join('\n') || '';
-     return `   📝 ${task.title}:
-${comments}
-${issues}`;
-   }).join('\n')}`;
-}).join('\n\n')}
+${projects.map((p: any) => `📂 ${p.name}: ${p.description || 'Sem descrição'}`).join('\n')}
 
 👥 EQUIPES
 ${teams.map((t: any) => `👨‍💼 ${t.name}: ${t.description || 'Sem descrição'}`).join('\n')}
@@ -141,21 +124,51 @@ ${kanbanTasks.map((t: any) => {
     'medium': '🟡',
     'high': '🔴'
   };
-  return `
+  
+  let taskContent = `
 📌 Tarefa: ${t.title}
 📝 Descrição: ${t.description || 'Sem descrição'}
 📊 Status: ${statusEmoji[t.status] || '📋'} ${t.status}
 ⚡ Prioridade: ${priorityEmoji[t.priority] || '⚪'} ${t.priority}
 👤 Responsável: ${t.assignee || 'Não atribuído'}
-💬 Comentários: ${t.comments?.length || 0}
-🐛 Issues Abertas: ${t.issues?.filter((i: any) => i.status === 'open').length || 0}
-⏱️ Duração: ${t.duration ? `${t.duration}h` : 'Não iniciada'}
-`;
-}).join('\n')}
+⏱️ Duração: ${t.duration ? `${t.duration}h` : 'Não iniciada'}`;
 
-📊 Total: ${kanbanTasks.length} tarefas
+  // Adicionar comentários se existirem
+  if (t.comments && t.comments.length > 0) {
+    taskContent += `\n💬 Comentários (${t.comments.length}):`;
+    t.comments.forEach((comment: any, index: number) => {
+      taskContent += `\n   ${index + 1}. ${comment.author}: ${comment.text}`;
+      taskContent += `\n      📅 ${new Date(comment.createdAt).toLocaleDateString('pt-BR')}`;
+    });
+  }
+
+  // Adicionar issues se existirem
+  if (t.issues && t.issues.length > 0) {
+    taskContent += `\n🐛 Issues (${t.issues.length}):`;
+    t.issues.forEach((issue: any, index: number) => {
+      const severityEmoji = {
+        'critical': '🔴',
+        'high': '🟠',
+        'medium': '🟡',
+        'low': '🟢'
+      };
+      taskContent += `\n   ${index + 1}. ${severityEmoji[issue.severity] || '⚪'} ${issue.title}`;
+      taskContent += `\n      📝 ${issue.description}`;
+      taskContent += `\n      📊 Status: ${issue.status === 'open' ? '🔴 Aberto' : '✅ Resolvido'}`;
+      taskContent += `\n      📅 ${new Date(issue.createdAt).toLocaleDateString('pt-BR')}`;
+    });
+  }
+
+  return taskContent;
+}).join('\n\n')}
+
+📊 RESUMO GERAL:
+📋 Total: ${kanbanTasks.length} tarefas
 ✅ Concluídas: ${kanbanTasks.filter((t: any) => t.status === 'production').length}
 🔄 Em Progresso: ${kanbanTasks.filter((t: any) => t.status === 'in_progress').length}
+💬 Total de Comentários: ${kanbanTasks.reduce((acc: number, t: any) => acc + (t.comments?.length || 0), 0)}
+🐛 Total de Issues: ${kanbanTasks.reduce((acc: number, t: any) => acc + (t.issues?.length || 0), 0)}
+🔴 Issues Abertas: ${kanbanTasks.reduce((acc: number, t: any) => acc + (t.issues?.filter((i: any) => i.status === 'open').length || 0), 0)}
           `;
           break;
       }
@@ -238,8 +251,10 @@ ${kanbanTasks.map((t: any) => {
       window.URL.revokeObjectURL(url);
       
       // Enviar por email se solicitado
+      let emailSent = false;
       if (sendEmail && user?.email) {
         try {
+          console.log('📧 Iniciando envio de email para:', user.email);
           const emailContent = emailService.generateEmailContent(reportType, dateRange, format);
           await emailService.sendReport({
             to: user.email,
@@ -251,17 +266,21 @@ ${kanbanTasks.map((t: any) => {
               mimeType: mimeType
             }
           });
-          console.log('📧 Relatório enviado por email com sucesso!');
-          alert('✅ Relatório enviado por email com sucesso! Verifique sua caixa de entrada.');
+          emailSent = true;
+          console.log('✅ Relatório enviado por email com sucesso!');
         } catch (emailError) {
-          console.warn('⚠️ Erro ao enviar email, mas relatório foi baixado:', emailError);
-          alert('⚠️ Erro ao enviar relatório por email. O arquivo foi baixado localmente.');
+          console.error('❌ Erro ao enviar email:', emailError);
+          emailSent = false;
         }
-      } else if (sendEmail && !user?.email) {
-        alert('⚠️ Email não encontrado. Faça login novamente para enviar relatórios por email.');
       }
       
-      alert('Relatório gerado e baixado com sucesso!' + (sendEmail ? ' Também foi enviado por email.' : ''));
+      if (emailSent) {
+        alert('✅ Relatório gerado, baixado e enviado por email com sucesso!');
+      } else if (sendEmail) {
+        alert('⚠️ Relatório gerado e baixado, mas houve um problema ao enviar por email. Verifique o console para mais detalhes.');
+      } else {
+        alert('✅ Relatório gerado e baixado com sucesso!');
+      }
       onClose();
     } catch (error) {
       console.error('Erro ao gerar relatório:', error);

@@ -17,15 +17,18 @@ export const emailService = {
     try {
       console.log('📧 Enviando relatório por email:', emailReport.to);
       
-      // Simular envio de email (em produção, você usaria um serviço como SendGrid, AWS SES, etc.)
+      // Simular envio de email com progresso
+      console.log('🔄 Preparando email...');
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('📤 Enviando para o servidor...');
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Aqui você implementaria a lógica real de envio de email
-      // Por exemplo, usando uma função Edge do Supabase ou um serviço externo
+      console.log('✅ Email enviado com sucesso!');
       
-      console.log('✅ Relatório enviado por email com sucesso!');
+      // Simular sucesso - em produção, aqui você faria a chamada real para o serviço de email
+      // Por exemplo: await supabase.functions.invoke('send-email', { body: emailReport });
       
-      // Simular sucesso
       return Promise.resolve();
     } catch (error) {
       console.error('❌ Erro ao enviar email:', error);

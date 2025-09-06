@@ -61,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed = false
       )}
 
       {/* Sidebar */}
-      <div className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static inset-y-0 left-0 z-50 w-72 md:${isCollapsed ? 'w-16' : 'w-64'} bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out md:flex md:flex-shrink-0 shadow-lg overflow-hidden`}>
+      <div className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static inset-y-0 left-0 z-50 w-72 md:w-${isCollapsed ? '16' : '64'} bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out md:flex md:flex-shrink-0 shadow-lg`}>
         <div className="flex flex-col w-full">
           <div className="flex flex-col h-0 flex-1">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">

@@ -50,8 +50,6 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [newComment, setNewComment] = useState('');
   const [newIssue, setNewIssue] = useState({ title: '', description: '', severity: 'medium' as 'low' | 'medium' | 'high' | 'critical' });
-  const [readComments, setReadComments] = useState<Set<string>>(new Set());
-  const [readIssues, setReadIssues] = useState<Set<string>>(new Set());
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPriority, setFilterPriority] = useState<string>('all');
 
@@ -312,6 +310,16 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
     setNewIssue({ title: '', description: '', severity: 'medium' });
   };
 
+  const handleCloseIssuesModal = () => {
+    setShowIssuesModal(false);
+    setSelectedTask(null);
+  };
+
+  const handleCloseCommentsModal = () => {
+    setShowCommentsModal(false);
+    setSelectedTask(null);
+  };
+
   // Filtrar tarefas
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -406,18 +414,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                           onClick={() => {
                             setSelectedTask(task);
                             setShowCommentsModal(true);
-                            // Marcar comentários como lidos
-                            setReadComments(prev => {
-                              const newSet = new Set(prev);
-                              newSet.add(task.id);
-                              return newSet;
-                            });
                           }}
                           className="relative text-gray-400 hover:text-blue-600 p-1 rounded-md hover:bg-blue-50 transition-colors"
                           title="Comentários"
                         >
                           <ChatBubbleLeftIcon className="h-4 w-4" />
-                          {task.comments.length > 0 && !readComments.has(task.id) && (
+                          {task.comments.length > 0 && (
                             <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium shadow-sm">
                               {task.comments.length}
                             </span>
@@ -427,18 +429,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                           onClick={() => {
                             setSelectedTask(task);
                             setShowIssuesModal(true);
-                            // Marcar issues como lidas
-                            setReadIssues(prev => {
-                              const newSet = new Set(prev);
-                              newSet.add(task.id);
-                              return newSet;
-                            });
                           }}
                           className="relative text-gray-400 hover:text-red-600 p-1 rounded-md hover:bg-red-50 transition-colors"
                           title="Issues"
                         >
                           <ExclamationTriangleIcon className="h-4 w-4" />
-                          {task.issues.filter(issue => issue.status === 'open').length > 0 && !readIssues.has(task.id) && (
+                          {task.issues.filter(issue => issue.status === 'open').length > 0 && (
                             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium shadow-sm animate-pulse">
                               {task.issues.filter(issue => issue.status === 'open').length}
                             </span>
@@ -654,10 +650,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
             
             <div className="flex justify-end gap-3">
               <button
-                onClick={() => {
-                  setShowCommentsModal(false);
-                  setNewComment('');
-                }}
+                onClick={handleCloseCommentsModal}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
               >
                 Fechar
@@ -734,10 +727,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
             
             <div className="flex justify-end gap-3">
               <button
-                onClick={() => {
-                  setShowIssuesModal(false);
-                  setNewIssue({ title: '', description: '', severity: 'medium' });
-                }}
+                onClick={handleCloseIssuesModal}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
               >
                 Fechar

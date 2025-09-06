@@ -133,7 +133,7 @@ const Profile: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-900">Perfil</h1>
         <p className="text-gray-600">Gerencie suas informações pessoais</p>
       </div>
-
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Avatar e informações básicas */}
         <div className="lg:col-span-1">
@@ -387,7 +387,7 @@ const Profile: React.FC = () => {
                 Usar Foto
               </button>
             </div>
-          </div>
+      </div>
         </div>
       )}
     </div>
