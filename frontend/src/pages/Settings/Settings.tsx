@@ -13,7 +13,7 @@ import {
   ArrowRightOnRectangleIcon,
   CodeBracketIcon,
   ServerIcon,
-  DatabaseIcon,
+  CircleStackIcon,
   GlobeAltIcon,
   CpuChipIcon,
   PaintBrushIcon
@@ -488,7 +488,7 @@ const Settings: React.FC = () => {
 
                 <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
                   <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <DatabaseIcon className="h-6 w-6 text-purple-600" />
+                    <CircleStackIcon className="h-6 w-6 text-purple-600" />
                     Banco de Dados
                   </h4>
                   <p className="text-gray-700 mb-4">
