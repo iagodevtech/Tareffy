@@ -91,6 +91,7 @@ export const teamService = {
       console.log('🆔 Team IDs:', teamIds);
 
       // Depois buscar as equipes pelos IDs
+      console.log('🔍 Buscando equipes com IDs:', teamIds);
       const { data: teams, error: teamsError } = await supabase
         .from('teams')
         .select('*')
@@ -103,6 +104,12 @@ export const teamService = {
       }
 
       console.log('👥 Equipes encontradas:', teams);
+      console.log('📊 Resumo:', {
+        memberships: memberships.length,
+        teamIds: teamIds.length,
+        teams: teams?.length || 0
+      });
+      
       return teams || [];
     } catch (error) {
       console.error('❌ Erro em getTeamsAsMember:', error);
