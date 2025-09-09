@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Frontend React para o sistema Tareffy",
   "private": true,
-  "homepage": "https://iagodevtech.github.io/Tareffy",
+  "homepage": "https://iagodevtech.github.io/Tareffy/",
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@heroicons/react": "^2.2.0",

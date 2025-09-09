@@ -5,26 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tareffy - Gerenciamento de Tarefas</title>
     <script>
-      // Função para redirecionar
-      function redirectToHome() {
-        // Salvar a URL atual para redirecionamento após carregar a app
-        sessionStorage.setItem('redirectAfterLoad', location.href);
-        
-        // Sempre redirecionar para a raiz
-        location.replace('/');
-      }
-      
-      // Executar redirecionamento imediatamente
-      redirectToHome();
+      // Redirecionar para a raiz
+      window.location.replace('/');
     </script>
   </head>
   <body>
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-      <div style="text-align: center; padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 1rem; backdrop-filter: blur(10px);">
-        <h1 style="font-size: 2rem; margin-bottom: 1rem;">🚀 Tareffy</h1>
-        <p style="font-size: 1.2rem; margin-bottom: 1rem;">Redirecionando...</p>
-        <p style="margin-bottom: 1rem;">Se não for redirecionado automaticamente:</p>
-        <a href="/" style="color: white; text-decoration: underline; font-weight: bold;">Clique aqui para ir ao início</a>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif;">
+      <div style="text-align: center;">
+        <h1>🚀 Tareffy</h1>
+        <p>Redirecionando...</p>
+        <p><a href="/">Clique aqui se não for redirecionado</a></p>
       </div>
     </div>
   </body>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { realEmailService } from './services/realEmailService';
@@ -25,16 +25,6 @@ function App() {
   useEffect(() => {
     // Inicializar EmailJS
     realEmailService.init();
-    
-    // Verificar se há um redirecionamento pendente do 404.html
-    const redirectAfterLoad = sessionStorage.getItem('redirectAfterLoad');
-    if (redirectAfterLoad) {
-      sessionStorage.removeItem('redirectAfterLoad');
-      // Aguardar um pouco para a aplicação carregar completamente
-      setTimeout(() => {
-        window.location.href = redirectAfterLoad;
-      }, 1000);
-    }
   }, []);
 
   return (
