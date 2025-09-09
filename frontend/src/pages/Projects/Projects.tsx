@@ -33,49 +33,39 @@ const Projects: React.FC = () => {
   const loadProjects = async () => {
     try {
       setLoading(true);
-      console.log('🔄 Carregando projetos e equipes...');
       
-      // Carregar equipes primeiro (mais simples)
+      // Carregar equipes primeiro
       let allTeams: Team[] = [];
       try {
         const ownedTeams = await teamService.getTeams();
-        console.log('✅ Equipes criadas carregadas:', ownedTeams.length);
         allTeams = [...ownedTeams];
       } catch (teamError) {
-        console.error('❌ Erro ao carregar equipes criadas:', teamError);
+        console.error('Erro ao carregar equipes criadas:', teamError);
       }
       
       try {
         const memberTeams = await teamService.getTeamsAsMember();
-        console.log('✅ Equipes como membro carregadas:', memberTeams.length);
         memberTeams.forEach(memberTeam => {
           if (!allTeams.find(team => team.id === memberTeam.id)) {
             allTeams.push(memberTeam);
           }
         });
       } catch (memberError) {
-        console.error('❌ Erro ao carregar equipes como membro:', memberError);
+        console.error('Erro ao carregar equipes como membro:', memberError);
       }
       
-      // Carregar projetos separadamente
+      // Carregar projetos
       let projectsData: Project[] = [];
       try {
         projectsData = await projectService.getProjects();
-        console.log('✅ Projetos carregados:', projectsData.length);
       } catch (projectError) {
-        console.error('❌ Erro ao carregar projetos:', projectError);
+        console.error('Erro ao carregar projetos:', projectError);
       }
-      
-      console.log('📊 Dados finais:', {
-        projects: projectsData.length,
-        teams: allTeams.length,
-        teamNames: allTeams.map(t => t.name)
-      });
       
       setProjects(projectsData);
       setTeams(allTeams);
     } catch (error) {
-      console.error('❌ Erro geral ao carregar:', error);
+      console.error('Erro ao carregar dados:', error);
     } finally {
       setLoading(false);
     }
