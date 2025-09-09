@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tareffy - Gerenciamento de Tarefas</title>
     <script>
-      // Redirecionar para a raiz
-      window.location.replace('/');
+      // Redirecionar para a URL correta do Tareffy
+      if (window.location.hostname === 'iagodevtech.github.io') {
+        window.location.replace('https://iagodevtech.github.io/Tareffy/');
+      } else {
+        window.location.replace('/');
+      }
     </script>
   </head>
   <body>

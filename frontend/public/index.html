@@ -9,6 +9,12 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Tareffy - Gerenciamento de Tarefas</title>
+    <script>
+      // Redirecionar para a URL correta se necessário
+      if (window.location.hostname === 'iagodevtech.github.io' && !window.location.pathname.includes('/Tareffy')) {
+        window.location.replace('https://iagodevtech.github.io/Tareffy/');
+      }
+    </script>
   </head>
   <body>
     <noscript>Você precisa habilitar JavaScript para executar este aplicativo.</noscript>
