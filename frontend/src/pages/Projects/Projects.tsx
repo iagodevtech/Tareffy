@@ -177,10 +177,11 @@ const Projects: React.FC = () => {
         </div>
         <button
           onClick={handleNewProject}
-          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-xl hover:from-emerald-600 hover:to-teal-700 flex items-center gap-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-2 sm:px-6 sm:py-3 rounded-xl hover:from-emerald-600 hover:to-teal-700 flex items-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
         >
-          <span className="text-xl">✨</span>
-          <span className="font-semibold">Novo Projeto</span>
+          <span className="text-lg sm:text-xl">✨</span>
+          <span className="font-semibold hidden sm:inline">Novo Projeto</span>
+          <span className="font-semibold sm:hidden">Novo</span>
         </button>
       </div>
 

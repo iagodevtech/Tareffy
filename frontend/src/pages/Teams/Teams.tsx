@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, UserPlusIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import { teamService, Team } from '../../services/teamService';
-import { emailDebugService } from '../../services/emailDebugService';
-import { emailTemplateFinder } from '../../services/emailTemplateFinder';
-import { EmailParameterTester } from '../../services/emailParameterTester';
-import { EmailRecipientTester } from '../../services/emailRecipientTester';
-import { EmailTemplateValidator } from '../../services/emailTemplateValidator';
 
 const Teams: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -123,123 +118,13 @@ const Teams: React.FC = () => {
       setSelectedTeam('');
       setInviteEmail('');
       setInviteRole('member');
-      alert('Convite enviado com sucesso!');
+      alert('Convite enviado com sucesso!\n\n📧 Verifique sua caixa de entrada, spam ou lixo eletrônico.');
     } catch (error: any) {
       console.error('Erro ao enviar convite:', error);
       alert(error.message || 'Erro ao enviar convite');
     }
   };
 
-  const handleDebugEmail = async () => {
-    console.log('🔍 Iniciando debug do sistema de email...');
-    await emailDebugService.runFullDiagnostic();
-  };
-
-  const handleTestEmail = async () => {
-    try {
-      console.log('🧪 Testando envio de email simples...');
-      
-      // Teste direto com EmailJS
-      const { default: emailjs } = await import('@emailjs/browser');
-      const { EMAILJS_CONFIG } = await import('../../config/emailjs');
-      
-      const templateParams = {
-        to_email: 'iagodevtech@gmail.com',
-        team_name: 'Equipe Teste',
-        role: 'Membro',
-        inviter_name: 'Usuário Teste',
-        app_url: 'https://iagodevtech.github.io/Tareffy/login'
-      };
-
-      console.log('📤 Enviando email de teste...', templateParams);
-      console.log('🔧 Service ID:', EMAILJS_CONFIG.SERVICE_ID);
-      console.log('📋 Template ID:', EMAILJS_CONFIG.TEMPLATE_ID_TEAM_INVITE);
-
-      const response = await emailjs.send(
-        EMAILJS_CONFIG.SERVICE_ID,
-        EMAILJS_CONFIG.TEMPLATE_ID_TEAM_INVITE,
-        templateParams
-      );
-
-      console.log('✅ Email de teste enviado com sucesso!', response);
-      alert('✅ Email de teste enviado com sucesso! Verifique sua caixa de entrada.');
-    } catch (error: any) {
-      console.error('❌ Erro no teste de email:', error);
-      alert(`❌ Erro: ${error.text || error.message}`);
-    }
-  };
-
-  const handleFindTemplate = async () => {
-    console.log('🔍 Procurando template funcional...');
-    const workingTemplate = await emailTemplateFinder.findWorkingTemplate();
-    
-    if (workingTemplate) {
-      alert(`✅ Template funcional encontrado: ${workingTemplate}`);
-      console.log(`✅ Use este template: ${workingTemplate}`);
-    } else {
-      alert('❌ Nenhum template funcional encontrado. Verifique o EmailJS.');
-      await emailTemplateFinder.listAvailableTemplates();
-    }
-  };
-
-  const handleTestParameters = async () => {
-    console.log('🧪 Testando parâmetros do template...');
-    await EmailParameterTester.testTemplateParameters();
-    alert('✅ Teste de parâmetros concluído! Verifique o console para detalhes.');
-  };
-
-  const handleTestTemplateIds = async () => {
-    console.log('🔍 Testando diferentes IDs de template...');
-    const workingTemplate = await EmailParameterTester.testDifferentTemplateIds();
-    
-    if (workingTemplate) {
-      alert(`✅ Template funcional encontrado: ${workingTemplate}`);
-      console.log(`✅ Use este template: ${workingTemplate}`);
-    } else {
-      alert('❌ Nenhum template funcional encontrado.');
-    }
-  };
-
-  const handleTestRecipient = async () => {
-    console.log('🧪 Testando parâmetros de destinatário...');
-    const success = await EmailRecipientTester.testRecipientParameters();
-    
-    if (success) {
-      alert('✅ Parâmetro de destinatário funcionando!');
-    } else {
-      alert('❌ Nenhum parâmetro de destinatário funcionou. Verifique o console.');
-    }
-  };
-
-  const handleTestTemplateConfig = async () => {
-    console.log('🔍 Testando configuração do template...');
-    const success = await EmailRecipientTester.testTemplateConfiguration();
-    
-    if (success) {
-      alert('✅ Configuração do template funcionando!');
-    } else {
-      alert('❌ Configuração do template com problemas. Verifique o console.');
-    }
-  };
-
-  const handleValidateTemplate = async () => {
-    console.log('🔍 Validando template...');
-    const result = await EmailTemplateValidator.validateTemplateConfiguration();
-    
-    if (result.success) {
-      alert(`✅ ${result.message}`);
-    } else {
-      alert(`❌ ${result.message}\n\n💡 Solução: ${result.solution}`);
-    }
-  };
-
-  const handleTemplateDiagnostic = async () => {
-    console.log('🔍 Executando diagnóstico completo...');
-    const diagnostic = await EmailTemplateValidator.getTemplateDiagnostic();
-    
-    alert('✅ Diagnóstico concluído! Verifique o console para detalhes completos.');
-    console.log('📊 Resultado do diagnóstico:', diagnostic);
-  };
 
 
   if (loading) {
@@ -265,74 +150,22 @@ const Teams: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Equipes</h1>
           <p className="text-gray-600">Gerencie suas equipes e convide membros</p>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <button
             onClick={() => setShowInviteModal(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
+            className="bg-green-600 text-white px-3 py-2 sm:px-4 rounded-lg hover:bg-green-700 flex items-center justify-center gap-2 text-sm sm:text-base"
           >
-            <EnvelopeIcon className="h-5 w-5" />
-            Convidar Membro
+            <EnvelopeIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden sm:inline">Convidar Membro</span>
+            <span className="sm:hidden">Convidar</span>
           </button>
           <button
             onClick={handleNewTeam}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+            className="bg-blue-600 text-white px-3 py-2 sm:px-4 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2 text-sm sm:text-base"
           >
-            <PlusIcon className="h-5 w-5" />
-            Nova Equipe
-          </button>
-          <button
-            onClick={handleDebugEmail}
-            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 flex items-center gap-2"
-          >
-            🔍 Debug Email
-          </button>
-          <button
-            onClick={handleTestEmail}
-            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2"
-          >
-            🧪 Teste Email
-          </button>
-          <button
-            onClick={handleFindTemplate}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2"
-          >
-            🔍 Encontrar Template
-          </button>
-          <button
-            onClick={handleTestParameters}
-            className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 flex items-center gap-2"
-          >
-            🧪 Testar Parâmetros
-          </button>
-          <button
-            onClick={handleTestTemplateIds}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2"
-          >
-            🔍 Testar IDs
-          </button>
-          <button
-            onClick={handleTestRecipient}
-            className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 flex items-center gap-2"
-          >
-            📧 Testar Destinatário
-          </button>
-          <button
-            onClick={handleTestTemplateConfig}
-            className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 flex items-center gap-2"
-          >
-            ⚙️ Testar Config
-          </button>
-          <button
-            onClick={handleValidateTemplate}
-            className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 flex items-center gap-2"
-          >
-            ✅ Validar Template
-          </button>
-          <button
-            onClick={handleTemplateDiagnostic}
-            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 flex items-center gap-2"
-          >
-            🔍 Diagnóstico
+            <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden sm:inline">Nova Equipe</span>
+            <span className="sm:hidden">Nova</span>
           </button>
         </div>
       </div>

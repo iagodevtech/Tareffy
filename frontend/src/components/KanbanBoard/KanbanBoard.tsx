@@ -188,35 +188,74 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   };
 
   // Touch events para mobile
+  const [touchStartPos, setTouchStartPos] = useState<{ x: number; y: number } | null>(null);
+  const [touchCurrentPos, setTouchCurrentPos] = useState<{ x: number; y: number } | null>(null);
+
   const handleTouchStart = (e: React.TouchEvent, task: Task) => {
     setDraggedTask(task);
+    const touch = e.touches[0];
+    setTouchStartPos({ x: touch.clientX, y: touch.clientY });
+    setTouchCurrentPos({ x: touch.clientX, y: touch.clientY });
     e.preventDefault();
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!draggedTask) return;
+    if (!draggedTask || !touchStartPos) return;
+    
+    const touch = e.touches[0];
+    setTouchCurrentPos({ x: touch.clientX, y: touch.clientY });
     e.preventDefault();
   };
 
-  const handleTouchEnd = (e: React.TouchEvent, newStatus: string) => {
-    if (!draggedTask) return;
-    
-    const updatedTask = { ...draggedTask, status: newStatus as any };
-    
-    // Atualizar timestamps baseado no status
-    if (newStatus === 'in_progress' && !updatedTask.startedAt) {
-      updatedTask.startedAt = new Date().toISOString();
-    } else if (newStatus === 'production' && !updatedTask.completedAt) {
-      updatedTask.completedAt = new Date().toISOString();
-      updatedTask.duration = calculateDuration(updatedTask) ? 
-        Math.floor((new Date().getTime() - new Date(updatedTask.startedAt || updatedTask.createdAt).getTime()) / (1000 * 60 * 60)) : 0;
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!draggedTask || !touchStartPos || !touchCurrentPos) {
+      setDraggedTask(null);
+      setTouchStartPos(null);
+      setTouchCurrentPos(null);
+      return;
+    }
+
+    // Calcular distância do movimento
+    const deltaX = touchCurrentPos.x - touchStartPos.x;
+    const deltaY = touchCurrentPos.y - touchStartPos.y;
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    // Se o movimento foi significativo (mais de 50px), tentar mover para próxima coluna
+    if (distance > 50) {
+      const currentIndex = columns.findIndex(col => col.id === draggedTask.status);
+      let newIndex = currentIndex;
+      
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Movimento horizontal
+        if (deltaX > 0 && currentIndex < columns.length - 1) {
+          newIndex = currentIndex + 1;
+        } else if (deltaX < 0 && currentIndex > 0) {
+          newIndex = currentIndex - 1;
+        }
+      }
+      
+      if (newIndex !== currentIndex) {
+        const newStatus = columns[newIndex].id;
+        const updatedTask = { ...draggedTask, status: newStatus as any };
+        
+        // Atualizar timestamps baseado no status
+        if (newStatus === 'in_progress' && !updatedTask.startedAt) {
+          updatedTask.startedAt = new Date().toISOString();
+        } else if (newStatus === 'production' && !updatedTask.completedAt) {
+          updatedTask.completedAt = new Date().toISOString();
+          updatedTask.duration = calculateDuration(updatedTask) ? 
+            Math.floor((new Date().getTime() - new Date(updatedTask.startedAt || updatedTask.createdAt).getTime()) / (1000 * 60 * 60)) : 0;
+        }
+        
+        setTasks(prev => prev.map(task => 
+          task.id === draggedTask.id ? updatedTask : task
+        ));
+      }
     }
     
-    setTasks(prev => prev.map(task => 
-      task.id === draggedTask.id ? updatedTask : task
-    ));
-    
     setDraggedTask(null);
+    setTouchStartPos(null);
+    setTouchCurrentPos(null);
   };
 
   const handleNewTask = () => {

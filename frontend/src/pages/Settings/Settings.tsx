@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { userService, UserSettings } from '../../services/userService';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 
 const Settings: React.FC = () => {
@@ -17,6 +18,7 @@ const Settings: React.FC = () => {
   const [cockpitNotes, setCockpitNotes] = useState('');
   const [newProjectIdea, setNewProjectIdea] = useState('');
   const { logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const tabs = [
@@ -157,15 +159,21 @@ const Settings: React.FC = () => {
                 <label className="block text-base font-medium text-gray-700 mb-2">
                   Tema
                 </label>
-                <select
-                  value={settings.theme}
-                  onChange={(e) => setSettings({...settings, theme: e.target.value as 'light' | 'dark' | 'system'})}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="light">🌞 Claro</option>
-                  <option value="dark">🌙 Escuro</option>
-                  <option value="system">💻 Sistema</option>
-                </select>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={toggleTheme}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      theme === 'light' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    {theme === 'light' ? '🌞 Claro' : '🌙 Escuro'}
+                  </button>
+                  <span className="text-sm text-gray-500">
+                    Tema atual: {theme === 'light' ? 'Claro' : 'Escuro'}
+                  </span>
+                </div>
               </div>
 
               <div>

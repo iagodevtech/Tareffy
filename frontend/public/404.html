@@ -5,17 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tareffy - Gerenciamento de Tarefas</title>
     <script>
-      // Redirecionar para a página principal do Tareffy
-      sessionStorage.redirect = location.href;
-      window.location.replace('/');
+      // Função para redirecionar
+      function redirectToHome() {
+        // Salvar a URL atual para redirecionamento após carregar a app
+        sessionStorage.setItem('redirectAfterLoad', location.href);
+        
+        // Tentar redirecionar para a raiz
+        if (location.pathname !== '/') {
+          location.replace('/');
+        } else {
+          // Se já estiver na raiz, recarregar a página
+          location.reload();
+        }
+      }
+      
+      // Executar redirecionamento imediatamente
+      redirectToHome();
+      
+      // Fallback caso o redirecionamento falhe
+      setTimeout(() => {
+        if (location.pathname !== '/') {
+          location.replace('/');
+        }
+      }, 1000);
     </script>
   </head>
   <body>
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif;">
-      <div style="text-align: center;">
-        <h1>Tareffy</h1>
-        <p>Redirecionando...</p>
-        <p>Se não for redirecionado automaticamente, <a href="/">clique aqui</a>.</p>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+      <div style="text-align: center; padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 1rem; backdrop-filter: blur(10px);">
+        <h1 style="font-size: 2rem; margin-bottom: 1rem;">🚀 Tareffy</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 1rem;">Redirecionando...</p>
+        <p style="margin-bottom: 1rem;">Se não for redirecionado automaticamente:</p>
+        <a href="/" style="color: white; text-decoration: underline; font-weight: bold;">Clique aqui para ir ao início</a>
       </div>
     </div>
   </body>
