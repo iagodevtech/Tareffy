@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Projects from './pages/Projects/Projects';
 import ProjectDetails from './pages/Projects/ProjectDetails';
 import Teams from './pages/Teams/Teams';
+import AcceptInvite from './pages/Teams/AcceptInvite';
 import Reports from './pages/Reports/Reports';
 import Profile from './pages/Profile/Profile';
 import Settings from './pages/Settings/Settings';
@@ -48,6 +49,7 @@ function App() {
                 <Route path="projects" element={<Projects />} />
                 <Route path="projects/:id" element={<ProjectDetails />} />
                 <Route path="teams" element={<Teams />} />
+                <Route path="accept-invite" element={<AcceptInvite />} />
                 <Route path="reports" element={<Reports />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="settings" element={<Settings />} />

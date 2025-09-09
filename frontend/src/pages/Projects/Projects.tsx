@@ -1,11 +1,13 @@
   import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// Icons removidos - usando emojis nos botões
 import { projectService, Project } from '../../services/projectService';
+import { teamService, Team } from '../../services/teamService';
+// Icons removidos - usando emojis nos botões
 
 const Projects: React.FC = () => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [showModal, setShowModal] = useState(false);
@@ -31,8 +33,12 @@ const Projects: React.FC = () => {
   const loadProjects = async () => {
     try {
       setLoading(true);
-      const data = await projectService.getProjects();
-      setProjects(data);
+      const [projectsData, teamsData] = await Promise.all([
+        projectService.getProjects(),
+        teamService.getTeams()
+      ]);
+      setProjects(projectsData);
+      setTeams(teamsData);
     } catch (error) {
       console.error('Erro ao carregar projetos:', error);
     } finally {
@@ -82,7 +88,7 @@ const Projects: React.FC = () => {
       description: '',
       status: 'active',
       progress: 0,
-      team: '',
+      team_id: '',
       deadline: null,
       created_at: '',
       updated_at: '',
@@ -102,6 +108,11 @@ const Projects: React.FC = () => {
     // Validação básica
     if (!editingProject.name.trim()) {
       alert('Por favor, insira um nome para o projeto');
+      return;
+    }
+    
+    if (!editingProject.team_id) {
+      alert('Por favor, selecione uma equipe para o projeto');
       return;
     }
 
@@ -232,7 +243,7 @@ const Projects: React.FC = () => {
               </div>
               
               <div className="text-sm text-gray-600">
-                <p><span className="font-medium">Equipe:</span> {project.team || 'Não definida'}</p>
+                <p><span className="font-medium">Equipe:</span> {project.team_name || 'Não definida'}</p>
                 <p><span className="font-medium">Prazo:</span> {project.deadline ? new Date(project.deadline).toLocaleDateString('pt-BR') : 'Não definido'}</p>
               </div>
             </div>
@@ -299,12 +310,24 @@ const Projects: React.FC = () => {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Equipe</label>
-                <input
-                  type="text"
-                  value={editingProject.team}
-                  onChange={(e) => setEditingProject({...editingProject, team: e.target.value})}
+                <select
+                  value={editingProject.team_id}
+                  onChange={(e) => setEditingProject({...editingProject, team_id: e.target.value})}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                  required
+                >
+                  <option value="">Selecione uma equipe</option>
+                  {teams.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {team.name}
+                    </option>
+                  ))}
+                </select>
+                {teams.length === 0 && (
+                  <p className="text-sm text-amber-600 mt-1">
+                    ⚠️ Você precisa criar uma equipe primeiro para criar projetos.
+                  </p>
+                )}
               </div>
               
               <div>

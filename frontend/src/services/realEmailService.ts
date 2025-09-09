@@ -17,7 +17,7 @@ export const realEmailService = {
   },
 
   // Enviar convite de equipe
-  async sendTeamInvite(email: string, teamName: string, role: string, inviterName: string): Promise<boolean> {
+  async sendTeamInvite(email: string, teamName: string, role: string, inviterName: string, inviteId?: string): Promise<boolean> {
     try {
       console.log('📧 Enviando convite real via EmailJS...', { email, teamName, role, inviterName });
 
@@ -27,7 +27,9 @@ export const realEmailService = {
         team_name: teamName,
         role: role === 'admin' ? 'Administrador' : role === 'dev' ? 'Desenvolvedor' : 'Membro',
         inviter_name: inviterName,
-        app_url: 'https://iagodevtech.github.io/Tareffy/#/login'
+        app_url: inviteId 
+          ? `https://iagodevtech.github.io/Tareffy/#/accept-invite?invite=${inviteId}`
+          : 'https://iagodevtech.github.io/Tareffy/#/login'
       };
 
       console.log('📤 Parâmetros do template:', templateParams);

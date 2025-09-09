@@ -7,7 +7,8 @@ export interface Project {
   description: string;
   status: 'active' | 'completed' | 'on-hold';
   progress: number;
-  team: string;
+  team_id: string;
+  team_name?: string; // Para exibição
   deadline: string | null;
   created_at: string;
   updated_at: string;
@@ -15,19 +16,40 @@ export interface Project {
 }
 
 export const projectService = {
-  // Buscar todos os projetos do usuário
+  // Buscar todos os projetos do usuário (das equipes que ele participa)
   async getProjects(): Promise<Project[]> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
+    // Buscar equipes onde o usuário é membro
+    const { data: userTeams, error: teamsError } = await supabase
+      .from('team_members')
+      .select('team_id')
+      .eq('user_id', user.id);
+
+    if (teamsError) throw teamsError;
+
+    const teamIds = userTeams?.map(t => t.team_id) || [];
+
+    // Buscar projetos das equipes do usuário
     const { data, error } = await supabase
       .from('projects')
-      .select('*')
-      .eq('user_id', user.id)
+      .select(`
+        *,
+        teams (
+          name
+        )
+      `)
+      .in('team_id', teamIds)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    
+    // Adicionar team_name para exibição
+    return data?.map(project => ({
+      ...project,
+      team_name: project.teams?.name || 'Equipe não encontrada'
+    })) || [];
   },
 
   // Buscar um projeto específico por ID
@@ -61,7 +83,7 @@ export const projectService = {
       description: project.description,
       status: project.status,
       progress: project.progress,
-      team: project.team,
+      team_id: project.team_id,
       deadline: project.deadline,
       user_id: user.id
     };

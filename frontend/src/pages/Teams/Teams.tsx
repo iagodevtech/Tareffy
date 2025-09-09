@@ -31,8 +31,20 @@ const Teams: React.FC = () => {
   const loadTeams = async () => {
     try {
       setLoading(true);
-      const data = await teamService.getTeams();
-      setTeams(data);
+      // Carregar equipes que o usuário criou
+      const ownedTeams = await teamService.getTeams();
+      // Carregar equipes onde o usuário é membro
+      const memberTeams = await teamService.getTeamsAsMember();
+      
+      // Combinar e remover duplicatas
+      const allTeams = [...ownedTeams];
+      memberTeams.forEach(memberTeam => {
+        if (!allTeams.find(team => team.id === memberTeam.id)) {
+          allTeams.push(memberTeam);
+        }
+      });
+      
+      setTeams(allTeams);
     } catch (error) {
       console.error('Erro ao carregar equipes:', error);
     } finally {

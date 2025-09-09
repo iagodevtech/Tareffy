@@ -238,9 +238,9 @@ export const teamService = {
         return data;
       }
       
-      console.log('📧 Enviando convite para:', { email, teamName, role, inviterName });
+      console.log('📧 Enviando convite para:', { email, teamName, role, inviterName, inviteId: data.id });
       
-      const emailSent = await realEmailService.sendTeamInvite(email.trim(), teamName, role, inviterName);
+      const emailSent = await realEmailService.sendTeamInvite(email.trim(), teamName, role, inviterName, data.id);
       
       if (emailSent) {
         console.log(`✅ Email de convite enviado com sucesso para ${email}`);
