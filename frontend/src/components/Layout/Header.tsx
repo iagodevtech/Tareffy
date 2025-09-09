@@ -104,13 +104,12 @@ const Header: React.FC = () => {
               
               {/* Dropdown de notificações */}
               {showNotifications && (
-                <div className={`absolute w-64 sm:w-72 max-w-[calc(100vw-3rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-[60] ${
-                  notificationPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
+                <div className={`fixed w-64 sm:w-72 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-[60] ${
+                  notificationPosition === 'top' ? 'bottom-20' : 'top-20'
                 }`} style={{ 
                   right: '1rem',
-                  maxWidth: 'calc(100vw - 3rem)', 
-                  maxHeight: 'calc(100vh - 4rem)', 
-                  marginTop: notificationPosition === 'bottom' ? '0.5rem' : '0' 
+                  maxWidth: 'calc(100vw - 2rem)', 
+                  maxHeight: 'calc(100vh - 6rem)'
                 }}>
                   <div className="p-3 border-b border-gray-200">
                     <div className="flex justify-between items-center">
