@@ -309,7 +309,10 @@ export const teamService = {
       .update({ status: 'accepted' })
       .eq('id', inviteId);
 
-    if (updateError) throw updateError;
+    if (updateError) {
+      console.error('Erro ao atualizar status do convite:', updateError);
+      throw updateError;
+    }
   },
 
   // Rejeitar convite
@@ -357,21 +360,44 @@ export const teamService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
-    const { data, error } = await supabase
-      .from('team_invites')
-      .select(`
-        *,
-        teams (
-          name,
-          description
-        )
-      `)
-      .eq('email', user.email)
-      .eq('status', 'pending')
-      .gt('expires_at', new Date().toISOString())
-      .order('created_at', { ascending: false });
+    try {
+      // Buscar convites pendentes
+      const { data: invites, error: invitesError } = await supabase
+        .from('team_invites')
+        .select('*')
+        .eq('email', user.email)
+        .eq('status', 'pending')
+        .gt('expires_at', new Date().toISOString())
+        .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return data || [];
+      if (invitesError) throw invitesError;
+
+      if (!invites || invites.length === 0) {
+        return [];
+      }
+
+      // Buscar informações das equipes
+      const teamIds = invites.map(invite => invite.team_id);
+      const { data: teams, error: teamsError } = await supabase
+        .from('teams')
+        .select('id, name, description')
+        .in('id', teamIds);
+
+      if (teamsError) throw teamsError;
+
+      // Combinar dados
+      const invitesWithTeams = invites.map(invite => {
+        const team = teams?.find(t => t.id === invite.team_id);
+        return {
+          ...invite,
+          teams: team ? { name: team.name, description: team.description } : null
+        };
+      });
+
+      return invitesWithTeams;
+    } catch (error) {
+      console.error('Erro em getPendingInvites:', error);
+      throw error;
+    }
   }
 };
