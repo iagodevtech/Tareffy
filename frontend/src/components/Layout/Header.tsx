@@ -9,7 +9,6 @@ const Header: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [notificationPosition, setNotificationPosition] = useState<'bottom' | 'top'>('bottom');
-  const [notificationHorizontalPosition, setNotificationHorizontalPosition] = useState<'right' | 'left'>('right');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -74,16 +73,6 @@ const Header: React.FC = () => {
       } else {
         setNotificationPosition('bottom');
       }
-
-      // Verificar se há espaço suficiente à direita
-      const notificationWidth = 320; // largura do menu (w-80 = 320px)
-      const availableSpaceRight = window.innerWidth - 50; // espaço à direita do ícone
-      
-      if (availableSpaceRight < notificationWidth) {
-        setNotificationHorizontalPosition('left');
-      } else {
-        setNotificationHorizontalPosition('right');
-      }
     }
     setShowNotifications(!showNotifications);
   };
@@ -115,11 +104,11 @@ const Header: React.FC = () => {
               
               {/* Dropdown de notificações */}
               {showNotifications && (
-                <div className={`absolute w-80 sm:w-96 max-w-[calc(100vw-1rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-[60] ${
+                <div className={`absolute w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-[60] ${
                   notificationPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
                 }`} style={{ 
-                  [notificationHorizontalPosition === 'right' ? 'right' : 'left']: '0.5rem',
-                  maxWidth: 'calc(100vw - 1rem)', 
+                  right: '0.5rem',
+                  maxWidth: 'calc(100vw - 2rem)', 
                   maxHeight: 'calc(100vh - 4rem)', 
                   marginTop: notificationPosition === 'bottom' ? '0.5rem' : '0' 
                 }}>
