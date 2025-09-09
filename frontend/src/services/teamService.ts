@@ -39,14 +39,26 @@ export const teamService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
-    const { data, error } = await supabase
-      .from('teams')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+    try {
+      console.log('🔍 Buscando equipes criadas pelo usuário:', user.id, user.email);
+      
+      const { data, error } = await supabase
+        .from('teams')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return data || [];
+      if (error) {
+        console.error('❌ Erro ao buscar equipes criadas:', error);
+        throw error;
+      }
+
+      console.log('👥 Equipes criadas encontradas:', data);
+      return data || [];
+    } catch (error) {
+      console.error('❌ Erro em getTeams:', error);
+      throw error;
+    }
   },
 
   // Buscar equipes onde o usuário é membro
@@ -55,19 +67,28 @@ export const teamService = {
     if (!user) throw new Error('Usuário não autenticado');
 
     try {
+      console.log('🔍 Buscando equipes onde usuário é membro:', user.id, user.email);
+      
       // Primeiro buscar os team_ids onde o usuário é membro
       const { data: memberships, error: membersError } = await supabase
         .from('team_members')
-        .select('team_id')
+        .select('team_id, role')
         .eq('user_id', user.id);
 
-      if (membersError) throw membersError;
+      if (membersError) {
+        console.error('❌ Erro ao buscar memberships:', membersError);
+        throw membersError;
+      }
+
+      console.log('📋 Memberships encontradas:', memberships);
 
       if (!memberships || memberships.length === 0) {
+        console.log('⚠️ Nenhuma membership encontrada');
         return [];
       }
 
       const teamIds = memberships.map(m => m.team_id);
+      console.log('🆔 Team IDs:', teamIds);
 
       // Depois buscar as equipes pelos IDs
       const { data: teams, error: teamsError } = await supabase
@@ -76,7 +97,12 @@ export const teamService = {
         .in('id', teamIds)
         .order('created_at', { ascending: false });
 
-      if (teamsError) throw teamsError;
+      if (teamsError) {
+        console.error('❌ Erro ao buscar equipes:', teamsError);
+        throw teamsError;
+      }
+
+      console.log('👥 Equipes encontradas:', teams);
       return teams || [];
     } catch (error) {
       console.error('❌ Erro em getTeamsAsMember:', error);
