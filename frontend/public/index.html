@@ -9,9 +9,23 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Tareffy - Gerenciamento de Tarefas</title>
+    <script>
+      // Verificar se estamos em uma rota que não existe
+      if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/Tareffy/')) {
+        // Redirecionar para a raiz
+        window.location.replace('/');
+      }
+    </script>
   </head>
   <body>
     <noscript>Você precisa habilitar JavaScript para executar este aplicativo.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif;">
+        <div style="text-align: center;">
+          <h1>🚀 Tareffy</h1>
+          <p>Carregando...</p>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

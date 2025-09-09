@@ -10,24 +10,12 @@
         // Salvar a URL atual para redirecionamento após carregar a app
         sessionStorage.setItem('redirectAfterLoad', location.href);
         
-        // Tentar redirecionar para a raiz
-        if (location.pathname !== '/') {
-          location.replace('/');
-        } else {
-          // Se já estiver na raiz, recarregar a página
-          location.reload();
-        }
+        // Sempre redirecionar para a raiz
+        location.replace('/');
       }
       
       // Executar redirecionamento imediatamente
       redirectToHome();
-      
-      // Fallback caso o redirecionamento falhe
-      setTimeout(() => {
-        if (location.pathname !== '/') {
-          location.replace('/');
-        }
-      }, 1000);
     </script>
   </head>
   <body>
