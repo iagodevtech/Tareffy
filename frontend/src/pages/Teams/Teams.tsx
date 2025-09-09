@@ -3,6 +3,7 @@ import { PlusIcon, PencilIcon, TrashIcon, UserPlusIcon, EnvelopeIcon } from '@he
 import { teamService, Team } from '../../services/teamService';
 import { emailDebugService } from '../../services/emailDebugService';
 import { emailTemplateFinder } from '../../services/emailTemplateFinder';
+import { EmailParameterTester } from '../../services/emailParameterTester';
 
 const Teams: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -179,6 +180,24 @@ const Teams: React.FC = () => {
     }
   };
 
+  const handleTestParameters = async () => {
+    console.log('🧪 Testando parâmetros do template...');
+    await EmailParameterTester.testTemplateParameters();
+    alert('✅ Teste de parâmetros concluído! Verifique o console para detalhes.');
+  };
+
+  const handleTestTemplateIds = async () => {
+    console.log('🔍 Testando diferentes IDs de template...');
+    const workingTemplate = await EmailParameterTester.testDifferentTemplateIds();
+    
+    if (workingTemplate) {
+      alert(`✅ Template funcional encontrado: ${workingTemplate}`);
+      console.log(`✅ Use este template: ${workingTemplate}`);
+    } else {
+      alert('❌ Nenhum template funcional encontrado.');
+    }
+  };
+
 
   if (loading) {
     return (
@@ -235,6 +254,18 @@ const Teams: React.FC = () => {
             className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2"
           >
             🔍 Encontrar Template
+          </button>
+          <button
+            onClick={handleTestParameters}
+            className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 flex items-center gap-2"
+          >
+            🧪 Testar Parâmetros
+          </button>
+          <button
+            onClick={handleTestTemplateIds}
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2"
+          >
+            🔍 Testar IDs
           </button>
         </div>
       </div>
