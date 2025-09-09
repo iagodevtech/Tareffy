@@ -4,6 +4,7 @@ import { teamService, Team } from '../../services/teamService';
 import { emailDebugService } from '../../services/emailDebugService';
 import { emailTemplateFinder } from '../../services/emailTemplateFinder';
 import { EmailParameterTester } from '../../services/emailParameterTester';
+import { EmailRecipientTester } from '../../services/emailRecipientTester';
 
 const Teams: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -198,6 +199,28 @@ const Teams: React.FC = () => {
     }
   };
 
+  const handleTestRecipient = async () => {
+    console.log('🧪 Testando parâmetros de destinatário...');
+    const success = await EmailRecipientTester.testRecipientParameters();
+    
+    if (success) {
+      alert('✅ Parâmetro de destinatário funcionando!');
+    } else {
+      alert('❌ Nenhum parâmetro de destinatário funcionou. Verifique o console.');
+    }
+  };
+
+  const handleTestTemplateConfig = async () => {
+    console.log('🔍 Testando configuração do template...');
+    const success = await EmailRecipientTester.testTemplateConfiguration();
+    
+    if (success) {
+      alert('✅ Configuração do template funcionando!');
+    } else {
+      alert('❌ Configuração do template com problemas. Verifique o console.');
+    }
+  };
+
 
   if (loading) {
     return (
@@ -266,6 +289,18 @@ const Teams: React.FC = () => {
             className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2"
           >
             🔍 Testar IDs
+          </button>
+          <button
+            onClick={handleTestRecipient}
+            className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 flex items-center gap-2"
+          >
+            📧 Testar Destinatário
+          </button>
+          <button
+            onClick={handleTestTemplateConfig}
+            className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 flex items-center gap-2"
+          >
+            ⚙️ Testar Config
           </button>
         </div>
       </div>
