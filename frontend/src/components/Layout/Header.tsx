@@ -91,10 +91,10 @@ const Header: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <div className="relative">
+            <div className="relative z-50">
               <button 
                 onClick={toggleNotifications}
-                className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors relative"
+                className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors relative z-50"
               >
                 <BellIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 {notifications.some(n => !n.read) && (
@@ -104,9 +104,9 @@ const Header: React.FC = () => {
               
               {/* Dropdown de notificações */}
               {showNotifications && (
-                <div className={`absolute right-0 w-80 sm:w-96 max-w-[calc(100vw-1rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50 ${
+                <div className={`absolute right-0 w-80 sm:w-96 max-w-[calc(100vw-1rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-[60] ${
                   notificationPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
-                }`} style={{ right: '0.5rem', maxWidth: 'calc(100vw - 1rem)', maxHeight: 'calc(100vh - 6rem)' }}>
+                }`} style={{ right: '0.5rem', maxWidth: 'calc(100vw - 1rem)', maxHeight: 'calc(100vh - 6rem)', marginTop: notificationPosition === 'bottom' ? '0.5rem' : '0' }}>
                   <div className="p-4 border-b border-gray-200">
                     <div className="flex justify-between items-center">
                       <h3 className="text-sm font-semibold text-gray-900">Notificações</h3>
