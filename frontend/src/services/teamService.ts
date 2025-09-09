@@ -27,6 +27,10 @@ export interface TeamInvite {
   invited_by: string;
   created_at: string;
   expires_at: string;
+  teams?: {
+    name: string;
+    description: string;
+  };
 }
 
 export const teamService = {
