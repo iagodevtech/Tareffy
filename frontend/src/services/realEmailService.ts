@@ -27,7 +27,7 @@ export const realEmailService = {
         team_name: teamName,
         role: role === 'admin' ? 'Administrador' : role === 'dev' ? 'Desenvolvedor' : 'Membro',
         inviter_name: inviterName,
-        app_url: 'https://iagodevtech.github.io/Tareffy/login'
+        app_url: 'https://iagodevtech.github.io/Tareffy/#/login'
       };
 
       console.log('📤 Parâmetros do template:', templateParams);
@@ -64,7 +64,7 @@ export const realEmailService = {
         team_name: `Relatório ${reportType}`,
         role: 'Usuário',
         inviter_name: 'Sistema Tareffy',
-        app_url: 'https://iagodevtech.github.io/Tareffy/dashboard'
+        app_url: 'https://iagodevtech.github.io/Tareffy/#/dashboard'
       };
 
       const response = await emailjs.send(
@@ -106,7 +106,7 @@ export const realEmailService = {
         team_name: emailData.subject || 'Notificação do Tareffy',
         role: 'Usuário',
         inviter_name: 'Sistema Tareffy',
-        app_url: 'https://iagodevtech.github.io/Tareffy/dashboard'
+        app_url: 'https://iagodevtech.github.io/Tareffy/#/dashboard'
       };
 
       console.log('📤 Parâmetros do email:', templateParams);

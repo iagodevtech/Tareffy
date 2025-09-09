@@ -32,14 +32,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // Aplicar tema ao documento
+    console.log('🎨 Aplicando tema:', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+      console.log('🌙 Classe dark adicionada');
     } else {
       document.documentElement.classList.remove('dark');
+      console.log('☀️ Classe dark removida');
     }
     
     // Salvar tema no localStorage
     localStorage.setItem('theme', theme);
+    console.log('💾 Tema salvo no localStorage:', theme);
   }, [theme]);
 
   const toggleTheme = () => {
