@@ -104,15 +104,15 @@ const Header: React.FC = () => {
               
               {/* Dropdown de notificações */}
               {showNotifications && (
-                <div className={`absolute w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-[60] ${
+                <div className={`absolute w-64 sm:w-72 max-w-[calc(100vw-3rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-[60] ${
                   notificationPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
                 }`} style={{ 
-                  right: '0.5rem',
-                  maxWidth: 'calc(100vw - 2rem)', 
+                  right: '1rem',
+                  maxWidth: 'calc(100vw - 3rem)', 
                   maxHeight: 'calc(100vh - 4rem)', 
                   marginTop: notificationPosition === 'bottom' ? '0.5rem' : '0' 
                 }}>
-                  <div className="p-4 border-b border-gray-200">
+                  <div className="p-3 border-b border-gray-200">
                     <div className="flex justify-between items-center">
                       <h3 className="text-sm font-semibold text-gray-900">Notificações</h3>
                       <button
@@ -133,7 +133,7 @@ const Header: React.FC = () => {
                         <div
                           key={notification.id}
                           onClick={() => handleNotificationClick(notification)}
-                          className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
+                          className={`p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
                             !notification.read ? 'bg-blue-50' : ''
                           }`}
                         >
@@ -158,7 +158,7 @@ const Header: React.FC = () => {
                     )}
                   </div>
                   {notifications.length > 0 && (
-                    <div className="p-3 border-t border-gray-200">
+                    <div className="p-2 border-t border-gray-200">
                       <button 
                         onClick={handleMarkAllAsRead}
                         className="w-full text-xs text-blue-600 hover:text-blue-800 font-medium"
