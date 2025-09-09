@@ -8,6 +8,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [notificationPosition, setNotificationPosition] = useState<'bottom' | 'top'>('bottom');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -60,6 +61,22 @@ const Header: React.FC = () => {
     setShowNotifications(false);
   };
 
+  const toggleNotifications = () => {
+    if (!showNotifications) {
+      // Verificar se há espaço suficiente abaixo
+      const headerHeight = 64; // altura do header
+      const availableSpaceBelow = window.innerHeight - headerHeight;
+      const notificationHeight = 400; // altura estimada do menu
+      
+      if (availableSpaceBelow < notificationHeight) {
+        setNotificationPosition('top');
+      } else {
+        setNotificationPosition('bottom');
+      }
+    }
+    setShowNotifications(!showNotifications);
+  };
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="px-4 sm:px-6 lg:px-8">
@@ -76,7 +93,7 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="relative">
               <button 
-                onClick={() => setShowNotifications(!showNotifications)}
+                onClick={toggleNotifications}
                 className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors relative"
               >
                 <BellIcon className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -87,7 +104,9 @@ const Header: React.FC = () => {
               
               {/* Dropdown de notificações */}
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-96 max-w-[calc(100vw-1rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-6rem)] overflow-hidden" style={{ right: '0.5rem', maxWidth: 'calc(100vw - 1rem)' }}>
+                <div className={`absolute right-0 w-80 sm:w-96 max-w-[calc(100vw-1rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-8rem)] overflow-hidden ${
+                  notificationPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
+                }`} style={{ right: '0.5rem', maxWidth: 'calc(100vw - 1rem)', maxHeight: 'calc(100vh - 8rem)' }}>
                   <div className="p-4 border-b border-gray-200">
                     <div className="flex justify-between items-center">
                       <h3 className="text-sm font-semibold text-gray-900">Notificações</h3>
@@ -99,7 +118,7 @@ const Header: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="max-h-96 overflow-y-auto">
+                  <div className="max-h-[calc(100vh-16rem)] overflow-y-auto">
                     {notifications.length === 0 ? (
                       <div className="p-4 text-center text-gray-500">
                         Nenhuma notificação
