@@ -35,32 +35,47 @@ const Projects: React.FC = () => {
       setLoading(true);
       console.log('🔄 Carregando projetos e equipes...');
       
-      const [projectsData, ownedTeams, memberTeams] = await Promise.all([
-        projectService.getProjects(),
-        teamService.getTeams(),
-        teamService.getTeamsAsMember()
-      ]);
+      // Carregar equipes primeiro (mais simples)
+      let allTeams: Team[] = [];
+      try {
+        const ownedTeams = await teamService.getTeams();
+        console.log('✅ Equipes criadas carregadas:', ownedTeams.length);
+        allTeams = [...ownedTeams];
+      } catch (teamError) {
+        console.error('❌ Erro ao carregar equipes criadas:', teamError);
+      }
       
-      console.log('📊 Dados carregados:', {
+      try {
+        const memberTeams = await teamService.getTeamsAsMember();
+        console.log('✅ Equipes como membro carregadas:', memberTeams.length);
+        memberTeams.forEach(memberTeam => {
+          if (!allTeams.find(team => team.id === memberTeam.id)) {
+            allTeams.push(memberTeam);
+          }
+        });
+      } catch (memberError) {
+        console.error('❌ Erro ao carregar equipes como membro:', memberError);
+      }
+      
+      // Carregar projetos separadamente
+      let projectsData: Project[] = [];
+      try {
+        projectsData = await projectService.getProjects();
+        console.log('✅ Projetos carregados:', projectsData.length);
+      } catch (projectError) {
+        console.error('❌ Erro ao carregar projetos:', projectError);
+      }
+      
+      console.log('📊 Dados finais:', {
         projects: projectsData.length,
-        ownedTeams: ownedTeams.length,
-        memberTeams: memberTeams.length
+        teams: allTeams.length,
+        teamNames: allTeams.map(t => t.name)
       });
-      
-      // Combinar equipes criadas e equipes onde é membro
-      const allTeams = [...ownedTeams];
-      memberTeams.forEach(memberTeam => {
-        if (!allTeams.find(team => team.id === memberTeam.id)) {
-          allTeams.push(memberTeam);
-        }
-      });
-      
-      console.log('👥 Equipes combinadas:', allTeams.map(t => ({ id: t.id, name: t.name })));
       
       setProjects(projectsData);
       setTeams(allTeams);
     } catch (error) {
-      console.error('❌ Erro ao carregar projetos:', error);
+      console.error('❌ Erro geral ao carregar:', error);
     } finally {
       setLoading(false);
     }

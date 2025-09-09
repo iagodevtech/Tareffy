@@ -54,23 +54,34 @@ export const teamService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
-    const { data, error } = await supabase
-      .from('team_members')
-      .select(`
-        team_id,
-        teams (
-          id,
-          name,
-          description,
-          user_id,
-          created_at,
-          updated_at
-        )
-      `)
-      .eq('user_id', user.id);
+    try {
+      // Primeiro buscar os team_ids onde o usuário é membro
+      const { data: memberships, error: membersError } = await supabase
+        .from('team_members')
+        .select('team_id')
+        .eq('user_id', user.id);
 
-    if (error) throw error;
-    return data?.map(item => item.teams).flat().filter(Boolean) || [];
+      if (membersError) throw membersError;
+
+      if (!memberships || memberships.length === 0) {
+        return [];
+      }
+
+      const teamIds = memberships.map(m => m.team_id);
+
+      // Depois buscar as equipes pelos IDs
+      const { data: teams, error: teamsError } = await supabase
+        .from('teams')
+        .select('*')
+        .in('id', teamIds)
+        .order('created_at', { ascending: false });
+
+      if (teamsError) throw teamsError;
+      return teams || [];
+    } catch (error) {
+      console.error('❌ Erro em getTeamsAsMember:', error);
+      throw error;
+    }
   },
 
   // Criar nova equipe
