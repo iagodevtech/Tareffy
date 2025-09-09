@@ -5,6 +5,7 @@ import { emailDebugService } from '../../services/emailDebugService';
 import { emailTemplateFinder } from '../../services/emailTemplateFinder';
 import { EmailParameterTester } from '../../services/emailParameterTester';
 import { EmailRecipientTester } from '../../services/emailRecipientTester';
+import { EmailTemplateValidator } from '../../services/emailTemplateValidator';
 
 const Teams: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -221,6 +222,25 @@ const Teams: React.FC = () => {
     }
   };
 
+  const handleValidateTemplate = async () => {
+    console.log('🔍 Validando template...');
+    const result = await EmailTemplateValidator.validateTemplateConfiguration();
+    
+    if (result.success) {
+      alert(`✅ ${result.message}`);
+    } else {
+      alert(`❌ ${result.message}\n\n💡 Solução: ${result.solution}`);
+    }
+  };
+
+  const handleTemplateDiagnostic = async () => {
+    console.log('🔍 Executando diagnóstico completo...');
+    const diagnostic = await EmailTemplateValidator.getTemplateDiagnostic();
+    
+    alert('✅ Diagnóstico concluído! Verifique o console para detalhes completos.');
+    console.log('📊 Resultado do diagnóstico:', diagnostic);
+  };
+
 
   if (loading) {
     return (
@@ -301,6 +321,18 @@ const Teams: React.FC = () => {
             className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 flex items-center gap-2"
           >
             ⚙️ Testar Config
+          </button>
+          <button
+            onClick={handleValidateTemplate}
+            className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 flex items-center gap-2"
+          >
+            ✅ Validar Template
+          </button>
+          <button
+            onClick={handleTemplateDiagnostic}
+            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 flex items-center gap-2"
+          >
+            🔍 Diagnóstico
           </button>
         </div>
       </div>
