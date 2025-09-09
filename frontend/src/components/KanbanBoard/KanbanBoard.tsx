@@ -460,7 +460,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                }`}
                onDragOver={handleDragOver}
                onDrop={(e) => handleDrop(e, column.id)}
-               onTouchEnd={(e) => handleTouchEnd(e, column.id)}
+               onTouchEnd={handleTouchEnd}
              >
                {filteredTasks
                  .filter(task => task.status === column.id)
@@ -474,7 +474,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
                     onDragStart={(e) => handleDragStart(e, task)}
                     onTouchStart={(e) => handleTouchStart(e, task)}
                     onTouchMove={handleTouchMove}
-                    onTouchEnd={(e) => handleTouchEnd(e, column.id)}
+                    onTouchEnd={handleTouchEnd}
                     style={{ touchAction: 'none' }}
                   >
                     <div className="flex justify-between items-start mb-2">
