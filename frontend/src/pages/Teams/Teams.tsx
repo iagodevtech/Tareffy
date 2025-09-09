@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, UserPlusIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import { teamService, Team } from '../../services/teamService';
+import { supabase } from '../../lib/supabase';
+
+// Estender a interface Team para incluir userRole
+interface TeamWithRole extends Team {
+  userRole?: 'admin' | 'dev' | 'member' | null;
+}
 
 const Teams: React.FC = () => {
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [teams, setTeams] = useState<TeamWithRole[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -44,7 +50,24 @@ const Teams: React.FC = () => {
         }
       });
       
-      setTeams(allTeams);
+      // Adicionar informações de papel do usuário para cada equipe
+      const teamsWithRole = await Promise.all(
+        allTeams.map(async (team) => {
+          const { data: member } = await supabase
+            .from('team_members')
+            .select('role')
+            .eq('team_id', team.id)
+            .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+            .single();
+          
+          return {
+            ...team,
+            userRole: member?.role || null
+          };
+        })
+      );
+      
+      setTeams(teamsWithRole);
     } catch (error) {
       console.error('Erro ao carregar equipes:', error);
     } finally {
@@ -208,30 +231,39 @@ const Teams: React.FC = () => {
                   <p className="text-gray-600 text-sm mt-1">{team.description}</p>
                 </div>
                 <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      setSelectedTeam(team.id);
-                      setShowInviteModal(true);
-                    }}
-                    className="p-1 text-gray-400 hover:text-green-600"
-                    title="Convidar membro"
-                  >
-                    <UserPlusIcon className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleEditTeam(team)}
-                    className="p-1 text-gray-400 hover:text-blue-600"
-                    title="Editar equipe"
-                  >
-                    <PencilIcon className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteTeam(team.id)}
-                    className="p-1 text-gray-400 hover:text-red-600"
-                    title="Excluir equipe"
-                  >
-                    <TrashIcon className="h-4 w-4" />
-                  </button>
+                  {team.userRole === 'admin' && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setSelectedTeam(team.id);
+                          setShowInviteModal(true);
+                        }}
+                        className="p-1 text-gray-400 hover:text-green-600"
+                        title="Convidar membro"
+                      >
+                        <UserPlusIcon className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleEditTeam(team)}
+                        className="p-1 text-gray-400 hover:text-blue-600"
+                        title="Editar equipe"
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTeam(team.id)}
+                        className="p-1 text-gray-400 hover:text-red-600"
+                        title="Excluir equipe"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    </>
+                  )}
+                  {team.userRole && team.userRole !== 'admin' && (
+                    <span className="text-xs text-gray-500 px-2 py-1 bg-gray-100 rounded">
+                      {team.userRole === 'dev' ? 'Desenvolvedor' : 'Membro'}
+                    </span>
+                  )}
                 </div>
               </div>
               

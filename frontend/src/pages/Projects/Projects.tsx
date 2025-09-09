@@ -33,14 +33,34 @@ const Projects: React.FC = () => {
   const loadProjects = async () => {
     try {
       setLoading(true);
-      const [projectsData, teamsData] = await Promise.all([
+      console.log('🔄 Carregando projetos e equipes...');
+      
+      const [projectsData, ownedTeams, memberTeams] = await Promise.all([
         projectService.getProjects(),
-        teamService.getTeams()
+        teamService.getTeams(),
+        teamService.getTeamsAsMember()
       ]);
+      
+      console.log('📊 Dados carregados:', {
+        projects: projectsData.length,
+        ownedTeams: ownedTeams.length,
+        memberTeams: memberTeams.length
+      });
+      
+      // Combinar equipes criadas e equipes onde é membro
+      const allTeams = [...ownedTeams];
+      memberTeams.forEach(memberTeam => {
+        if (!allTeams.find(team => team.id === memberTeam.id)) {
+          allTeams.push(memberTeam);
+        }
+      });
+      
+      console.log('👥 Equipes combinadas:', allTeams.map(t => ({ id: t.id, name: t.name })));
+      
       setProjects(projectsData);
-      setTeams(teamsData);
+      setTeams(allTeams);
     } catch (error) {
-      console.error('Erro ao carregar projetos:', error);
+      console.error('❌ Erro ao carregar projetos:', error);
     } finally {
       setLoading(false);
     }
@@ -324,9 +344,15 @@ const Projects: React.FC = () => {
                   ))}
                 </select>
                 {teams.length === 0 && (
-                  <p className="text-sm text-amber-600 mt-1">
-                    ⚠️ Você precisa criar uma equipe primeiro para criar projetos.
-                  </p>
+                  <div className="text-sm text-amber-600 mt-1">
+                    <p>⚠️ Você precisa criar uma equipe primeiro para criar projetos.</p>
+                    <button
+                      onClick={loadProjects}
+                      className="text-blue-600 hover:text-blue-800 underline mt-1"
+                    >
+                      🔄 Recarregar equipes
+                    </button>
+                  </div>
                 )}
               </div>
               

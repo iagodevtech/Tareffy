@@ -169,7 +169,7 @@ export const teamService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
-    // Verificar se o usuário tem permissão para convidar
+    // Verificar se o usuário tem permissão para convidar (apenas admin/criador)
     const { data: member } = await supabase
       .from('team_members')
       .select('role')
@@ -177,8 +177,8 @@ export const teamService = {
       .eq('user_id', user.id)
       .single();
 
-    if (!member || (member.role !== 'admin' && member.role !== 'dev')) {
-      throw new Error('Você não tem permissão para convidar membros');
+    if (!member || member.role !== 'admin') {
+      throw new Error('Apenas o administrador da equipe pode convidar novos membros');
     }
 
     // Verificar se já existe convite pendente
