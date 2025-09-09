@@ -1,162 +1,150 @@
-# 🚀 Tareffy - Sistema de Gestão de Tarefas
+# 🚀 Tareffy - Sistema de Gerenciamento de Tarefas
 
-Tareffy é uma plataforma moderna e intuitiva para gestão de tarefas, projetos e equipes, desenvolvida com React, TypeScript e Supabase.
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/iagodevtech/Tareffy)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Deploy](https://img.shields.io/badge/deploy-GitHub%20Pages-brightgreen.svg)](https://iagodevtech.github.io/Tareffy/)
 
-## ✨ Características
+> **Versão 1.0.0** - Sistema completo de gerenciamento de tarefas e projetos em equipe
 
-- 📱 **Interface Responsiva**: Design moderno e adaptável para todos os dispositivos
-- 🔐 **Autenticação Segura**: Sistema de login integrado com Supabase
-- 📊 **Dashboard Intuitivo**: Métricas e gráficos em tempo real
-- 👥 **Gestão de Equipes**: Organize e gerencie suas equipes de trabalho
-- 📋 **Sistema de Tarefas**: Crie, organize e acompanhe o progresso das tarefas
-- 🎯 **Sistema de Prioridades**: Defina e gerencie prioridades das tarefas
-- 📈 **Relatórios**: Gere relatórios diários e semanais
-- 🌙 **Tema Escuro/Claro**: Suporte a múltiplos temas
+## 📋 Sobre o Projeto
 
-## 🛠️ Tecnologias
+O **Tareffy** é uma aplicação web moderna e responsiva para gerenciamento de tarefas e projetos em equipe. Desenvolvido com React, TypeScript e Supabase, oferece uma experiência intuitiva tanto em desktop quanto em dispositivos móveis.
 
-- **Frontend**: React 18 + TypeScript + Vite
-- **Backend**: Node.js + Express + Prisma
-- **Banco de Dados**: PostgreSQL (via Supabase)
-- **Autenticação**: Supabase Auth
-- **Estilização**: Tailwind CSS + CSS Modules
-- **Deploy**: GitHub Pages
+### ✨ Principais Funcionalidades
 
-## 🚀 Como Usar
+- 👥 **Gerenciamento de Equipes** - Crie equipes e convide membros por email
+- 📋 **Projetos Organizados** - Organize tarefas em projetos vinculados a equipes
+- 📊 **Kanban Board** - Interface drag & drop para gerenciar tarefas
+- 📈 **Dashboard Inteligente** - Acompanhe estatísticas e progresso
+- 📱 **Design Responsivo** - Funciona perfeitamente em mobile e desktop
+- 🌙 **Tema Dark/Light** - Interface adaptável às suas preferências
+- 📧 **Notificações por Email** - Receba convites e relatórios automaticamente
+- 📄 **Relatórios em PDF** - Gere relatórios detalhados dos projetos
+
+## 🛠️ Tecnologias Utilizadas
+
+### Frontend
+- **React 18** - Biblioteca para interfaces de usuário
+- **TypeScript** - Tipagem estática para JavaScript
+- **Tailwind CSS** - Framework CSS utilitário
+- **React Router** - Roteamento para aplicações React
+- **Heroicons** - Ícones SVG otimizados
+
+### Backend & Serviços
+- **Supabase** - Backend-as-a-Service (PostgreSQL, Auth, Storage)
+- **EmailJS** - Envio de emails direto do frontend
+- **GitHub Pages** - Hospedagem estática
+- **GitHub Actions** - CI/CD automatizado
+
+## 🚀 Deploy
+
+### 🌐 Aplicação Online
+**URL:** https://iagodevtech.github.io/Tareffy/
+
+### 📱 Compatibilidade
+- ✅ **Desktop** - Chrome, Firefox, Safari, Edge
+- ✅ **Mobile** - iOS Safari, Android Chrome
+- ✅ **Tablet** - iPad, Android tablets
+
+## 🏗️ Estrutura do Projeto
+
+```
+tareffy/
+├── frontend/                 # Aplicação React
+│   ├── public/              # Arquivos estáticos
+│   ├── src/
+│   │   ├── components/      # Componentes reutilizáveis
+│   │   ├── pages/          # Páginas da aplicação
+│   │   ├── services/       # Serviços e APIs
+│   │   ├── contexts/       # Contextos React
+│   │   └── lib/           # Configurações e utilitários
+│   └── package.json
+├── .github/workflows/       # GitHub Actions
+├── CHANGELOG.md            # Histórico de mudanças
+├── VERSION.md              # Informações da versão
+└── README.md               # Este arquivo
+```
+
+## 🎯 Funcionalidades Detalhadas
+
+### 👥 Sistema de Equipes
+- Criação e gerenciamento de equipes
+- Convites por email com links de aceite
+- Sistema de permissões (Admin, Membro, Dev)
+- Acesso baseado em membership
+
+### 📋 Gerenciamento de Projetos
+- Projetos vinculados a equipes
+- Status: Ativo, Concluído, Em Espera
+- Progresso e prazos
+- Acesso controlado por equipe
+
+### 📊 Kanban Board
+- Interface drag & drop intuitiva
+- Colunas personalizáveis
+- Comentários e issues por tarefa
+- Badges de notificação
+- Otimizado para mobile
+
+### 📈 Dashboard e Relatórios
+- Estatísticas em tempo real
+- Geração de relatórios em PDF
+- Envio automático por email
+- Log de atividades
+
+### ⚙️ Configurações
+- Perfil de usuário editável
+- Tema dark/light mode
+- Cockpit para anotações pessoais
+- Relatório técnico das tecnologias
+
+## 🔧 Desenvolvimento Local
 
 ### Pré-requisitos
-
-- Node.js 18+ 
+- Node.js 18+
 - npm ou yarn
 - Conta no Supabase
+- Conta no EmailJS
 
 ### Instalação
 
 1. **Clone o repositório**
-   ```bash
-   git clone https://github.com/seu-usuario/tareffy.git
-   cd tareffy
-   ```
+```bash
+git clone https://github.com/iagodevtech/Tareffy.git
+cd Tareffy
+```
 
 2. **Instale as dependências**
-   ```bash
-   npm install
-   ```
+```bash
+cd frontend
+npm install
+```
 
-3. **Configure o Supabase**
-   - Crie um projeto no [Supabase](https://supabase.com)
-   - Copie as credenciais do projeto
-   - Crie um arquivo `.env` na raiz do projeto:
-
-   ```env
-   VITE_SUPABASE_URL=sua_url_do_supabase
-   VITE_SUPABASE_ANON_KEY=sua_chave_anonima_do_supabase
-   ```
+3. **Configure as variáveis de ambiente**
+```bash
+# Crie um arquivo .env.local
+cp .env.example .env.local
+# Edite com suas credenciais do Supabase e EmailJS
+```
 
 4. **Execute o projeto**
-   ```bash
-   npm run dev
-   ```
-
-### Configuração do Banco de Dados
-
-1. **Execute as migrações do Prisma**
-   ```bash
-   cd backend
-   npx prisma migrate dev
-   ```
-
-2. **Execute o seed (opcional)**
-   ```bash
-   npm run seed
-   ```
-
-## 📱 Deploy no GitHub Pages
-
-O projeto está configurado para deploy automático no GitHub Pages:
-
-1. **Configure os Secrets do GitHub**
-   - Vá para `Settings > Secrets and variables > Actions`
-   - Adicione:
-     - `VITE_SUPABASE_URL`: Sua URL do Supabase
-     - `VITE_SUPABASE_ANON_KEY`: Sua chave anônima do Supabase
-
-2. **Ative o GitHub Pages**
-   - Vá para `Settings > Pages`
-   - Source: `Deploy from a branch`
-   - Branch: `gh-pages` (criado automaticamente pelo workflow)
-
-3. **Faça push para a branch main**
-   ```bash
-   git add .
-   git commit -m "Configuração para GitHub Pages"
-   git push origin main
-   ```
-
-O deploy será executado automaticamente e estará disponível em `https://seu-usuario.github.io/tareffy/`
-
-## 🔧 Scripts Disponíveis
-
-- `npm run dev` - Inicia o servidor de desenvolvimento
-- `npm run build` - Gera build de produção
-- `npm run preview` - Visualiza o build de produção
-- `npm run lint` - Executa o linter
-- `npm run type-check` - Verifica tipos TypeScript
-
-## 📁 Estrutura do Projeto
-
-```
-tareffy/
-├── src/                    # Código fonte do frontend
-│   ├── components/         # Componentes React
-│   ├── pages/             # Páginas da aplicação
-│   ├── contexts/          # Contextos React
-│   ├── services/          # Serviços e APIs
-│   ├── styles/            # Estilos CSS
-│   └── config/            # Configurações
-├── backend/               # Backend Node.js
-│   ├── src/               # Código fonte do backend
-│   ├── prisma/            # Schema e migrações do banco
-│   └── dist/              # Build do backend
-├── .github/               # Workflows do GitHub Actions
-├── dist/                  # Build de produção
-└── docs/                  # Documentação
+```bash
+npm start
 ```
 
-## 🔐 Configuração do Supabase
+## 📝 Changelog
 
-### 1. Crie um Projeto
-- Acesse [supabase.com](https://supabase.com)
-- Crie um novo projeto
-- Aguarde a configuração inicial
+Veja o [CHANGELOG.md](CHANGELOG.md) para o histórico completo de mudanças.
 
-### 2. Configure as Tabelas
-Execute o arquivo `supabase-schema.sql` no SQL Editor do Supabase:
+### Versão 1.0.0 (27/01/2025)
+- 🎉 Lançamento inicial
+- ✨ Todas as funcionalidades principais implementadas
+- 🐛 Correções de bugs e melhorias de UX
+- 📱 Otimização para dispositivos móveis
 
-```sql
--- Execute o conteúdo de supabase-schema.sql
-```
+## 🤝 Contribuição
 
-### 3. Configure as Políticas de Segurança
-Configure as Row Level Security (RLS) para suas tabelas:
-
-```sql
--- Exemplo para tabela de usuários
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can view own profile" ON users
-  FOR SELECT USING (auth.uid() = id);
-```
-
-### 4. Configure as Variáveis de Ambiente
-No seu arquivo `.env`:
-
-```env
-VITE_SUPABASE_URL=https://seu-projeto.supabase.co
-VITE_SUPABASE_ANON_KEY=sua-chave-anonima
-```
-
-## 🤝 Contribuindo
+Contribuições são bem-vindas! Para contribuir:
 
 1. Fork o projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
@@ -168,19 +156,19 @@ VITE_SUPABASE_ANON_KEY=sua-chave-anonima
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 📞 Suporte
+## 👨‍💻 Desenvolvedor
 
-- **Issues**: [GitHub Issues](https://github.com/seu-usuario/tareffy/issues)
-- **Documentação**: [Wiki do Projeto](https://github.com/seu-usuario/tareffy/wiki)
-- **Email**: seu-email@exemplo.com
+**Iago Alves**
+- GitHub: [@iagodevtech](https://github.com/iagodevtech)
+- Email: iagomederios801@gmail.com
 
 ## 🙏 Agradecimentos
 
-- [React](https://reactjs.org/) - Biblioteca JavaScript para interfaces
-- [Supabase](https://supabase.com/) - Backend como serviço
-- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS utilitário
-- [Vite](https://vitejs.dev/) - Build tool moderna
+- [Supabase](https://supabase.com/) - Backend-as-a-Service
+- [EmailJS](https://www.emailjs.com/) - Serviço de email
+- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS
+- [Heroicons](https://heroicons.com/) - Ícones SVG
 
 ---
 
-**Desenvolvido com ❤️ por [Seu Nome]**
+**Tareffy v1.0.0** - Desenvolvido com ❤️ por Iago Alves
