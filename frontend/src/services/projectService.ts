@@ -57,15 +57,46 @@ export const projectService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
+    console.log('🔍 Buscando projeto:', id, 'para usuário:', user.id, user.email);
+
+    // Buscar equipes onde o usuário é membro
+    const { data: userTeams, error: teamsError } = await supabase
+      .from('team_members')
+      .select('team_id')
+      .eq('user_id', user.id);
+
+    if (teamsError) {
+      console.error('❌ Erro ao buscar equipes do usuário:', teamsError);
+      throw teamsError;
+    }
+
+    const teamIds = userTeams?.map(t => t.team_id) || [];
+    console.log('🆔 Team IDs do usuário:', teamIds);
+
     const { data, error } = await supabase
       .from('projects')
-      .select('*')
+      .select(`
+        *,
+        teams (
+          name
+        )
+      `)
       .eq('id', id)
-      .eq('user_id', user.id)
+      .in('team_id', teamIds)
       .single();
 
-    if (error) throw error;
-    return data;
+    if (error) {
+      console.error('❌ Erro ao buscar projeto:', error);
+      throw error;
+    }
+
+    console.log('✅ Projeto encontrado:', data);
+    
+    // Adicionar team_name para exibição
+    return {
+      ...data,
+      team_name: data.teams?.name || 'Equipe não encontrada'
+    };
   },
 
   // Criar novo projeto
