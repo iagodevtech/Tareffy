@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { teamService, TeamInvite } from '../../services/teamService';
@@ -11,11 +11,7 @@ const AcceptInvite: React.FC = () => {
   const [accepting, setAccepting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadInvite();
-  }, []);
-
-  const loadInvite = async () => {
+  const loadInvite = useCallback(async () => {
     try {
       setLoading(true);
       const inviteId = searchParams.get('invite');
@@ -41,7 +37,11 @@ const AcceptInvite: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams]);
+
+  useEffect(() => {
+    loadInvite();
+  }, [loadInvite]);
 
   const handleAccept = async () => {
     if (!invite) return;
