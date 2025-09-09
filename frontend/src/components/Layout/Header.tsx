@@ -66,7 +66,7 @@ const Header: React.FC = () => {
       // Verificar se há espaço suficiente abaixo
       const headerHeight = 64; // altura do header
       const availableSpaceBelow = window.innerHeight - headerHeight;
-      const notificationHeight = 400; // altura estimada do menu
+      const notificationHeight = 300; // altura mais conservadora
       
       if (availableSpaceBelow < notificationHeight) {
         setNotificationPosition('top');
@@ -104,9 +104,9 @@ const Header: React.FC = () => {
               
               {/* Dropdown de notificações */}
               {showNotifications && (
-                <div className={`absolute right-0 w-80 sm:w-96 max-w-[calc(100vw-1rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-8rem)] overflow-hidden ${
+                <div className={`absolute right-0 w-80 sm:w-96 max-w-[calc(100vw-1rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50 ${
                   notificationPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
-                }`} style={{ right: '0.5rem', maxWidth: 'calc(100vw - 1rem)', maxHeight: 'calc(100vh - 8rem)' }}>
+                }`} style={{ right: '0.5rem', maxWidth: 'calc(100vw - 1rem)', maxHeight: 'calc(100vh - 6rem)' }}>
                   <div className="p-4 border-b border-gray-200">
                     <div className="flex justify-between items-center">
                       <h3 className="text-sm font-semibold text-gray-900">Notificações</h3>
@@ -118,7 +118,7 @@ const Header: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="max-h-[calc(100vh-16rem)] overflow-y-auto">
+                  <div className="max-h-[calc(100vh-12rem)] overflow-y-auto">
                     {notifications.length === 0 ? (
                       <div className="p-4 text-center text-gray-500">
                         Nenhuma notificação
