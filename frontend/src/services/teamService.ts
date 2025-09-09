@@ -274,44 +274,66 @@ export const teamService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuário não autenticado');
 
-    // Buscar convite
-    const { data: invite, error: inviteError } = await supabase
-      .from('team_invites')
-      .select('*')
-      .eq('id', inviteId)
-      .eq('email', user.email)
-      .eq('status', 'pending')
-      .single();
+    try {
+      console.log('🔧 Iniciando aceite do convite:', inviteId);
 
-    if (inviteError || !invite) {
-      throw new Error('Convite não encontrado ou inválido');
-    }
+      // Buscar convite
+      const { data: invite, error: inviteError } = await supabase
+        .from('team_invites')
+        .select('*')
+        .eq('id', inviteId)
+        .eq('email', user.email)
+        .eq('status', 'pending')
+        .single();
 
-    // Verificar se não expirou
-    if (new Date(invite.expires_at) < new Date()) {
-      throw new Error('Convite expirado');
-    }
+      if (inviteError || !invite) {
+        console.error('❌ Convite não encontrado:', inviteError);
+        throw new Error('Convite não encontrado ou inválido');
+      }
 
-    // Adicionar membro à equipe
-    const { error: memberError } = await supabase
-      .from('team_members')
-      .insert({
-        team_id: invite.team_id,
-        user_id: user.id,
-        role: invite.role
-      });
+      console.log('✅ Convite encontrado:', invite);
 
-    if (memberError) throw memberError;
+      // Verificar se não expirou
+      if (new Date(invite.expires_at) < new Date()) {
+        throw new Error('Convite expirado');
+      }
 
-    // Atualizar status do convite
-    const { error: updateError } = await supabase
-      .from('team_invites')
-      .update({ status: 'accepted' })
-      .eq('id', inviteId);
+      // Adicionar membro à equipe
+      console.log('👥 Adicionando membro à equipe...');
+      const { error: memberError } = await supabase
+        .from('team_members')
+        .insert({
+          team_id: invite.team_id,
+          user_id: user.id,
+          role: invite.role
+        });
 
-    if (updateError) {
-      console.error('Erro ao atualizar status do convite:', updateError);
-      throw updateError;
+      if (memberError) {
+        console.error('❌ Erro ao adicionar membro:', memberError);
+        throw memberError;
+      }
+
+      console.log('✅ Membro adicionado à equipe');
+
+      // Atualizar status do convite (sem updated_at)
+      console.log('📝 Atualizando status do convite...');
+      const { error: updateError } = await supabase
+        .from('team_invites')
+        .update({ status: 'accepted' })
+        .eq('id', inviteId)
+        .select();
+
+      if (updateError) {
+        console.error('❌ Erro ao atualizar status do convite:', updateError);
+        // Não vamos falhar aqui, pois o membro já foi adicionado
+        console.log('⚠️ Membro foi adicionado, mas falha ao atualizar convite');
+      } else {
+        console.log('✅ Status do convite atualizado');
+      }
+
+    } catch (error) {
+      console.error('❌ Erro geral ao aceitar convite:', error);
+      throw error;
     }
   },
 
