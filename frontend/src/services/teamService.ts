@@ -341,20 +341,21 @@ export const teamService = {
 
       console.log('✅ Membro adicionado à equipe');
 
-      // Atualizar status do convite (sem updated_at)
-      console.log('📝 Atualizando status do convite...');
-      const { error: updateError } = await supabase
-        .from('team_invites')
-        .update({ status: 'accepted' })
-        .eq('id', inviteId)
-        .select();
+      // Tentar atualizar status do convite (opcional - não crítico)
+      console.log('📝 Tentando atualizar status do convite...');
+      try {
+        const { error: updateError } = await supabase
+          .from('team_invites')
+          .update({ status: 'accepted' })
+          .eq('id', inviteId);
 
-      if (updateError) {
-        console.error('❌ Erro ao atualizar status do convite:', updateError);
-        // Não vamos falhar aqui, pois o membro já foi adicionado
-        console.log('⚠️ Membro foi adicionado, mas falha ao atualizar convite');
-      } else {
-        console.log('✅ Status do convite atualizado');
+        if (updateError) {
+          console.log('⚠️ Não foi possível atualizar status do convite, mas membro foi adicionado:', updateError.message);
+        } else {
+          console.log('✅ Status do convite atualizado');
+        }
+      } catch (updateError) {
+        console.log('⚠️ Erro ao atualizar convite, mas membro foi adicionado com sucesso');
       }
 
     } catch (error) {
